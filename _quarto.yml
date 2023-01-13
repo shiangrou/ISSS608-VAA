@@ -3,15 +3,18 @@ project:
 
 website:
   title: "ISSS608-VAA"
-  navbar:
+  navbar: 
     left:
       - href: index.qmd
         text: Home
       - about.qmd
+    right:
+      - href: New.qmd
+        text: New
 
 format:
   html:
-    theme: cosmo
+    theme: united
     css: styles.css
     toc: true
 
