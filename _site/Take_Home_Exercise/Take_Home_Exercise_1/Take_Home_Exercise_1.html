@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Law Shiang Rou">
+
+<title>ISSS608-VAA - Take Home Exercise 1</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">ISSS608-VAA</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-hands-on-exercise" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Hands-on Exercise</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-exercise">    
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_exercise/Hands-on_EX01/Hands-on_EX01.html">
+ <span class="dropdown-text">Hands-on Exercise 1</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-take-home-exercise" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Take Home Exercise</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-take-home-exercise">    
+        <li>
+    <a class="dropdown-item" href="../../Take_Home_Exercise/Take_Home_Excercise_1/Take_Home_Exercise_1.html">
+ <span class="dropdown-text">Take Home Exercise 1</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><strong>1. Overview</strong></a></li>
+  <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset"><strong>2. Dataset</strong></a></li>
+  <li><a href="#preparation-steps" id="toc-preparation-steps" class="nav-link" data-scroll-target="#preparation-steps"><strong>3. Preparation Steps</strong></a></li>
+  <li><a href="#key-insights" id="toc-key-insights" class="nav-link" data-scroll-target="#key-insights"><strong>4. Key Insights</strong></a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Take Home Exercise 1</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Law Shiang Rou </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview"><strong>1. Overview</strong></h2>
+<p>In this take-home exercise, we will explore using age-sex pyramids to showcase the age and gender distribution of Singapore population in nine selected planning areas on single view using trellis display.</p>
+</section>
+<section id="dataset" class="level2">
+<h2 class="anchored" data-anchor-id="dataset"><strong>2. Dataset</strong></h2>
+<p>The dataset used, <a href="https://www.singstat.gov.sg/find-data/search-by-theme/population/geographic-distribution/latest-data"><em>Singapore Residents by Planning Area / Subzone, Age Group, Sex and Type of Dwelling, June 2022</em></a>, can be retrieved from the Singapore Department of Statistics home page.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/image-1140628652.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure above shows csv file on SingStats website</figcaption><p></p>
+</figure>
+</div>
+<p>Additional information on regions and maturity of the planning areas were referenced from <a href="https://en.wikipedia.org/wiki/Planning_Areas_of_Singapore">Wikipedia</a> and <a href="https://www.propertyguru.com.sg/property-guides/non-mature-vs-mature-bto-55760">PropertyGuru Singapore</a> to provide more insights to the readers. The consolidated Excel file can be retrieved from <u><strong>Github</strong></u>.</p>
+</section>
+<section id="preparation-steps" class="level2">
+<h2 class="anchored" data-anchor-id="preparation-steps"><strong>3. Preparation Steps</strong></h2>
+<section id="preparing-the-data-in-tableau" class="level4">
+<h4 class="anchored" data-anchor-id="preparing-the-data-in-tableau"><span style="color: Navy;">3.1 Preparing the data in Tableau</span></h4>
+<table class="table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 34%">
+<col style="width: 57%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Step</th>
+<th>Description</th>
+<th style="text-align: center;">Screenshot</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1.</td>
+<td><strong>Load the csv file into Tableau.</strong> <br><br> Click “Connect to Data” –&gt; click “Text file” and select the CSV file to connect to</td>
+<td style="text-align: center;"><img src="images/image-763433829.png" class="img-fluid" width="460"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2.</td>
+<td><strong>View the Notes.</strong> <br><br> Click on “View data” –&gt; the view data screen will appear.</td>
+<td style="text-align: center;"><img src="images/image-761813158.png" class="img-fluid" width="280"><br><img src="images/image-770310311.png" class="img-fluid" width="460"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3.</td>
+<td><strong>Rename the columns according to the data in Notes.</strong> <br><br> In the viewing panel on the right, click the down arrow button beside each field name –&gt; select “Rename” and change the name according to table shown in step 2.</td>
+<td style="text-align: center;"><img src="images/image-794020447.png" class="img-fluid" width="460"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4.</td>
+<td><strong>Save the Tableau file.</strong> <br><br> Click on “Save” button</td>
+<td style="text-align: center;"><img src="images/image-690970572.png" class="img-fluid" width="460"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5.</td>
+<td><strong>Adding additional information on region and maturity.</strong> <br><br> Click “Add” –&gt; click “Microsoft Excel” and select the file to add.</td>
+<td style="text-align: center;"><img src="images/image-144063171.png" class="img-fluid" width="460"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">6.</td>
+<td><strong>Build the connection with “Maturity”.</strong> <br><br> 1. Drag “Maturity” to the right until a line is form to connect to the original data.<br><br>2. Select “Planning Area” = “Planning Area1”</td>
+<td style="text-align: center;"><img src="images/image-963339825.png" class="img-fluid" width="460"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">7.</td>
+<td><strong>Build the connection with “Region”.</strong> <br><br> 1. Drag “Region” to the right until a line is form to connect to the original data.<br><br>2. Select “Planning Area” = “Planning Area (Region)”</td>
+<td style="text-align: center;"><img src="images/image-1332630524.png" class="img-fluid" width="460"></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="view-the-data-and-select-9-planning-areas" class="level4">
+<h4 class="anchored" data-anchor-id="view-the-data-and-select-9-planning-areas"><span style="color: Navy;">3.2 View the data and select 9 planning areas</span></h4>
+<table class="table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 34%">
+<col style="width: 57%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Step</th>
+<th>Description</th>
+<th style="text-align: center;">Screenshot</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1.</td>
+<td><strong>Selecting the 9 planning areas based on highest resident count and when possible, choose 1 mature and 1 non-mature within same region.</strong> <br><br> Click on sheet 1<br>1. Drag “Region” into Columns, drag “Planning Area” and “Maturity” into Rows, then place Resident Count onto the table body.<br><br>2. Sort each region to find out the planning areas with highest resident count.<br><br><strong>Central</strong> - Bukit Merah <em>(Mature)</em><br><strong>East</strong> - Bedok <em>(Mature)</em>, Tampines <em>(Mature)</em><br><strong>North</strong> - Woodlands <em>(Non-mature)</em>, Yishun <em>(Non-mature)</em><br><strong>North-East</strong> - Sengkang <em>(Non-mature)</em>, Ang Mo Kio <em>(Mature)</em><br><strong>West</strong> - Jurong West <em>(Non-mature)</em>, Clementi <em>(Mature)</em></td>
+<td style="text-align: center;"><img src="images/3.2.1.png" class="img-fluid" width="460"><br><img src="images/3.2.1(east).png" class="img-fluid" width="460"><br><img src="images/3.2.1(north).png" class="img-fluid" width="460"><br><img src="images/3.2.1(north-east).png" class="img-fluid" width="460"><br><img src="images/3.2.1(west).png" class="img-fluid" width="460"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2.</td>
+<td><strong>Apply Filter.</strong> <br><br> Drag “Planning Area” into filter, select the 9 planning areas listed in previous step and click “Apply”.</td>
+<td style="text-align: center;"><img src="images/3.2.2.png" class="img-fluid" style="width:100.0%"><br><img src="images/3.2.2(1).png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3.</td>
+<td><strong>Apply Filter to all worksheets.</strong> <br><br> Click on “Planning Area” under filter, select “Apply to Worksheets” –&gt; “All Using This Data Source”.</td>
+<td style="text-align: center;"><img src="images/3.2.3.png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="plotting-the-charts" class="level4">
+<h4 class="anchored" data-anchor-id="plotting-the-charts"><span style="color: Navy;">3.3 Plotting the charts</span></h4>
+<table class="table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 34%">
+<col style="width: 57%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Step</th>
+<th>Description</th>
+<th style="text-align: center;">Screenshot</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1.</td>
+<td><strong>Create calculated field for Female and Male resident count</strong> <br><br> Under Analysis, click “Create Calculated Field”<br>Create a calculated fields - “Female” by keying in the formula shown on the right, then repeat the step and create another calculated fields - “Male”.</td>
+<td style="text-align: center;"><img src="images/3.3.1.png" class="img-fluid" style="width:100.0%"><br><img src="images/3.3.1(1).png" class="img-fluid" style="width:100.0%"><br><img src="images/3.3.1(2).png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2.</td>
+<td><strong>Create the base for age-sex pyramids</strong> <br><br> Drag “Female” and “Male” onto Columns and drag “Age Group” onto Rows.</td>
+<td style="text-align: center;"><img src="images/3.3.2.png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3.</td>
+<td><strong>Create calculated field - Index</strong> <br><br> Under Analysis, click “Create Calculated Field”<br>Create a calculated fields - “Index” by keying in the formula shown on the right.</td>
+<td style="text-align: center;"><img src="images/3.3.3.png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4.</td>
+<td><strong>Create parameter - Number of Columns</strong> <br><br> On Data panel, right click on empty space and select “Create Parameter…”<br><br>On Edit Parameter screen, change the name and key in Current value of 2</td>
+<td style="text-align: center;"><img src="images/3.3.4.png" class="img-fluid" style="width:100.0%"><br><img src="images/3.3.4(1).png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5.</td>
+<td><strong>Create calculated field - Columns</strong> <br><br> Under Analysis, click “Create Calculated Field”<br>Create a calculated field - “Columns” by keying in the formula shown on the right.<br><br>Once the calculated field “Columns” is created, right click on it on the Data panel, and select “Convert to Discrete”</td>
+<td style="text-align: center;"><img src="images/3.3.5.png" class="img-fluid" style="width:100.0%"><br><img src="images/3.3.5(1).png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">6.</td>
+<td><strong>Build trellis display</strong> <br><br> 1. Drag “Columns” to Columns and drag “Region” to Rows<br><br> 2. Drag “Planning Area” to Detail<br><br> 3. Right click on “Planning Area” under Detail and select Compute using “Planning Area”</td>
+<td style="text-align: center;"><img src="images/3.3.6.png" class="img-fluid" style="width:100.0%"><br><br><img src="images/3.3.6(1).png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">7.</td>
+<td><strong>Edit X-Axis of “Females”</strong> <br><br> 1. Right click “Females” on X-axis and select Edit Axis.<br><br> 2. Select Fixed under range and set Fixed start to 0 and Fixed end to 14000. Check “Reversed” under Scale.<br><br> 3. Navigate to “Tick Marks”, set Major Tick Marks to Fixed and set Tick interval to 2000.</td>
+<td style="text-align: center;"><img src="images/3.3.7.png" class="img-fluid" style="width:100.0%"><br><img src="images/3.3.7(1).png" class="img-fluid" style="width:100.0%"><br><br><img src="images/3.3.7(2).png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8.</td>
+<td><strong>Edit X-Axis of “Males”</strong> <br><br> Right click “Males” on X-axis and select Edit Axis.<br><br> 1. Select Fixed under range and set Fixed start to 0 and Fixed end to 14000. <br><br> 2. Navigate to “Tick Marks”, set Major Tick Marks to Fixed and set Tick interval to 2000.</td>
+<td style="text-align: center;"><img src="images/3.3.8.png" class="img-fluid" style="width:100.0%"><br><img src="images/3.3.8(1).png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">9.</td>
+<td><strong>Change fill and border colors</strong> <br><br> Click on color, select red fill and border line for “Females” and blue for “Males” for more intuitive visualization.</td>
+<td style="text-align: center;"><img src="images/3.3.9F.png" class="img-fluid" width="300"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">10.</td>
+<td><strong>Sort the charts by resident counts</strong> <br><br> 1. Drag “Resident Count” onto Tooltip<br><br>2. Right click on “Planning Area” under All panel, and select Sort<br><br>3. Select sort by “Field” and set Field Name as “Resident Count”<br><br>4. Click on the triangle icon beside Region under Rows, Select sort by “Field” and set Field Name as “Resident Count”</td>
+<td style="text-align: center;"><img src="images/3.3.10.png" class="img-fluid" width="230"><br><br><img src="images/3.3.10(1).png" class="img-fluid" width="230"><br><br><img src="images/3.3.10(2).png" class="img-fluid" width="230"><br><br><img src="images/3.3.10(3).png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="creating-calculated-fields-for-additional-insights" class="level4">
+<h4 class="anchored" data-anchor-id="creating-calculated-fields-for-additional-insights"><span style="color: Navy;">3.4 Creating calculated fields for additional insights</span></h4>
+<table class="table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 34%">
+<col style="width: 57%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Step</th>
+<th>Description</th>
+<th style="text-align: center;">Screenshot</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1.</td>
+<td><strong>Create calculated field - Female-to-Male Ratio</strong> <br><br> Under Analysis, click “Create Calculated Field” to create a calculated field - “Female-to-Male Ratio” by keying in the formula shown on the right.</td>
+<td style="text-align: center;"><img src="images/3.4.1.png" class="img-fluid" style="width:100.0%"><br></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2.</td>
+<td><strong>Group type of dwelling into public, private and others</strong> <br><br>1. Right click on Type of Dwelling, select “Create” and the “Group”<br><br> 2. Select the respective dwelling types and click Group, once all the 3 groups have been formed, click “Apply”.</td>
+<td style="text-align: center;"><img src="images/3.4.2.png" class="img-fluid" style="width:100.0%"><br><br><img src="images/3.4.2(1).png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3.</td>
+<td><strong>Create calculated field - Public/Private Ratio</strong> <br><br>Under Analysis, click “Create Calculated Field” to create a calculated field - “Public/Private Ratio” by keying in the formula shown on the right.</td>
+<td style="text-align: center;"><img src="images/3.4.3.png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4.</td>
+<td><strong>Create calculated field - Top Age Group</strong> <br><br>Under Analysis, click “Create Calculated Field” to create 2 calculated fields - “TopAgeGroup-Female” and “TopAgeGroup-Male” by keying in the formula shown on the right.</td>
+<td style="text-align: center;"><img src="images/3.4.4.png" class="img-fluid" style="width:100.0%"><br><br><img src="images/3.4.4(1).png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5.</td>
+<td><strong>Create calculated field - Window Resident Count</strong> <br><br>Under Analysis, click “Create Calculated Field” to create a calculated field - “Window Resident Count” by keying in the formula shown on the right.</td>
+<td style="text-align: center;"><img src="images/3.4.5.png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="labelling-the-charts" class="level4">
+<h4 class="anchored" data-anchor-id="labelling-the-charts"><span style="color: Navy;">3.5 Labelling the charts</span></h4>
+<table class="table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 34%">
+<col style="width: 57%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Step</th>
+<th>Description</th>
+<th style="text-align: center;">Screenshot</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1.</td>
+<td><strong>Create AVG(1)</strong> <br><br>Type AVG(1) into columns.</td>
+<td style="text-align: center;"><img src="images/3.5.1.png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2.</td>
+<td><strong>Change chart type and color opacity</strong> <br><br>Click on the dropdown button beside “Bar” and select “Line”. Then click on Color and adjust opacity to 0%.</td>
+<td style="text-align: center;"><img src="images/3.5.2.png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3.</td>
+<td><strong>Adding Labels</strong> <br><br>1. Drag “Planning Area”, “Maturity”, “Window Resident Count”, “Female-to-Male ratio” and “public/private ratio” onto Label<br><br>2. Right click on “Maturity” and select “Attribute”</td>
+<td style="text-align: center;"><img src="images/3.5.3.png" class="img-fluid" width="230"><br><br><img src="images/3.5.3(2).png" class="img-fluid" width="260"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4.</td>
+<td><strong>Edit Label</strong> <br><br>Type AVG(1) into columns.</td>
+<td style="text-align: center;"><img src="images/3.5.4.png" class="img-fluid" style="width:100.0%"><br><br><img src="images/3.5.4(1).png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="section" class="level4">
+<h4 class="anchored" data-anchor-id="section"><span style="color: Navy;">3.6</span></h4>
+</section>
+</section>
+<section id="key-insights" class="level2">
+<h2 class="anchored" data-anchor-id="key-insights"><strong>4. Key Insights</strong></h2>
+<ol type="1">
+<li>Sengkang - has</li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

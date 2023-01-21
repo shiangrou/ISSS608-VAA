@@ -3,7 +3,7 @@ title: "Hands-on Exercise 1"
 author: "Law Shiang Rou"
 ---
 
-# **Getting Started** 
+# **Getting Started**
 
 ### **Install and launch R packages**
 
