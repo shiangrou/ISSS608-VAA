@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Law Shiang Rou">
+<meta name="dcterms.date" content="2023-01-21">
 
 <title>ISSS608-VAA - Take Home Exercise 1</title>
 <style>
@@ -134,7 +135,8 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><strong>1. Overview</strong></a></li>
   <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset"><strong>2. Dataset</strong></a></li>
   <li><a href="#preparation-steps" id="toc-preparation-steps" class="nav-link" data-scroll-target="#preparation-steps"><strong>3. Preparation Steps</strong></a></li>
-  <li><a href="#key-insights" id="toc-key-insights" class="nav-link" data-scroll-target="#key-insights"><strong>4. Key Insights</strong></a></li>
+  <li><a href="#trellis-display-age-sex-pyramids" id="toc-trellis-display-age-sex-pyramids" class="nav-link" data-scroll-target="#trellis-display-age-sex-pyramids"><strong>4. Trellis Display: Age-Sex Pyramids</strong></a></li>
+  <li><a href="#key-insights" id="toc-key-insights" class="nav-link" data-scroll-target="#key-insights"><strong>5. Key Insights</strong></a></li>
   </ul>
 </nav>
     </div>
@@ -157,6 +159,12 @@ ul.task-list li input[type="checkbox"] {
           </div>
   </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 21, 2023</p>
+    </div>
+  </div>
   
     
   </div>
@@ -177,7 +185,7 @@ ul.task-list li input[type="checkbox"] {
 <p></p><figcaption class="figure-caption">Figure above shows csv file on SingStats website</figcaption><p></p>
 </figure>
 </div>
-<p>Additional information on regions and maturity of the planning areas were referenced from <a href="https://en.wikipedia.org/wiki/Planning_Areas_of_Singapore">Wikipedia</a> and <a href="https://www.propertyguru.com.sg/property-guides/non-mature-vs-mature-bto-55760">PropertyGuru Singapore</a> to provide more insights to the readers. The consolidated Excel file can be retrieved from <u><strong>Github</strong></u>.</p>
+<p>Additional information on regions and maturity of the planning areas were referenced from <a href="https://en.wikipedia.org/wiki/Planning_Areas_of_Singapore">Wikipedia</a> and <a href="https://www.propertyguru.com.sg/property-guides/non-mature-vs-mature-bto-55760">PropertyGuru Singapore</a> to provide more insights to the readers. The additional information consolidated can be retrieved from <a href="https://github.com/shiangrou/ISSS608-VAA/blob/master/Take_Home_Exercise/Take_Home_Exercise_1/Estate%20Listing.xlsx">Github</a>.</p>
 </section>
 <section id="preparation-steps" class="level2">
 <h2 class="anchored" data-anchor-id="preparation-steps"><strong>3. Preparation Steps</strong></h2>
@@ -199,44 +207,44 @@ ul.task-list li input[type="checkbox"] {
 <tbody>
 <tr class="odd">
 <td style="text-align: center;">1.</td>
-<td><strong>Load the csv file into Tableau.</strong> <br><br> Click “Connect to Data” –&gt; click “Text file” and select the CSV file to connect to</td>
-<td style="text-align: center;"><img src="images/image-763433829.png" class="img-fluid" width="460"></td>
+<td><strong>Load the csv file into Tableau.</strong> <br><br> Click “Connect to Data”, select “Text file” and choose the CSV file to connect to</td>
+<td style="text-align: center;"><img src="images/image-763433829.png" class="img-fluid" width="430"></td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">2.</td>
-<td><strong>View the Notes.</strong> <br><br> Click on “View data” –&gt; the view data screen will appear.</td>
-<td style="text-align: center;"><img src="images/image-761813158.png" class="img-fluid" width="280"><br><img src="images/image-770310311.png" class="img-fluid" width="460"></td>
+<td><strong>View the Notes.</strong> <br><br> Click on “View data” beside “Notes” for the view data screen to appear.</td>
+<td style="text-align: center;"><img src="images/image-761813158.png" class="img-fluid" width="230"><br><br><img src="images/image-770310311.png" class="img-fluid" style="width:100.0%"></td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">3.</td>
-<td><strong>Rename the columns according to the data in Notes.</strong> <br><br> In the viewing panel on the right, click the down arrow button beside each field name –&gt; select “Rename” and change the name according to table shown in step 2.</td>
-<td style="text-align: center;"><img src="images/image-794020447.png" class="img-fluid" width="460"></td>
+<td><strong>Rename the columns according to the data in Notes.</strong> <br><br> In the viewing panel on the right, click the down arrow button beside each field name and select “Rename” to change the name according to table shown in step 2.</td>
+<td style="text-align: center;"><img src="images/3.1.3.png" class="img-fluid" style="width:100.0%"></td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">4.</td>
 <td><strong>Save the Tableau file.</strong> <br><br> Click on “Save” button</td>
-<td style="text-align: center;"><img src="images/image-690970572.png" class="img-fluid" width="460"></td>
+<td style="text-align: center;"><img src="images/image-690970572.png" class="img-fluid" style="width:100.0%"></td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">5.</td>
-<td><strong>Adding additional information on region and maturity.</strong> <br><br> Click “Add” –&gt; click “Microsoft Excel” and select the file to add.</td>
-<td style="text-align: center;"><img src="images/image-144063171.png" class="img-fluid" width="460"></td>
+<td><strong>Adding additional information on region and maturity.</strong> <br><br> Click “Add” and select “Microsoft Excel” to choose the file to add.</td>
+<td style="text-align: center;"><img src="images/image-144063171.png" class="img-fluid" style="width:100.0%"></td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">6.</td>
 <td><strong>Build the connection with “Maturity”.</strong> <br><br> 1. Drag “Maturity” to the right until a line is form to connect to the original data.<br><br>2. Select “Planning Area” = “Planning Area1”</td>
-<td style="text-align: center;"><img src="images/image-963339825.png" class="img-fluid" width="460"></td>
+<td style="text-align: center;"><img src="images/image-963339825.png" class="img-fluid" style="width:100.0%"></td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">7.</td>
 <td><strong>Build the connection with “Region”.</strong> <br><br> 1. Drag “Region” to the right until a line is form to connect to the original data.<br><br>2. Select “Planning Area” = “Planning Area (Region)”</td>
-<td style="text-align: center;"><img src="images/image-1332630524.png" class="img-fluid" width="460"></td>
+<td style="text-align: center;"><img src="images/image-1332630524.png" class="img-fluid" style="width:100.0%"></td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="view-the-data-and-select-9-planning-areas" class="level4">
-<h4 class="anchored" data-anchor-id="view-the-data-and-select-9-planning-areas"><span style="color: Navy;">3.2 View the data and select 9 planning areas</span></h4>
+<section id="select-9-planning-areas" class="level4">
+<h4 class="anchored" data-anchor-id="select-9-planning-areas"><span style="color: Navy;">3.2 Select 9 planning areas</span></h4>
 <table class="table">
 <colgroup>
 <col style="width: 8%">
@@ -253,18 +261,18 @@ ul.task-list li input[type="checkbox"] {
 <tbody>
 <tr class="odd">
 <td style="text-align: center;">1.</td>
-<td><strong>Selecting the 9 planning areas based on highest resident count and when possible, choose 1 mature and 1 non-mature within same region.</strong> <br><br> Click on sheet 1<br>1. Drag “Region” into Columns, drag “Planning Area” and “Maturity” into Rows, then place Resident Count onto the table body.<br><br>2. Sort each region to find out the planning areas with highest resident count.<br><br><strong>Central</strong> - Bukit Merah <em>(Mature)</em><br><strong>East</strong> - Bedok <em>(Mature)</em>, Tampines <em>(Mature)</em><br><strong>North</strong> - Woodlands <em>(Non-mature)</em>, Yishun <em>(Non-mature)</em><br><strong>North-East</strong> - Sengkang <em>(Non-mature)</em>, Ang Mo Kio <em>(Mature)</em><br><strong>West</strong> - Jurong West <em>(Non-mature)</em>, Clementi <em>(Mature)</em></td>
-<td style="text-align: center;"><img src="images/3.2.1.png" class="img-fluid" width="460"><br><img src="images/3.2.1(east).png" class="img-fluid" width="460"><br><img src="images/3.2.1(north).png" class="img-fluid" width="460"><br><img src="images/3.2.1(north-east).png" class="img-fluid" width="460"><br><img src="images/3.2.1(west).png" class="img-fluid" width="460"></td>
+<td><strong>Selecting the 9 planning areas based on highest resident count and when possible, choose 1 mature and 1 non-mature area in each region.</strong> <br><br>1. Click on sheet 1, drag “Region” into Columns and drag “Planning Area” and “Maturity” into Rows, then place “Resident Count” as the table content.<br><br>2. Sort each region to find out the planning areas with highest resident count.<br><br><span style="font-size:14px"><u>The 9 selected planning areas:</u><br> <strong>Central</strong> - Bukit Merah <em>(Mature)</em><br><strong>East</strong> - Bedok <em>(Mature)</em>, Tampines <em>(Mature)</em><br><strong>North</strong> - Woodlands <em>(Non-mature)</em>, Yishun <em>(Non-mature)</em><br><strong>North-East</strong> - Sengkang <em>(Non-mature)</em>, Ang Mo Kio <em>(Mature)</em><br><strong>West</strong> - Jurong West <em>(Non-mature)</em>, Clementi <em>(Mature)</em></span></td>
+<td style="text-align: center;"><img src="images/3.2.1.png" class="img-fluid" style="width:100.0%"><br><br><img src="images/3.2.1(east).png" class="img-fluid" style="width:100.0%"><br><br><img src="images/3.2.1(north).png" class="img-fluid" style="width:100.0%"><br><br><img src="images/3.2.1(north-east).png" class="img-fluid" style="width:100.0%"><br><br><img src="images/3.2.1(west).png" class="img-fluid" style="width:100.0%"></td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">2.</td>
-<td><strong>Apply Filter.</strong> <br><br> Drag “Planning Area” into filter, select the 9 planning areas listed in previous step and click “Apply”.</td>
-<td style="text-align: center;"><img src="images/3.2.2.png" class="img-fluid" style="width:100.0%"><br><img src="images/3.2.2(1).png" class="img-fluid" style="width:100.0%"></td>
+<td><strong>Apply filter to dataset.</strong> <br><br> Drag “Planning Area” into filter, select the 9 planning areas listed in previous step and click “Apply”.</td>
+<td style="text-align: center;"><img src="images/3.2.2.png" class="img-fluid" width="400"><br><br><img src="images/3.2.2(1).png" class="img-fluid" width="400"></td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">3.</td>
-<td><strong>Apply Filter to all worksheets.</strong> <br><br> Click on “Planning Area” under filter, select “Apply to Worksheets” –&gt; “All Using This Data Source”.</td>
-<td style="text-align: center;"><img src="images/3.2.3.png" class="img-fluid" style="width:100.0%"></td>
+<td><strong>Apply filter to all worksheets.</strong> <br><br> Click on “Planning Area” under filter, select “Apply to Worksheets” and “All Using This Data Source”.</td>
+<td style="text-align: center;"><img src="images/3.2.3.png" class="img-fluid" width="400"></td>
 </tr>
 </tbody>
 </table>
@@ -287,43 +295,43 @@ ul.task-list li input[type="checkbox"] {
 <tbody>
 <tr class="odd">
 <td style="text-align: center;">1.</td>
-<td><strong>Create calculated field for Female and Male resident count</strong> <br><br> Under Analysis, click “Create Calculated Field”<br>Create a calculated fields - “Female” by keying in the formula shown on the right, then repeat the step and create another calculated fields - “Male”.</td>
-<td style="text-align: center;"><img src="images/3.3.1.png" class="img-fluid" style="width:100.0%"><br><img src="images/3.3.1(1).png" class="img-fluid" style="width:100.0%"><br><img src="images/3.3.1(2).png" class="img-fluid" style="width:100.0%"></td>
+<td><strong>Create calculated field for female and male resident count</strong> <br><br> Under Analysis, click “Create Calculated Field”, create a calculated field - “Female” by keying in the formula shown on the right, then repeat the step and create another calculated field - “Male”.</td>
+<td style="text-align: center;"><img src="images/3.3.1.png" class="img-fluid" style="width:100.0%"><br><br><img src="images/3.3.1(1).png" class="img-fluid" style="width:100.0%"><br><br><img src="images/3.3.1(2).png" class="img-fluid" style="width:100.0%"></td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">2.</td>
-<td><strong>Create the base for age-sex pyramids</strong> <br><br> Drag “Female” and “Male” onto Columns and drag “Age Group” onto Rows.</td>
+<td><strong>Create the base for age-sex pyramids</strong> <br><br> Drag “Females” and “Males” onto Columns and drag “Age Group” onto Rows.</td>
 <td style="text-align: center;"><img src="images/3.3.2.png" class="img-fluid" style="width:100.0%"></td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">3.</td>
-<td><strong>Create calculated field - Index</strong> <br><br> Under Analysis, click “Create Calculated Field”<br>Create a calculated fields - “Index” by keying in the formula shown on the right.</td>
+<td><strong>Create calculated field - Index</strong> <br><br> Under Analysis, click “Create Calculated Field”, create a calculated field - “Index” by keying in the formula shown on the right.</td>
 <td style="text-align: center;"><img src="images/3.3.3.png" class="img-fluid" style="width:100.0%"></td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">4.</td>
 <td><strong>Create parameter - Number of Columns</strong> <br><br> On Data panel, right click on empty space and select “Create Parameter…”<br><br>On Edit Parameter screen, change the name and key in Current value of 2</td>
-<td style="text-align: center;"><img src="images/3.3.4.png" class="img-fluid" style="width:100.0%"><br><img src="images/3.3.4(1).png" class="img-fluid" style="width:100.0%"></td>
+<td style="text-align: center;"><img src="images/3.3.4.png" class="img-fluid" width="310"><br><br><img src="images/3.3.4(1).png" class="img-fluid" width="300"></td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">5.</td>
-<td><strong>Create calculated field - Columns</strong> <br><br> Under Analysis, click “Create Calculated Field”<br>Create a calculated field - “Columns” by keying in the formula shown on the right.<br><br>Once the calculated field “Columns” is created, right click on it on the Data panel, and select “Convert to Discrete”</td>
-<td style="text-align: center;"><img src="images/3.3.5.png" class="img-fluid" style="width:100.0%"><br><img src="images/3.3.5(1).png" class="img-fluid" style="width:100.0%"></td>
+<td><strong>Create calculated field - Columns</strong> <br><br> Under Analysis, click “Create Calculated Field”, create a calculated field - “Columns” by keying in the formula shown on the right.<br><br>Once the calculated field “Columns” is created, right click on it on the Data panel, and select “Convert to Discrete”</td>
+<td style="text-align: center;"><img src="images/3.3.5.png" class="img-fluid" style="width:100.0%"><br><br><img src="images/3.3.5(1).png" class="img-fluid" width="320"></td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">6.</td>
-<td><strong>Build trellis display</strong> <br><br> 1. Drag “Columns” to Columns and drag “Region” to Rows<br><br> 2. Drag “Planning Area” to Detail<br><br> 3. Right click on “Planning Area” under Detail and select Compute using “Planning Area”</td>
+<td><strong>Build trellis display</strong> <br><br> 1. Drag “Columns” to Columns and drag “Region” to Rows<br><br> 2. Drag “Planning Area” to Detail<br><br> 3. Right click on “Planning Area” under Detail and select compute using “Planning Area”</td>
 <td style="text-align: center;"><img src="images/3.3.6.png" class="img-fluid" style="width:100.0%"><br><br><img src="images/3.3.6(1).png" class="img-fluid" style="width:100.0%"></td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">7.</td>
-<td><strong>Edit X-Axis of “Females”</strong> <br><br> 1. Right click “Females” on X-axis and select Edit Axis.<br><br> 2. Select Fixed under range and set Fixed start to 0 and Fixed end to 14000. Check “Reversed” under Scale.<br><br> 3. Navigate to “Tick Marks”, set Major Tick Marks to Fixed and set Tick interval to 2000.</td>
+<td><strong>Edit X-Axis of “Females”</strong> <br><br> 1. Right click “Females” on X-axis and select “Edit Axis”.<br><br> 2. Select “Fixed” under range and set Fixed start to 0 and Fixed end to 14000. Check “Reversed” under Scale.<br><br> 3. Navigate to “Tick Marks”, set Major Tick Marks to “Fixed” and set Tick interval to 2000.</td>
 <td style="text-align: center;"><img src="images/3.3.7.png" class="img-fluid" style="width:100.0%"><br><img src="images/3.3.7(1).png" class="img-fluid" style="width:100.0%"><br><br><img src="images/3.3.7(2).png" class="img-fluid" style="width:100.0%"></td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">8.</td>
-<td><strong>Edit X-Axis of “Males”</strong> <br><br> Right click “Males” on X-axis and select Edit Axis.<br><br> 1. Select Fixed under range and set Fixed start to 0 and Fixed end to 14000. <br><br> 2. Navigate to “Tick Marks”, set Major Tick Marks to Fixed and set Tick interval to 2000.</td>
-<td style="text-align: center;"><img src="images/3.3.8.png" class="img-fluid" style="width:100.0%"><br><img src="images/3.3.8(1).png" class="img-fluid" style="width:100.0%"></td>
+<td><strong>Edit X-Axis of “Males”</strong> <br><br> Right click “Males” on X-axis and select “Edit Axis”.<br><br> 1. Select “Fixed” under range and set Fixed start to 0 and Fixed end to 14000. <br><br> 2. Navigate to “Tick Marks”, set Major Tick Marks to “Fixed” and set Tick interval to 2000.</td>
+<td style="text-align: center;"><img src="images/3.3.8.png" class="img-fluid" style="width:100.0%"><br><br><img src="images/3.3.8(1).png" class="img-fluid" style="width:100.0%"></td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">9.</td>
@@ -332,8 +340,8 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td style="text-align: center;">10.</td>
-<td><strong>Sort the charts by resident counts</strong> <br><br> 1. Drag “Resident Count” onto Tooltip<br><br>2. Right click on “Planning Area” under All panel, and select Sort<br><br>3. Select sort by “Field” and set Field Name as “Resident Count”<br><br>4. Click on the triangle icon beside Region under Rows, Select sort by “Field” and set Field Name as “Resident Count”</td>
-<td style="text-align: center;"><img src="images/3.3.10.png" class="img-fluid" width="230"><br><br><img src="images/3.3.10(1).png" class="img-fluid" width="230"><br><br><img src="images/3.3.10(2).png" class="img-fluid" width="230"><br><br><img src="images/3.3.10(3).png" class="img-fluid" style="width:100.0%"></td>
+<td><strong>Sort the charts by resident counts</strong> <br><br> 1. Drag “Resident Count” onto Tooltip<br><br>2. Right click on “Planning Area” under “All” panel, and select Sort<br><br>3. Select sort by “Field” and set Field Name as “Resident Count”<br><br>4. Click on the triangle icon beside Region under Rows, Select sort by “Field” and set Field Name as “Resident Count”</td>
+<td style="text-align: center;"><img src="images/3.3.10.png" class="img-fluid" width="213"><img src="images/3.3.10(1).png" class="img-fluid" width="225"><br><br><img src="images/3.3.10(2).png" class="img-fluid" width="230"><br><br><img src="images/3.3.10(3).png" class="img-fluid" style="width:100.0%"></td>
 </tr>
 </tbody>
 </table>
@@ -372,7 +380,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="even">
 <td style="text-align: center;">4.</td>
 <td><strong>Create calculated field - Top Age Group</strong> <br><br>Under Analysis, click “Create Calculated Field” to create 2 calculated fields - “TopAgeGroup-Female” and “TopAgeGroup-Male” by keying in the formula shown on the right.</td>
-<td style="text-align: center;"><img src="images/3.4.4.png" class="img-fluid" style="width:100.0%"><br><br><img src="images/3.4.4(1).png" class="img-fluid" style="width:100.0%"></td>
+<td style="text-align: center;"><img src="images/3.4.4.png" class="img-fluid" style="width:100.0%"></td>
 </tr>
 <tr class="odd">
 <td style="text-align: center;">5.</td>
@@ -382,8 +390,8 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table>
 </section>
-<section id="labelling-the-charts" class="level4">
-<h4 class="anchored" data-anchor-id="labelling-the-charts"><span style="color: Navy;">3.5 Labelling the charts</span></h4>
+<section id="adding-labels-and-tooltips" class="level4">
+<h4 class="anchored" data-anchor-id="adding-labels-and-tooltips"><span style="color: Navy;">3.5 Adding labels and tooltips</span></h4>
 <table class="table">
 <colgroup>
 <col style="width: 8%">
@@ -400,7 +408,7 @@ ul.task-list li input[type="checkbox"] {
 <tbody>
 <tr class="odd">
 <td style="text-align: center;">1.</td>
-<td><strong>Create AVG(1)</strong> <br><br>Type AVG(1) into columns.</td>
+<td><strong>Create AVG(1)</strong> <br><br>Type AVG(1) into Columns.</td>
 <td style="text-align: center;"><img src="images/3.5.1.png" class="img-fluid" style="width:100.0%"></td>
 </tr>
 <tr class="even">
@@ -410,23 +418,162 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td style="text-align: center;">3.</td>
-<td><strong>Adding Labels</strong> <br><br>1. Drag “Planning Area”, “Maturity”, “Window Resident Count”, “Female-to-Male ratio” and “public/private ratio” onto Label<br><br>2. Right click on “Maturity” and select “Attribute”</td>
-<td style="text-align: center;"><img src="images/3.5.3.png" class="img-fluid" width="230"><br><br><img src="images/3.5.3(2).png" class="img-fluid" width="260"></td>
+<td><strong>Adding labels</strong> <br><br>1. Drag “Planning Area”, “Maturity”, “Window Resident Count”, “Female-to-Male ratio” and “public/private ratio” onto Label<br><br>2. Right click on “Maturity” and select “Attribute”</td>
+<td style="text-align: center;"><img src="images/3.5.3.png" class="img-fluid" width="215"><img src="images/3.5.3(2).png" class="img-fluid" width="215"></td>
 </tr>
 <tr class="even">
 <td style="text-align: center;">4.</td>
-<td><strong>Edit Label</strong> <br><br>Type AVG(1) into columns.</td>
-<td style="text-align: center;"><img src="images/3.5.4.png" class="img-fluid" style="width:100.0%"><br><br><img src="images/3.5.4(1).png" class="img-fluid" style="width:100.0%"></td>
+<td><strong>Edit label</strong> <br><br>1. Click on “Label” and click <img src="images/dot.png" class="img-fluid" width="24"><br><br>2. Edit Label according to the screenshot on the right.</td>
+<td style="text-align: center;"><img src="images/3.5.4.png" class="img-fluid"><br><br><img src="images/3.5.4(1).png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5.</td>
+<td><strong>Edit tooltip for AVG(1)</strong> <br><br>1. Click on Tooltip and edit tooltip according to the screenshot on the right.</td>
+<td style="text-align: center;"><img src="images/3.5.5.png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">6.</td>
+<td><strong>Edit X-Axis for AVG(1)</strong> <br><br>Right click on AVG(1) on the X-axis<br><br>1. Select “Uniform axis range for all rows or columns”, check “Reversed” under Scale, and remove the axis title.<br><br>2. Navigate to “Tick Marks”, select “None” under Major Tick Marks</td>
+<td style="text-align: center;"><img src="images/3.5.6.png" class="img-fluid" style="width:100.0%"><br><br><img src="images/3.5.6(1).png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">7.</td>
+<td><strong>Add labels for “Males” (Max)</strong> <br><br>1. Drag Resident count onto Label under SUM(Males), click the dropdown and select “Add Table Calculation”<br><br>2. Select “Percent of Total as Calculation Type and compute using”Pane (down)“<br><br>3. Click on Label and check”Show mark labels, select “Min/Max” and uncheck “Label minimum value”</td>
+<td style="text-align: center;"><img src="images/3.5.7.png" class="img-fluid" width="210"><img src="images/3.5.7(1).png" class="img-fluid" width="225"><br><br><img src="images/3.5.7(2).png" class="img-fluid" width="225"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">8.</td>
+<td><strong>Add labels for “Females” (selected)</strong> <br><br>1. Drag “Females”, “Males” and “Resident Count” onto Label under SUM(Females), click the dropdown and select “Add table calculation”<br><br>2. Select “Percent of Total as Calculation Type and compute using”Pane (down)“<br><br>3. Click on Label and check”Show mark labels and select “Selected”</td>
+<td style="text-align: center;"><img src="images/3.5.8.png" class="img-fluid" width="200"><img src="images/3.5.8(1).png" class="img-fluid" width="220"><br><br><img src="images/3.5.8(2).png" class="img-fluid" width="280"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">9.</td>
+<td><strong>Highlight the top age group in each planning area</strong> <br><br>Drag “TopAgeGroup-Female” to color under SUM(Females) and drag “TopAgeGroup-Male” to color under SUM(Males)</td>
+<td style="text-align: center;"><img src="images/3.5.9.png" class="img-fluid" width="400"><br><br><img src="images/3.5.9(1).png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">10.</td>
+<td><strong>Adjust tooltips for SUM(Females) and SUM(Males)</strong> <br><br>Drag “Females”, “Males”, “Female-to-Male ratio” and “Maturity” onto tooltip under both SUM(Females) and SUM(Males). Edit the tooltip as shown on the right.</td>
+<td style="text-align: center;"><img src="images/3.5.10.png" class="img-fluid" style="width:100.0%"></td>
 </tr>
 </tbody>
 </table>
 </section>
-<section id="section" class="level4">
-<h4 class="anchored" data-anchor-id="section"><span style="color: Navy;">3.6</span></h4>
+<section id="formatting" class="level4">
+<h4 class="anchored" data-anchor-id="formatting"><span style="color: Navy;">3.6 Formatting</span></h4>
+<table class="table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 34%">
+<col style="width: 57%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Step</th>
+<th>Description</th>
+<th style="text-align: center;">Screenshot</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1.</td>
+<td><strong>Change sheet name</strong> <br><br>Double click on sheet name to rename, type in “Trellis: Age-Sex Pyramids”.</td>
+<td style="text-align: center;"><img src="images/3.6.1.png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2.</td>
+<td><strong>Hide field labels for Columns</strong> <br><br>Right click on “Columns” and select “Hide Field Labels for Columns”.</td>
+<td style="text-align: center;"><img src="images/3.6.2.png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3.</td>
+<td><strong>Hide header</strong> <br><br>Right click on “1” or “2” at the column header and deselect “Show Header”.</td>
+<td style="text-align: center;"><img src="images/3.6.3.png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4.</td>
+<td><strong>Format column shading and fonts</strong> <br><br>Right click on column/row header, select “Format” and edit the shading, font size, and bold the header font.</td>
+<td style="text-align: center;"><img src="images/3.6.4(1).png" class="img-fluid" width="190"><img src="images/3.6.4.png" class="img-fluid" width="220"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">5.</td>
+<td><strong>Annotate</strong> <br><br>Right click on the empty area on the chart, select “Annotate” and “Area”, type in the text shown on the right and adjust the size of the box to fit the empty area.</td>
+<td style="text-align: center;"><img src="images/3.6.5.png" class="img-fluid" style="width:100.0%"><br><br><img src="images/3.6.5(1).png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+</tbody>
+</table>
 </section>
+<section id="dashboarding" class="level4">
+<h4 class="anchored" data-anchor-id="dashboarding"><span style="color: Navy;">3.7 Dashboarding</span></h4>
+<table class="table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 34%">
+<col style="width: 57%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Step</th>
+<th>Description</th>
+<th style="text-align: center;">Screenshot</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1.</td>
+<td><strong>Add new dashboard</strong> <br><br>Click on <img src="images/dashboard.png" class="img-fluid" width="24"> at the bottom of the page to create a new dashboard. Drag “Trellis: Age-Sex Pyramid” sheet from the Dashboard panel onto the space in the right.<br><br> Under Size, select “Automatic”</td>
+<td style="text-align: center;"><img src="images/3.7.1.png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2.</td>
+<td><strong>Edit title</strong> <br><br>Double click on the title to edit the title to “Trellis Display: Age-Sex Pyramids of 9 planning areas located in 5 regions in Singapore in 2022”</td>
+<td style="text-align: center;"><img src="images/3.7.2.png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3.</td>
+<td><strong>Add descriptive text</strong> <br><br>Drag “Text” from the Objects panel onto the charts. Adjust the height of the text box, double click on the text box to key in the text as shown on the right.</td>
+<td style="text-align: center;"><img src="images/3.7.3.png" class="img-fluid" style="width:100.0%"><br><br><img src="images/3.7.4.png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="publishing-to-tableau-public" class="level4">
+<h4 class="anchored" data-anchor-id="publishing-to-tableau-public"><span style="color: Navy;">3.8 Publishing to Tableau Public</span></h4>
+<table class="table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 34%">
+<col style="width: 57%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Step</th>
+<th>Description</th>
+<th style="text-align: center;">Screenshot</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1.</td>
+<td><strong>Extract Data</strong> <br><br>Under Data, select “Extract Data” and save the .hyper file.</td>
+<td style="text-align: center;"><img src="images/3.8.1.png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2.</td>
+<td><strong>Publish to Tableau Public</strong> <br><br>Under Server, select “Tableau Public” and “Save to Tableau Public”.</td>
+<td style="text-align: center;"><img src="images/3.8.2.png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="trellis-display-age-sex-pyramids" class="level2">
+<h2 class="anchored" data-anchor-id="trellis-display-age-sex-pyramids"><strong>4. Trellis Display: Age-Sex Pyramids</strong></h2>
+<p><img src="images/Final Visualization.png" class="img-fluid" style="width:100.0%"></p>
+<p>The interactive visualization can now be viewed on <a href="https://isss608-shiangrou.netlify.app/take_home_exercise/take_home_exercise_1/take_home_exercise_1">Tableau Public</a>.</p>
 </section>
 <section id="key-insights" class="level2">
-<h2 class="anchored" data-anchor-id="key-insights"><strong>4. Key Insights</strong></h2>
+<h2 class="anchored" data-anchor-id="key-insights"><strong>5. Key Insights</strong></h2>
 <ol type="1">
 <li>Sengkang - has</li>
 </ol>
