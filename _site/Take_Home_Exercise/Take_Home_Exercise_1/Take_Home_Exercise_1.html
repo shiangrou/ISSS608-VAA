@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Law Shiang Rou">
-<meta name="dcterms.date" content="2023-01-21">
+<meta name="dcterms.date" content="2023-01-22">
 
 <title>ISSS608-VAA - Take Home Exercise 1</title>
 <style>
@@ -136,7 +136,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset"><strong>2. Dataset</strong></a></li>
   <li><a href="#preparation-steps" id="toc-preparation-steps" class="nav-link" data-scroll-target="#preparation-steps"><strong>3. Preparation Steps</strong></a></li>
   <li><a href="#trellis-display-age-sex-pyramids" id="toc-trellis-display-age-sex-pyramids" class="nav-link" data-scroll-target="#trellis-display-age-sex-pyramids"><strong>4. Trellis Display: Age-Sex Pyramids</strong></a></li>
-  <li><a href="#key-insights" id="toc-key-insights" class="nav-link" data-scroll-target="#key-insights"><strong>5. Key Insights</strong></a></li>
+  <li><a href="#key-observations" id="toc-key-observations" class="nav-link" data-scroll-target="#key-observations"><strong>5. Key Observations</strong></a></li>
   </ul>
 </nav>
     </div>
@@ -162,7 +162,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 21, 2023</p>
+      <p class="date">January 22, 2023</p>
     </div>
   </div>
   
@@ -174,7 +174,8 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="overview" class="level2">
 <h2 class="anchored" data-anchor-id="overview"><strong>1. Overview</strong></h2>
-<p>In this take-home exercise, we will explore using age-sex pyramids to showcase the age and gender distribution of Singapore population in nine selected planning areas on single view using trellis display.</p>
+<p>In this take-home exercise, we will explore using age-sex pyramids to showcase the age and gender composition of Singapore population in nine selected planning areas on single view using trellis display.</p>
+<p><u><strong>Selection of planning areas:</strong></u><br> In each of the 5 regions, we select 1 largest mature and 1 largest non-mature planning areas, based on number of residents. In East and North regions, only mature or non-mature estates are available, hence, 2 planning areas of the same maturity are selected in these 2 regions.</p>
 </section>
 <section id="dataset" class="level2">
 <h2 class="anchored" data-anchor-id="dataset"><strong>2. Dataset</strong></h2>
@@ -387,6 +388,11 @@ ul.task-list li input[type="checkbox"] {
 <td><strong>Create calculated field - Window Resident Count</strong> <br><br>Under Analysis, click “Create Calculated Field” to create a calculated field - “Window Resident Count” by keying in the formula shown on the right.</td>
 <td style="text-align: center;"><img src="images/3.4.5.png" class="img-fluid" style="width:100.0%"></td>
 </tr>
+<tr class="even">
+<td style="text-align: center;">6.</td>
+<td><strong>Add a line plot on Female-to-Male ratio</strong> <br><br>Drag “Female-to-Male Ratio” to Columns, click on the triangle icon and select compute using “Cell”. Right click on the X-Axis for line plot, select “Edit Axis” to edit the title to “F/M Ratio”</td>
+<td style="text-align: center;"><img src="images/3.4.6.png" class="img-fluid" style="width:100.0%"><br><br><img src="images/3.4.6(1).png" class="img-fluid" width="300"></td>
+</tr>
 </tbody>
 </table>
 </section>
@@ -455,6 +461,11 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: center;">10.</td>
 <td><strong>Adjust tooltips for SUM(Females) and SUM(Males)</strong> <br><br>Drag “Females”, “Males”, “Female-to-Male ratio” and “Maturity” onto tooltip under both SUM(Females) and SUM(Males). Edit the tooltip as shown on the right.</td>
 <td style="text-align: center;"><img src="images/3.5.10.png" class="img-fluid" style="width:100.0%"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">11.</td>
+<td><strong>Add label for F/M Ratio </strong> <br><br>Drag “Females-to-Males ratio” onto Label, click on Label, check “Show mark labels”, select “Min/Max” and deselect “Label minimum value”.</td>
+<td style="text-align: center;"><img src="images/3.5.11.png" class="img-fluid" width="350"></td>
 </tr>
 </tbody>
 </table>
@@ -570,13 +581,16 @@ ul.task-list li input[type="checkbox"] {
 <section id="trellis-display-age-sex-pyramids" class="level2">
 <h2 class="anchored" data-anchor-id="trellis-display-age-sex-pyramids"><strong>4. Trellis Display: Age-Sex Pyramids</strong></h2>
 <p><img src="images/Final Visualization.png" class="img-fluid" style="width:100.0%"></p>
-<p>The interactive visualization can now be viewed on <a href="https://isss608-shiangrou.netlify.app/take_home_exercise/take_home_exercise_1/take_home_exercise_1">Tableau Public</a>.</p>
+<p>The interactive visualization can now be viewed on <a href="https://public.tableau.com/views/TakeHomeExercise1-20Jan2023/Dashboard1?:language=en-US&amp;:display_count=n&amp;:origin=viz_share_link">Tableau Public</a>.</p>
 </section>
-<section id="key-insights" class="level2">
-<h2 class="anchored" data-anchor-id="key-insights"><strong>5. Key Insights</strong></h2>
-<ol type="1">
-<li>Sengkang - has</li>
-</ol>
+<section id="key-observations" class="level2">
+<h2 class="anchored" data-anchor-id="key-observations"><strong>5. Key Observations</strong></h2>
+<p><strong>1. Population size varies greatly across planning areas (PA), outer edges of Singapore more populated.</strong> From the trellis display, we observed that Bedok, Tampines, Jurong West, Sengkang, Woodlands and Yishun are significantly more populous than the other 3 PAs. We have mapped out the locations as shown below and observed that the more populous PAs are all located at outer edges of Singapore, and the 3 less populous PAs are either located near to or in Central Region.<br><br> <img src="images/Map location.png" class="img-fluid" width="700" alt="Singapore map with 9 selected planning areas"> <br><br> <strong>2. Mature estates have larger proportion of aged residents.</strong> The 3 mature PAs - Bukit Merah, AngMoKio and Clementi have 16.5%, 16.1% and 14.6% of their residents above 70 years old respectively. These proportions are much higher as compared to the 4 non-mature PAs (Woodlands, Yishun, Sengkang, Jurong West), with only 6.51% to 8.69% of their residents age above 70. This observation is consistent with the PA’s maturity. As mature PAs have been around for longer (&gt;20 years), it’s logical to have composition of older residents. Although the 2 mature PAs in East Region (Bedok, Tampines) have slightly lower proportion of residents above 70, at 13.75% and 9.58% respectively, their proportion of residents above 60 is at a similar level to that of Bukit Merah, AngMoKio and Clementi.</p>
+<p><strong>3. In the same region, non-mature PAs are more populated than mature PAs.</strong> For regions with both mature and non-mature PAs, the biggest non-mature PA in the region has significantly more residents than the biggest mature PA in the same region. This is observed from both West and North-East Region. The biggest non-mature PA in West Region, Jurong West is 1.75x more populous than Clementi, the biggest mature PA in the West. Also, Sengkang, the biggest non-mature PA in North-East Region has 57% more residents than the biggest mature PA in North-East, Ang Mo Kio.</p>
+<p><strong>4. High proportion of young families in Yishun, Woodlands, Sengkang and Tampines</strong> As evident from the trellis chart, these 4 PAs seem to be preferred by younger residents in their 20s and 30s. Besides, these PAs also have higher proportion of children under 10, as compared to other selected PAs. This indicates a pool of relatively younger families residing in these 4 PAs.</p>
+<p><strong>5. Shift in age distribution after age 70, with Females-to-Males ratio peaks after age 90 across all PAs.</strong> The line charts show that female-to-male ratio follows a constant uptrend after age 70, with female population more than double the male population at age 90 onward. This is unsurprising as <a href="https://www.singstat.gov.sg/find-data/search-by-theme/population/death-and-life-expectancy/latest-data">statistics</a> have shown that females have longer average life expectancy than males in Singapore. Additionally, a small bulge is also observed on the female-to-male ratio at age 30s to 40s, and the reason behind this bulge might be worth investigating.</p>
+<p><strong>6. Bedok has highest proportion of private housing, while Woodlands has highest proportion of HDB dwellers.</strong> In 2022, approximately 20% of residents resided in private housing in Singapore. Given this <a href="https://www.singstat.gov.sg/-/media/files/publications/population/population2022.ashx">statistic</a>, Bedok seems to be more prestige as 36.7% of residents here resided in private housing. Of all the private housing residents in Singapore, 11.3% of them reside in Bedok. Woodlands, on the other hand, has 92.3% of its residents residing in public housing.</p>
+<p><strong>Conclusion:</strong> The above observations are extracted based on only 9 selected PAs, we can expand this study to all 55 PAs to find out if some of the observations persist.</p>
 
 
 </section>

@@ -6,7 +6,10 @@ date: "`r Sys.Date()`"
 
 ## **1. Overview**
 
-In this take-home exercise, we will explore using age-sex pyramids to showcase the age and gender distribution of Singapore population in nine selected planning areas on single view using trellis display.
+In this take-home exercise, we will explore using age-sex pyramids to showcase the age and gender composition of Singapore population in nine selected planning areas on single view using trellis display.
+
+<u>**Selection of planning areas:**</u><br>
+In each of the 5 regions, we select 1 largest mature and 1 largest non-mature planning areas, based on number of residents. In East and North regions, only mature or non-mature estates are available, hence, 2 planning areas of the same maturity are selected in these 2 regions. 
 
 ## **2. Dataset**
 
@@ -60,6 +63,7 @@ Step | Description | Screenshot
 | 3. | **Create calculated field - Public/Private Ratio** <br><br>Under Analysis, click "Create Calculated Field" to create a calculated field - "Public/Private Ratio" by keying in the formula shown on the right.| ![](images/3.4.3.png){width=100%}|
 | 4. | **Create calculated field - Top Age Group** <br><br>Under Analysis, click "Create Calculated Field" to create 2 calculated fields - "TopAgeGroup-Female" and "TopAgeGroup-Male" by keying in the formula shown on the right.| ![](images/3.4.4.png){width=100%}|
 | 5. | **Create calculated field - Window Resident Count** <br><br>Under Analysis, click "Create Calculated Field" to create a calculated field - "Window Resident Count" by keying in the formula shown on the right.| ![](images/3.4.5.png){width=100%}|
+| 6. | **Add a line plot on Female-to-Male ratio** <br><br>Drag "Female-to-Male Ratio" to Columns, click on the triangle icon and select compute using "Cell". Right click on the X-Axis for line plot, select "Edit Axis" to edit the title to "F/M Ratio"| ![](images/3.4.6.png){width=100%}<br><br>![](images/3.4.6(1).png){width="300"}|
 
 #### [3.5 Adding labels and tooltips]{style="color: Navy;"}
 Step | Description | Screenshot  
@@ -74,6 +78,7 @@ Step | Description | Screenshot
 | 8. | **Add labels for "Females" (selected)** <br><br>1. Drag "Females", "Males" and "Resident Count" onto Label under SUM(Females), click the dropdown and select "Add table calculation"<br><br>2. Select "Percent of Total as Calculation Type and compute using "Pane (down)"<br><br>3. Click on Label and check "Show mark labels and select "Selected"|![](images/3.5.8.png){width="200"}![](images/3.5.8(1).png){width="220"}<br><br>![](images/3.5.8(2).png){width="280"}|
 | 9. | **Highlight the top age group in each planning area** <br><br>Drag "TopAgeGroup-Female" to color under SUM(Females) and drag "TopAgeGroup-Male" to color under SUM(Males)| ![](images/3.5.9.png){width="400"}<br><br>![](images/3.5.9(1).png){width=100%}|
 | 10. | **Adjust tooltips for SUM(Females) and SUM(Males)** <br><br>Drag "Females", "Males", "Female-to-Male ratio" and "Maturity" onto tooltip under both SUM(Females) and SUM(Males). Edit the tooltip as shown on the right.|![](images/3.5.10.png){width=100%}|
+| 11. | **Add label for F/M Ratio ** <br><br>Drag "Females-to-Males ratio" onto Label, click on Label, check "Show mark labels", select "Min/Max" and deselect "Label minimum value".| ![](images/3.5.11.png){width=350}|
 
 #### [3.6 Formatting]{style="color: Navy;"}
 Step | Description | Screenshot  
@@ -100,9 +105,29 @@ Step | Description | Screenshot
 ## **4. Trellis Display: Age-Sex Pyramids**
 ![](images/Final Visualization.png){width=100%}
 
-The interactive visualization can now be viewed on [Tableau Public](https://isss608-shiangrou.netlify.app/take_home_exercise/take_home_exercise_1/take_home_exercise_1).
+The interactive visualization can now be viewed on [Tableau Public](https://public.tableau.com/views/TakeHomeExercise1-20Jan2023/Dashboard1?:language=en-US&:display_count=n&:origin=viz_share_link). 
 
+## **5. Key Observations**
+**1. Population size varies greatly across planning areas (PA), outer edges of Singapore more populated.**
+From the trellis display, we observed that Bedok, Tampines, Jurong West, Sengkang, Woodlands and Yishun are significantly more populous than the other 3 PAs. We have mapped out the locations as shown below and observed that the more populous PAs are all located at outer edges of Singapore, and the 3 less populous PAs are either located near to or in Central Region.<br><br>
+![Singapore map with 9 selected planning areas](images/Map location.png){width="700"}
+<br><br>
+**2. Mature estates have larger proportion of aged residents.**
+The 3 mature PAs - Bukit Merah, AngMoKio and Clementi have 16.5%, 16.1% and 14.6% of their residents above 70 years old respectively. These proportions are much higher as compared to the 4 non-mature PAs (Woodlands, Yishun, Sengkang, Jurong West), with only 6.51% to 8.69% of their residents age above 70. This observation is consistent with the PA's maturity. As mature PAs have been around for longer (>20 years), it's logical to have composition of older residents.
+Although the 2 mature PAs in East Region (Bedok, Tampines) have slightly lower proportion of residents above 70, at 13.75% and 9.58% respectively, their proportion of residents above 60 is at a similar level to that of Bukit Merah, AngMoKio and Clementi.
 
-## **5. Key Insights**
+**3. In the same region, non-mature PAs are more populated than mature PAs.**
+For regions with both mature and non-mature PAs, the biggest non-mature PA in the region has significantly more residents than the biggest mature PA in the same region. This is observed from both West and North-East Region. The biggest non-mature PA in West Region, Jurong West is 1.75x more populous than Clementi, the biggest mature PA in the West. Also, Sengkang, the biggest non-mature PA in North-East Region has 57% more residents than the biggest mature PA in North-East, Ang Mo Kio.
 
-1.  Sengkang - has
+**4. High proportion of young families in Yishun, Woodlands, Sengkang and Tampines**
+As evident from the trellis chart, these 4 PAs seem to be preferred by younger residents in their 20s and 30s. Besides, these PAs also have higher proportion of children under 10, as compared to other selected PAs. This indicates a pool of relatively younger families residing in these 4 PAs.
+
+**5. Shift in age distribution after age 70, with Females-to-Males ratio peaks after age 90 across all PAs.**
+The line charts show that female-to-male ratio follows a constant uptrend after age 70, with female population more than double the male population at age 90 onward. This is unsurprising as [statistics](https://www.singstat.gov.sg/find-data/search-by-theme/population/death-and-life-expectancy/latest-data) have shown that females have longer average life expectancy than males in Singapore. Additionally, a small bulge is also observed on the female-to-male ratio at age 30s to 40s, and the reason behind this  bulge might be worth investigating.
+
+**6. Bedok has highest proportion of private housing, while Woodlands has highest proportion of HDB dwellers.**
+In 2022, approximately 20% of residents resided in private housing in Singapore. Given this [statistic](https://www.singstat.gov.sg/-/media/files/publications/population/population2022.ashx), Bedok seems to be more prestige as 36.7% of residents here resided in private housing. Of all the private housing residents in Singapore, 11.3% of them reside in Bedok. Woodlands, on the other hand, has 92.3% of its residents residing in public housing. 
+
+**Conclusion:**
+The above observations are extracted based on only 9 selected PAs, we can expand this study to all 55 PAs to find out if some of the observations persist.
+
