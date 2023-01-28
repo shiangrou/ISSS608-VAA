@@ -10,8 +10,8 @@ date: "`r Sys.Date()`"
 
 The code chunk below uses p_load() of pacman package to check if tidyverse packages have been installed.
 
-
 The code chunk below will import the library one by one
+
 ```{r}
 library(readr)
 library(dplyr)
@@ -19,6 +19,7 @@ library(tidyr)
 ```
 
 Alternatively, we can load all using p_load, this is more effective:
+
 ```{r}
 pacman::p_load(tidyverse)
 ```

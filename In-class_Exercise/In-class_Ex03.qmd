@@ -1,0 +1,40 @@
+---
+title: "In-class Exercise 3"
+author: "Law Shiang Rou"
+date: 28 January 2023
+date-modified: "`r Sys.Date()`"
+execute: 
+  echo: true
+  eval: true
+  warning: false
+format: html
+editor: visual
+---
+
+# Installing and loading R packages
+Two packages (tidyverse and ggiraph) are installed and loaded. 
+```{r}
+pacman::p_load(ggiraph, tidyverse)
+```
+
+# Importing data
+```{r}
+exam_data <- read_csv("data/Exam_data.csv")
+```
+
+# Plot a dotplot (static)
+```{r}
+ggplot(data=exam_data, aes(x= MATHS)) + 
+      geom_dotplot(dotsize=0.5)
+```
+# Plot a dotplot (interactive)
+```{r}
+p <- ggplot(data=exam_data, aes(x= MATHS)) + 
+      geom_dotplot_interactive(aes(tooltip = ID),
+      stackgroups = TRUE, binwidth=1, method = "histodot")
+girafe(
+  ggobj = p,
+  width_svg = 6,
+  height_svg = 6*0.618
+)
+```
