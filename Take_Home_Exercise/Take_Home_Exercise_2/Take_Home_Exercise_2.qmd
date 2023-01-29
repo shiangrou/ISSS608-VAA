@@ -1,5 +1,279 @@
 ---
 title: "Take Home Exercise 2"
 author: "Law Shiang Rou"
-date: "`r Sys.Date()`"
+date: 29 January 2023
+date-modified: "`r Sys.Date()`"
+execute:
+  warning: false
+format:
+  html:
+    code-fold: "show"
+    code-summary: "Hide the code"
+    code-block-border-left: "#63B9A0"
+    code-line-numbers: true
 ---
+
+## [**1. Overview**]{style="color: #0D644C;"}
+
+In this take-home exercise, a selected Tableau visualization submitted by classmate in take-home exercise 1 is reviewed based on its clarity and aesthetics.<br><br>
+Constructive suggestions are given based on data visualization design principles and best practices learned in Lesson 1 and 2. An alternative design is also proposed to help improve on the original visual. Instead of Tableau, the proposed design is produced using ggplot2, ggplot2 extensions and tidyverse packages.
+
+## [**2. Original visualization**]{style="color: #0D644C;"}
+The original visualization was done using Tableau and can be viewed on [Tableau Public](https://public.tableau.com/app/profile/thomas.hoang8154/viz/takehome1_16740523080150/Dashboard3). Figure below shows a screenshot of the original visual.<br>
+![Original Visualization](images/original.png){width=100%}
+<br>
+The dataset used, [Singapore Residents by Planning Area / Subzone, Age Group, Sex and Type of Dwelling, June 2022](https://www.singstat.gov.sg/find-data/search-by-theme/population/geographic-distribution/latest-data), can be retrieved from the Singapore Department of Statistics’ website. 
+
+## [**3. Review on original visualization**]{style="color: #0D644C;"}
+This section is divided into 3 parts for easy reading. <br><br>
+In 3.1, the merits of original visual are identified for peer learning, followed by 3.2, where the focus is shifted to point out the areas of improvement on clarity, and lastly, 3.3, where the aesthetics aspect of the visual is discussed.
+
+### 3.1 Merits of the original visual 
+> #### a. Clean background was used.
+[In the original visualization, a white background was used, allowing viewers to clearly see all the pyramid charts and labels at one glance.]{style="color: #5F5F5F;"}<br>
+
+> #### b. The charts are clearly labelled. 
+[The x-axis, y-axis and all 9 planning areas were labelled accordingly, with all labels in horizontal writing that is easy for viewers to read.]{style="color: #5F5F5F;"}<br>
+
+> #### c. Appropriate use of pyramid chart.
+[As the intention of the dashboard is to showcase the age and gender distribution of the selected planning areas, the use of pyramid chart type is appropriate and suitable for comparison.]{style="color: #5F5F5F;"}<br>
+
+> #### d. The intention of the dashboard is clear to viewers.
+[As the same colors were used for male and female across the 9 pyramids, it is obvious to viewers that the 9 pyramids on the dashboard are of the same structure, and the intention is for viewers to easily compare the shape of the 9 pyramids.]{style="color: #5F5F5F;"}
+
+### 3.2 Clarity
+> #### a. Absence of clear title – difficult for viewers to comprehend the visual at first glance.
+[The dashboard lacks a title to describe the content of the visual. Even though a short name, “Singapore Population Distribution by Age”, was given to the Viz in Tableau, it does not provide enough context for viewers and hence, can be misleading. For example, based on the short name given, viewers who are unfamiliar with Singapore might assume that the charts include the age distribution of the entire Singapore’s population. 
+In addition, the date of this data is unclear. As demographic data is ever changing, the title should also indicate the date of the data to prevent any confusion.]{style="color: #5F5F5F;"}<br>
+
+> #### b. Two different scales were used on the x-axes – might result in misleading comparisons.
+[The scales of x-axes differ for male and female population, and across the different planning areas. When doing comparison, viewers who are not aware of this difference could accidentally draw misleading insights. Taking Punggol’s pyramid as example, the bar of female residents in age group 35-39 has the same length as the bar of male residents in the same age group. However, the tooltip shows that there are 63k female residents and only 55k male residents in this age group.]{style="color: #5F5F5F;"}<br>
+
+> <p align="center">
+  <img width=55% src="images/3.2b.png">
+</p>
+
+> [Again, comparing between <u>Choa Chu Kang</u> and <u>Punggol</u>, judging solely from the length of the bars, both highlighted bars seem to have similar length, however, the number of residents in these two highlighted rows differs by 11k - Choa Chu Kang has 43,140 female residents and Punggol has 54,700 female residents.]{style="color: #5F5F5F;"}<br>
+
+<p align="center">
+  <img width=55% src="images/3.2b(1).png">
+</p>
+
+> #### c. Number of residents shown on charts looks inflated. 
+[Adding up the number of residents in each age group, the original visualization shows that Bedok has a total of 1.46million residents. This number seems a bit dubious as according to  ]{style="color: #5F5F5F;"}[  SingStats](https://www.singstat.gov.sg/find-data/search-by-theme/population/population-and-population-structure/visualising-data/population-dashboard)[, there were only 4.07million residents in Singapore as of June 2022. Adding up all the number of residents shown in the 9 planning areas in original visualization would have exceeded the total number of residents in Singapore.]{style="color: #5F5F5F;"}<br><br>
+[With the dataset used in take-home exercise 1, I have tabulated the number of residents by planning areas. As shown in the table below, Bedok has a total of 278k residents only, this does not tally with the original visual. ]{style="color: #5F5F5F;"}<br>
+
+<p align="center">
+  <img width=50% src="images/3.2c.png">
+</p>
+
+> [However, we are unable to investigate this further as the original source of data used in the original visual was not provided, and the date of original data was not stated as well.]{style="color: #5F5F5F;"}<br>
+
+> #### d. Absence of legend for color gradient, and gradient intensity is relative to bars within the same pyramid, not across pyramids.
+[The original visualization included color gradient on the pyramid charts. However, there is no legend to describe the gradient, leaving it to the viewers to assume. When inspected closely, we realise that the gradient intensity is with relative to the other bars within the same pyramid, rather than across all 9 pyramids. This might mislead viewers when making comparison.<br><br>
+Furthermore, as the length of the bars in the pyramids are already indicating the number of residents in each age group, color gradients might just be an extra element that competes for viewers’ attention.]{style="color: #5F5F5F;"}
+
+
+### 3.3 Aesthetics
+> #### a. Color options can be more intuitive.
+[The 2 colors used in the original visualization to represent male and female population can be made more intuitive. We can choose to align the color selection with common color associations that the general public have, i.e. blue for male and red/pink for female. This will help viewers to better associate and reduce the need for viewers to repeatedly refer to x-axis label for guidance.]{style="color: #5F5F5F;"}<br>
+
+> #### b. Charts of the 9 planning areas are not aligned.
+[The 9 pyramid charts seem to have been added to the dashboard one-by-one, resulting in different axis widths and misalignment of the charts. This affects the aesthetics of the dashboard, making it look disorganized and unprofessional.]{style="color: #5F5F5F;"}<br>
+
+> #### c. Overlapping y-axis labels.
+[The labels of the age groups on y-axis overlap each other, making it difficult for viewers to read. Some of the y-axis titles were cut off as well due to the different axis widths.]{style="color: #5F5F5F;"}<br>
+
+> #### d. Some longer bars in the pyramids were cropped off.
+[As shown in the screenshot below, the 2 highlighted bars seem to have been cropped off on the right. Even though the number of residents were provided in tooltips, this affects the aesthetics of the visual and the viewing experience.]{style="color: #5F5F5F;"}<br>
+
+> <p align="center">
+  <img width=55% src="images/3.3d.png">
+</p>
+
+> #### e. Repeated x-axis and y-axis labels.
+[The x-axis and y-axis labels should be the same across all 9 pyramids. Repeating the axis labels for 9 times makes the dashboard look congested.]{style="color: #5F5F5F;"}<br>
+
+## [**4. Proposed Visualization**]{style="color: #0D644C;"}
+The proposed visualization retains the merits of the original visualization while improving on the clarity and aesthetics. Below is a rough sketch of the proposed visualization.
+
+<p align="center">
+  <img width=60% src="images/sketch.png">
+</p>
+
+### 4.1 Key improvements.
+> #### a. Clear title - indicating context and date.
+[A clear title "Age-sex pyramids of top 9 planning areas by population count in Singapore, June 2022" is included for viewers to quickly grasp the context of the charts.]{style="color: #5F5F5F;"}<br>
+
+> #### b. Single scale on shared x-axis and shared y-axis.
+[Instead of using separate axes with different scales, the proposed visual is plotted on shared x and y axis. This allows viewers to compare across the different planning areas easily, without having to worry about the different axis scales.]{style="color: #5F5F5F;"}<br>
+
+> #### c. More intuitive colors.
+[Use blue for males and pink for females to align to common color associations.]{style="color: #5F5F5F;"}<br>
+
+> #### d. Organized layout with proper alignment.
+[The title, labels, legends, and charts are properly positioned, sized and aligned.]{style="color: #5F5F5F;"}<br>
+
+> #### e. Allow comparison with overall resident population.
+[The composite chart under 5(i) allows viewers to easily compare the shape of pyramid of each planning area with the pyramid of entire Singapore resident population.]{style="color: #5F5F5F;"}<br>
+
+## [**5. The Remake**]{style="color: #0D644C;"}
+
+#### a. Load the required libraries
+```{r}
+pacman::p_load(ggiraph, plotly, patchwork, hrbrthemes, ggthemes, 
+               knitr, rmarkdown, flextable, tidyverse)
+```
+
+
+#### b. Import the data
+```{r message = FALSE}
+results <- 'hide'
+data2022 <- read_csv("respopagesextod2022.csv")
+paged_table(data2022, options = list(rows.print = 5))
+```
+
+
+#### c. Group data by Planning Areas, Age Group and Sex
+```{r message = FALSE}
+data2022$Age_Group <- factor (data2022$Age_Group, 
+                              levels = unique(data2022$Age_Group)) 
+data2022$Planning_Areas <- factor (data2022$Planning_Areas, 
+                                   levels = unique(data2022$Planning_Areas)) 
+
+# Group by Planning Areas, Age Group and Sex
+data_grp <- data2022 %>%
+                    group_by(`Planning_Areas`, `Age_Group`, `Sex`) %>%
+                    summarise('Population_Count'= sum(`Population`)) %>%
+                    ungroup()
+paged_table(data_grp, options = list(rows.print = 5))
+```
+
+
+#### d. Select the top 9 planning areas by population count
+```{r message = FALSE}
+top9PA <- data_grp %>%
+  group_by(Planning_Areas) %>%
+  summarise(count = sum(Population_Count)) %>%
+  arrange(desc(count),.by_group = TRUE) %>%
+  top_n(9,count)
+
+data_top9 <- data_grp[data_grp$Planning_Areas %in% top9PA$Planning_Areas,]
+print(unique(data_top9$Planning_Areas))
+```
+
+
+#### e. Converting population count of males to negative.
+In order to plot age-sex pyramids, we need to convert the population count for one of the gender to negative. As we want "Male" to appear on the left side of the pyramids (to mimic the original visualization), we convert male population count to negative using the mutate function.
+```{r}
+data_all_males <- data_grp %>%
+  filter(`Sex` ==  "Males") %>%
+  mutate (Population_Count = -Population_Count)
+
+data_males <- data_top9 %>%
+  filter(`Sex` ==  "Males") %>%
+  mutate (Population_Count = -Population_Count)
+```
+
+
+#### f. Combining the converted males population count with female population count.
+```{r}
+data_all_females <- data_grp %>%
+  filter(`Sex` ==  "Females") 
+data_all_transform <- rbind(data_all_males,data_all_females)
+
+data_females <- data_top9 %>%
+  filter(`Sex` ==  "Females") 
+data_top9_transform <- rbind(data_males,data_females)
+```
+
+
+#### g. Plotting the age-sex pyramid of entire Singapore population.
+```{r fig.height = 6, fig.width = 10, align = "center"}
+data_all_transform_grp <- data_all_transform %>%
+  group_by(`Age_Group`, `Sex`) %>%
+  summarise('Population_Count'= sum(`Population_Count`)) %>%
+  ungroup()
+
+my_colors <- c("salmon","skyblue")
+pop_lab <- paste0(as.character(c(seq(160, 0, -40), seq(40, 160, 40))),"k")
+p_all <- ggplot(data_all_transform_grp, aes (x = reorder(Age_Group, desc(Age_Group)), 
+                                y = Population_Count, fill = Sex,
+                                text = paste("Age Group:", Age_Group, "\nPopulation:", abs(Population_Count), "\nSex", Sex))) +
+    geom_bar(stat = "identity", width = .7) +
+    scale_y_continuous(name = "Population Count", breaks = seq (-160000,160000,40000), labels=pop_lab) +
+    xlab("Age\nGroups") +
+    coord_flip() + 
+    theme_bw() + scale_fill_manual(values = my_colors) + 
+    ggtitle("Age-sex pyramids of Singapore, June 2022") + 
+    theme(axis.title.y= element_text(angle=0),
+          axis.ticks.y = element_blank(),
+          panel.grid.major.y = element_blank(),
+          panel.grid.minor.x = element_line(colour = "grey85", linetype = "dotted"),
+          plot.title = element_text(size=13, hjust = 0.5),
+          legend.position = "right")
+
+p_all
+```
+#### h. Plotting the age-sex pyramids of top 9 planning areas
+```{r fig.height = 10, fig.width = 10, align = "center"}
+xbrks <- seq(-12000, 12000, 3000)
+xlabls <- paste0(as.character(c(seq(12, 0, -3), seq(3, 12, 3))),"k")
+my_colors <- c("salmon","skyblue")
+p <-ggplot(data_top9_transform, aes (x = reorder(Age_Group, desc(Age_Group)), 
+                                y = Population_Count, fill = Sex, 
+                                text = paste("Age Group:", Age_Group, "\nPopulation:", abs(Population_Count), "\nSex", Sex))) +
+    geom_bar(stat = "identity", width = .7) +
+    facet_wrap (~ Planning_Areas, nrow = 3, ncol = 3) + 
+    scale_y_continuous(breaks = xbrks, labels = xlabls, name = "Population Count") +
+    xlab("Age\nGroups") +
+    coord_flip() + 
+    theme_bw() + scale_fill_manual(values = my_colors) + 
+    ggtitle("Age-sex pyramids of top 9 planning areas by population count in Singapore, June 2022") + 
+    theme(axis.title.y= element_text(angle=0),
+          axis.ticks.y = element_blank(),
+          panel.grid.major.y = element_blank(),
+          panel.grid.minor.x = element_line(colour = "grey85", linetype = "dotted"),
+          plot.title = element_text(size=13, hjust = 0.5),
+          legend.position = "none")
+p1 <- p + theme(legend.position = "right")
+    
+show(p1)
+```
+
+
+#### i. Creating a composite chart.
+```{r fig.height = 14, fig.width = 14, align = "center"}
+colnames(top9PA)[2] <- "Population Count"
+my_theme = gridExtra::ttheme_default(base_size = 12)
+table <- gridExtra::tableGrob(top9PA, theme = my_theme)
+patch <- (p | table) +
+  plot_layout(widths = unit(c(22, 1),c("cm","null")))
+  
+p_all / patch +
+  plot_layout(heights = unit(c(10, 1), c('cm', 'null')))
+```
+
+
+#### j. Adding interactivity.
+We can add interactivity to the plots using ggplotly.
+```{r}
+p2 <- p_all + theme(axis.title.y = element_text(angle=0))
+
+p3 <- p1 + theme(axis.text = element_text(size=5.5), 
+          axis.title = element_text(size =9),
+          axis.title.y= element_text(angle=0),
+          axis.ticks.y = element_blank(),
+          strip.text = element_text(size=8),
+          plot.title = element_text(size=10, hjust = 0.5),
+          legend.key.size = unit(1, 'cm'),
+          legend.title = element_text(size=9),
+          legend.text = element_text(size=6),
+          legend.position = "right") 
+
+ggplotly(p2, tooltip="text")
+ggplotly(p3, tooltip="text")
+
+```
+
+
