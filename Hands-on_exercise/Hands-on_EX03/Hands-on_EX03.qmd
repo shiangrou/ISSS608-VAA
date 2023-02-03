@@ -1,7 +1,7 @@
 ---
-title: "Hands-in_EX03"
+title: "Hands-on Exercise 3"
 author: "Law Shiang Rou"
-date: 28 January 2023
+date: 27 January 2023
 date-modified: "`r Sys.Date()`"
 execute: 
   echo: true
