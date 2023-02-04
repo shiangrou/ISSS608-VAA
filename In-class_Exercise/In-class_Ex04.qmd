@@ -1,0 +1,97 @@
+---
+title: "In-class Exercise 4"
+author: "Law Shiang Rou"
+date: 4 February 2023
+date-modified: "`r Sys.Date()`"
+execute: 
+  echo: true
+  eval: true
+  warning: false
+format:
+  html:
+    code-fold: "show"
+    code-summary: "Hide the code"
+    code-block-border-left: "#63B9A0"
+    code-line-numbers: true
+editor: visual
+---
+
+# Loading required packages
+```{r}
+pacman::p_load(plotly, DT, patchwork, tidyverse, ggstatsplot)
+```
+
+# Importing data
+```{r}
+exam_data <- read_csv("data/Exam_data.csv")
+```
+
+# Working with Plot_ly() method
+```{r}
+plot_ly(data = exam_data, 
+        x = ~ENGLISH, 
+        y = ~MATHS, 
+        color = ~RACE)
+```
+
+### Changing color with color palette
+```{r}
+plot_ly(data = exam_data, 
+        x = ~ENGLISH, 
+        y = ~MATHS, 
+        color = ~RACE, 
+        colors = "Set1")
+```
+
+### Changing to self-defined colors
+```{r}
+my_colors <- c("pink","skyblue","lightgreen","grey")
+plot_ly(data = exam_data, 
+        x = ~ENGLISH, 
+        y = ~MATHS, 
+        color = ~RACE, 
+        colors = my_colors)
+```
+
+# Working with ggplotly() method
+```{r}
+p <- ggplot(data=exam_data, 
+            aes(x = MATHS,
+                y = ENGLISH)) +
+  geom_point(dotsize = 1) +
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100))
+ggplotly(p)
+```
+
+# Coordinated Multiple Views with plotly
+```{r}
+d <- highlight_key(exam_data)  #<<
+p1 <- ggplot(data=d, 
+            aes(x = MATHS,
+                y = ENGLISH)) +
+  geom_point(size=1) +
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100))
+
+p2 <- ggplot(data=d, 
+            aes(x = MATHS,
+                y = SCIENCE)) +
+  geom_point(size=1) +
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100))
+subplot(ggplotly(p1),
+        ggplotly(p2))
+```
+
+# Working with ggstatsplot
+```{r}
+ggbetweenstats(
+  data = exam_data,
+  x = GENDER, 
+  y = MATHS,
+  type = "np",
+  messages = FALSE
+)
+```
+

@@ -27,6 +27,8 @@ website:
         menu: 
           - text: "In-Class Exercise 3"
             href: "In-class_Exercise/In-class_Ex03.html"
+          - text: "In-Class Exercise 4"
+            href: "In-class_Exercise/In-class_Ex04.html"
       - icon: graph-up
         text: "Take Home Exercise"
         menu: 

@@ -70,6 +70,13 @@
     "text": "Installing and loading R packages\nTwo packages (tidyverse and ggiraph) are installed and loaded.\n\npacman::p_load(ggiraph, tidyverse)\n\n\n\nImporting data\n\nexam_data <- read_csv(\"data/Exam_data.csv\")\n\n\n\nPlot a dotplot (static)\n\nggplot(data=exam_data, aes(x= MATHS)) + \n      geom_dotplot(dotsize=0.5)\n\n\n\n\n\n\nPlot a dotplot (interactive)\n\np <- ggplot(data=exam_data, aes(x= MATHS)) + \n      geom_dotplot_interactive(aes(tooltip = ID),\n      stackgroups = TRUE, binwidth=1, method = \"histodot\")\ngirafe(\n  ggobj = p,\n  width_svg = 6,\n  height_svg = 6*0.618\n)"
   },
   {
+    "objectID": "In-class_Exercise/In-class_Ex04.html",
+    "href": "In-class_Exercise/In-class_Ex04.html",
+    "title": "In-class Exercise 4",
+    "section": "",
+    "text": "Loading required packages\n\n\nHide the code\npacman::p_load(plotly, DT, patchwork, tidyverse, ggstatsplot)\n\n\n\n\nImporting data\n\n\nHide the code\nexam_data <- read_csv(\"data/Exam_data.csv\")\n\n\n\n\nWorking with Plot_ly() method\n\n\nHide the code\nplot_ly(data = exam_data, \n        x = ~ENGLISH, \n        y = ~MATHS, \n        color = ~RACE)\n\n\n\n\n\n\n\nChanging color with color palette\n\n\nHide the code\nplot_ly(data = exam_data, \n        x = ~ENGLISH, \n        y = ~MATHS, \n        color = ~RACE, \n        colors = \"Set1\")\n\n\n\n\n\n\n\n\nChanging to self-defined colors\n\n\nHide the code\nmy_colors <- c(\"pink\",\"skyblue\",\"lightgreen\",\"grey\")\nplot_ly(data = exam_data, \n        x = ~ENGLISH, \n        y = ~MATHS, \n        color = ~RACE, \n        colors = my_colors)\n\n\n\n\n\n\n\n\n\nWorking with ggplotly() method\n\n\nHide the code\np <- ggplot(data=exam_data, \n            aes(x = MATHS,\n                y = ENGLISH)) +\n  geom_point(dotsize = 1) +\n  coord_cartesian(xlim=c(0,100),\n                  ylim=c(0,100))\nggplotly(p)\n\n\n\n\n\n\n\n\nCoordinated Multiple Views with plotly\n\n\nHide the code\nd <- highlight_key(exam_data)  #<<\np1 <- ggplot(data=d, \n            aes(x = MATHS,\n                y = ENGLISH)) +\n  geom_point(size=1) +\n  coord_cartesian(xlim=c(0,100),\n                  ylim=c(0,100))\n\np2 <- ggplot(data=d, \n            aes(x = MATHS,\n                y = SCIENCE)) +\n  geom_point(size=1) +\n  coord_cartesian(xlim=c(0,100),\n                  ylim=c(0,100))\nsubplot(ggplotly(p1),\n        ggplotly(p2))\n\n\n\n\n\n\n\n\nWorking with ggstatsplot\n\n\nHide the code\nggbetweenstats(\n  data = exam_data,\n  x = GENDER, \n  y = MATHS,\n  type = \"np\",\n  messages = FALSE\n)"
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Visual Analytics & Application",
