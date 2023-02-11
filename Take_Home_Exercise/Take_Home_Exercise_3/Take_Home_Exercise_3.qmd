@@ -1,0 +1,83 @@
+---
+title: "Take Home Exercise 3"
+subtitle: "Uncover the salient patterns of Singapore public housing resale prices with ggplot2 and its extension"
+author: "Law Shiang Rou"
+date: 5 February 2023
+date-modified: "`r Sys.Date()`"
+date-format: medium
+execute:
+  warning: false
+format:
+  html:
+    page-layout: full
+    toc: true
+    smooth-scroll: true
+    code-fold: "show"
+    code-summary: "Hide the code"
+    code-block-border-left: "#63B9A0"
+    code-line-numbers: true
+    code-block-bg: "#f2f6f9"
+    title-block-banner: true
+    fig-align: center
+---
+
+![](images/1.png){width="100%"}
+
+# [1. Overview]{style="color: #0D644C;"}
+
+In take-home exercise 3, various interactive visualizations are prepared using r packages such as ggiraph, plotly, ggplot2, and ggstatsplot to showcase the salient patterns of the Singapore housing resale prices in 2022. The focus of this exercise is on 4-room and 5-room public housing (HDB flats).
+
+# [2. Data Preparation]{style="color: #0D644C;"}
+The dataset used is obtained from [data.gov.sg](https://data.gov.sg/dataset/resale-flat-prices).
+
+### Load the required libraries
+```{r}
+pacman::p_load(ggiraph, plotly, patchwork, hrbrthemes, ggthemes, 
+               tmap, ggstatsplot, heatmaply, readxl, 
+               knitr, rmarkdown, flextable, tidyverse)
+```
+
+### Prepare the data
+
+Import resale transaction data
+```{r}
+hdb_data <- read_csv("resale-flat-prices-based-on-registration-date-from-jan-2017-onwards.csv")
+paged_table(hdb_data, options = list(rows.print = 5))
+```
+
+Extract year 2022 3-room and 4-room resale data
+```{r}
+hdb2022 <- hdb_data %>%
+  filter(substr(month,1,4) == 2022 & flat_type %in% c("3 ROOM", "4 ROOM"))
+hdb2022
+```
+
+Import additional data on region and distance to mrt
+```{r}
+region_data <- read_excel("region.xlsx")
+mrt_data <- read_csv("hdb_data.csv")
+```
+
+Join additional info onto hdb_data
+```{r}
+hdb_data1 <- merge(hdb2022, region_data, by.x = "town", 
+             by.y = "TOWN", all.x = TRUE, all.y = FALSE)
+
+hdb_data1$address = paste(hdb_data1$block,hdb_data1$street_name)
+
+hdb_data_all <- merge(hdb_data1, mrt_data, by.x = "address", 
+             by.y = "address", all.x = TRUE, all.y = FALSE)
+hdb_data_all
+```
+
+# [3. Analysis]{style="color: #0D644C;"}
+
+### Overview of the Singapore HDB resale market
+To provide viewers with an overview of the Singapore 3-room and 4-room HDB flats resale market, the below interactive visualizations are prepared.
+
+```{r}
+p1 <- ggplot(hdb_data_all, aes(x = town, y = resale_price)) +
+  geom_boxplot_interactive()
+x <- girafe(ggobj = p1)
+x
+```

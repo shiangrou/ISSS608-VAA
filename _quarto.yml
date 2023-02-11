@@ -4,6 +4,7 @@ project:
 website:
   title: "Visual Analytics"
   navbar: 
+    collapse: true
     left:
       - icon: house-door
         href: index.qmd
@@ -29,6 +30,8 @@ website:
             href: "In-class_Exercise/In-class_Ex03.html"
           - text: "In-Class Exercise 4"
             href: "In-class_Exercise/In-class_Ex04.html"
+          - text: "In-Class Exercise 5"
+            href: "In-class_Exercise/In-class_Ex05.html"
       - icon: graph-up
         text: "Take Home Exercise"
         menu: 
@@ -36,6 +39,7 @@ website:
             href: "Take_Home_Exercise/Take_Home_Exercise_1/Take_Home_Exercise_1.html"
           - text: "Take Home Exercise 2"
             href: "Take_Home_Exercise/Take_Home_Exercise_2/Take_Home_Exercise_2.html"
+          - text: "Take Home Exercise 3"
 
 format:
   html:
