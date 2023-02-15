@@ -1,83 +1,953 @@
 ---
 title: "Take Home Exercise 3"
-subtitle: "Uncover the salient patterns of Singapore public housing resale prices with ggplot2 and its extension"
+subtitle: "Uncover the salient patterns of Singapore public housing resale prices with R"
 author: "Law Shiang Rou"
 date: 5 February 2023
 date-modified: "`r Sys.Date()`"
 date-format: medium
 execute:
   warning: false
+  error: false
+  message: false
 format:
   html:
     page-layout: full
     toc: true
     smooth-scroll: true
-    code-fold: "show"
-    code-summary: "Hide the code"
+    code-fold: true
+    code-summary: "Show the code"
     code-block-border-left: "#63B9A0"
-    code-line-numbers: true
     code-block-bg: "#f2f6f9"
+    code-copy: hover
     title-block-banner: true
     fig-align: center
+    reader-mode: true
 ---
 
+::: {.column-screen}
 ![](images/1.png){width="100%"}
+:::
 
-# [1. Overview]{style="color: #0D644C;"}
+::: {.column-page-inset}
+# [<u>Section 1:</u><br>Overview]{style="color: #0D644C;"}
 
-In take-home exercise 3, various interactive visualizations are prepared using r packages such as ggiraph, plotly, ggplot2, and ggstatsplot to showcase the salient patterns of the Singapore housing resale prices in 2022. The focus of this exercise is on 4-room and 5-room public housing (HDB flats).
+In take-home exercise 3, various interactive visualizations are prepared using R packages and functions such as ggiraph, ggplot2, and ggstatsplot to showcase the salient patterns of the Singapore public housing resale prices in 2022. The focus of this exercise is on 4-room and 5-room public houses (HDB flats).
 
-# [2. Data Preparation]{style="color: #0D644C;"}
-The dataset used is obtained from [data.gov.sg](https://data.gov.sg/dataset/resale-flat-prices).
+# [<u>Section 2:</u><br>Data Preparation]{style="color: #0D644C;"}
 
-### Load the required libraries
+The main dataset used is obtained from [data.gov.sg](https://data.gov.sg/dataset/resale-flat-prices). Additional information on region, town maturity and [distance to mrt](https://www.kaggle.com/datasets/chngyuanlongrandy/hdb-prices-with-closest-mrt-distance) are also added to provide more insights to viewers.
+
+### 2.1. Load the required libraries
+
+Some required libraries include:
+
+- <b>ggiraph, plotly</b>: To produce interactive visualization
+- <b>tmap</b>: To plot interactive choropleth map
+- <b>patchwork</b>: To combine separate ggplots into the same graphic
+- <b>heatmaply</b>: To plot interactive heatmaps
+- <b>ggstatsplot</b>: To create graphics with details from statistical tests
+- <b>tidyverse</b>: A suite of data wrangling and visualization packages such as tidyr, ggplot2, knitr and so on
+- <b>crosstalk</b>: To connect HTML widgets and allow them to communicate with each other
+
 ```{r}
-pacman::p_load(ggiraph, plotly, patchwork, hrbrthemes, ggthemes, 
-               tmap, ggstatsplot, heatmaply, readxl, 
-               knitr, rmarkdown, flextable, tidyverse)
+pacman::p_load(ggiraph, plotly, patchwork, hrbrthemes, ggthemes, readxl,
+               tmap, ggstatsplot, heatmaply, kableExtra, rmarkdown,
+               RColorBrewer, tidyverse, crosstalk, htmltools, sf)
 ```
 
-### Prepare the data
+### 2.2. Import data
 
-Import resale transaction data
+The original data is available in csv format. Read_csv function is being used here to read the data. Below shows a snippet of the dataset.
+
 ```{r}
 hdb_data <- read_csv("resale-flat-prices-based-on-registration-date-from-jan-2017-onwards.csv")
 paged_table(hdb_data, options = list(rows.print = 5))
 ```
 
-Extract year 2022 3-room and 4-room resale data
+### 2.3. Filter the required data
+
+For the purpose of this exercise, the data on year 2022 for 3-room and 4-room resale flats is filtered.
+
 ```{r}
 hdb2022 <- hdb_data %>%
   filter(substr(month,1,4) == 2022 & flat_type %in% c("3 ROOM", "4 ROOM"))
-hdb2022
 ```
 
-Import additional data on region and distance to mrt
+### 2.4. Import additional data
+
+Additional data on region, town maturity and distance to mrt is imported into R Studio.
+
 ```{r}
-region_data <- read_excel("region.xlsx")
+region_data <- read_xlsx("region.xlsx")
 mrt_data <- read_csv("hdb_data.csv")
 ```
 
-Join additional info onto hdb_data
+### 2.5. Join additional data onto hdb_data
+
+The additional information on region, town maturity and distance to nearest mrt are joined to the main dataset.
+
 ```{r}
-hdb_data1 <- merge(hdb2022, region_data, by.x = "town", 
-             by.y = "TOWN", all.x = TRUE, all.y = FALSE)
+hdb_data1 <- left_join(hdb2022, region_data, by = c("town" = "TOWN"))
 
 hdb_data1$address = paste(hdb_data1$block,hdb_data1$street_name)
 
-hdb_data_all <- merge(hdb_data1, mrt_data, by.x = "address", 
-             by.y = "address", all.x = TRUE, all.y = FALSE)
-hdb_data_all
+hdb_data_all <- left_join(hdb_data1, mrt_data, by = c("address" = "address"))
 ```
 
-# [3. Analysis]{style="color: #0D644C;"}
+### 2.6. Calculate "resale price per sqm" and "remaining lease (year)"
 
-### Overview of the Singapore HDB resale market
-To provide viewers with an overview of the Singapore 3-room and 4-room HDB flats resale market, the below interactive visualizations are prepared.
+In order to perform further analysis, the resale price per sqm is computed by dividing resale_price by floor_area_sqm.<br>
+Remaining lease in year is also calculated by taking the substring of the remaining_lease column.
 
 ```{r}
-p1 <- ggplot(hdb_data_all, aes(x = town, y = resale_price)) +
-  geom_boxplot_interactive()
-x <- girafe(ggobj = p1)
-x
+# Calculating resale price per sqm
+hdb_data_all$price_sqm <- hdb_data_all$resale_price / hdb_data_all$floor_area_sqm
+
+# Calculating remaining lease (year)
+hdb_data_all$remaining_lease_year <- as.numeric(substr(hdb_data_all$remaining_lease,1,3))
 ```
+
+### 2.7. Categorize storey into low, middle, high and super high floor
+
+The original storey_range field contains too many categories, making it difficult to analyse. Hence, we re-categorize storey_range into 4 categories.<br>
+
+- Level 3 and below = Low<br>
+- Level 4-9 = Middle<br>
+- Level 10-24 = High<br>
+- Level 25 and above = Super High<br>
+
+```{r}
+hdb_data_all1 <- hdb_data_all %>% 
+  separate(storey_range, into = c(NA, "storey_low"), sep = "TO ", remove = FALSE) %>% 
+  mutate(storey = 
+           cut(as.numeric(storey_low), 
+               breaks = c(1,3,9,24,100),
+               labels = c("Low","Middle","High","Super High")))
+
+paged_table(hdb_data_all1, options = list(rows.print = 5))
+```
+
+# [<u>Section 3:</u><br>Exploratory Analysis & Insights]{style="color: #0D644C;"}
+
+In this section, exploratory data analysis is performed using various visualization methods to uncover patterns of the HDB resale market in Singapore and identify the differences between the various flat types and towns. 
+
+### 3.1. Overview of the Singapore HDB resale market
+
+This section aims to provide viewers with a basic overview on Singapore 3-room and 4-room HDB resale flats market by visualizing the number of transactions and overall resale prices in 2022.
+
+#### i. Design Consideration
+
+The 2 interactive charts are designed to showcase the overall number of resale transactions in 2022 and the resale price range for both 3-room and 4-room flats across Singapore. Through the visuals, viewers can also identify the differences between the resale market for 3-room vs 4-room flats.
+
+- Boxplot is used to display the resale price range, viewers can easily identify the difference in resale prices range between both flat types.
+- Tooltips shows information on mean, median, minimum, maximum, lower and upper quartile price.
+- Bar chart is used to clearly display the number of transaction for each flat type.
+- Mean resale prices are plotted (white dot on boxplot) for viewers to easily compare mean and median.
+- The boxplot and bar chart are coordinated for viewers to have multiple view when hover over the 2 flat types.
+
+#### ii. Preparation Steps: Coordinated boxplot and bar chart for overview
+
+```{r}
+# Boxplot displaying the statistic summary of resale prices for 3-room and 4-room HDB.
+
+# specifying ybreaks and ylables
+ybrks <- seq(200000, 1500000, 100000)
+ylabls <- paste0(as.character(c(seq(200, 1500, 100))),"k")
+
+# customizing the appearance of tooltips
+tooltip_css <- "background-color:white;padding:8px;border-radius:10px 10px 10px 10px;
+font-style:bold; color:black;"
+
+# Calculating the stats for tooltips
+stats <- hdb_data_all %>% 
+  group_by(flat_type) %>% 
+  summarise(
+        Min = prettyNum(min(resale_price),
+                        big.mark = ",", scientific = FALSE),
+        Q1 = prettyNum(quantile(resale_price, 0.25),
+                       big.mark = ",", scientific = FALSE),
+        Median = prettyNum(median(resale_price),
+                           big.mark = ",", scientific = FALSE),
+        Mean = prettyNum(mean(resale_price),
+                         big.mark = ",", scientific = FALSE),
+        Q3 = prettyNum(quantile(resale_price, 0.75),
+                       big.mark = ",", scientific = FALSE),
+        Max = prettyNum(max(resale_price),
+                        big.mark = ",", scientific = FALSE))
+
+# Placing the stats into a table
+tooltip_table <- data.frame(unclass(stats), check.names = FALSE) %>%
+  kableExtra::kable(align = "c", booktabs=TRUE, row.names=FALSE, 
+                    col.names = c("Flat Type", "Min", "Q1", 
+                                  "Median", "Mean", "Q3", "Max")) %>%
+  row_spec(0, color = "white", background = "black")%>%
+  kable_styling(font_size = 11,bootstrap_options = "bordered")
+
+# Plotting the boxplot
+p1 <- ggplot(data = hdb_data_all,
+             aes(x=flat_type, y=resale_price, fill = flat_type)) +
+  geom_boxplot_interactive(aes(tooltip=tooltip_table,
+                               data_id=flat_type)) +
+  stat_summary(fun.y=mean, geom="point", shape = 15, color="white")+
+  theme_linedraw() + xlab("Flat Type") +
+  scale_y_continuous(name = "Resale \nPrice", 
+                     breaks=ybrks, labels=ylabls) +
+  ggtitle("Resale Prices by Flat Type")+
+  theme(axis.title.y = element_text(angle=0),
+        axis.ticks.x = element_blank(),
+        panel.grid.minor.y = element_line(colour="grey85", 
+                                          linetype = "dotted"),
+        panel.grid.major.x = element_blank(),
+        plot.title = element_text(size=10, face = "bold",hjust=0.5),
+        axis.title = element_text(size =9),
+        legend.position = "none")
+
+```
+
+```{r}
+# Bar chart showing the number of transactions for each flat type
+# Computing the count
+lab <- hdb_data_all %>% group_by (flat_type) %>% tally()
+
+# Plotting the bar chart
+p2 <- ggplot(lab,aes(x=flat_type, y=n, fill=flat_type))+
+  geom_bar_interactive(stat="identity", aes(data_id=flat_type, tooltip=paste(
+    "Number of Transactions =",format(n,big.mark = ",", scientific = FALSE))))+
+  geom_text(aes(label=n),vjust=1.3, color = "white")+
+  
+  theme_linedraw() + xlab("Flat Type") +
+  scale_y_continuous(name = "No. of\nTransactions") +
+  ggtitle("Number of Resale Transactions by Flat Type")+
+  theme(axis.title.y = element_text(angle=0, hjust=1),
+        axis.ticks.x = element_blank(),
+        panel.grid.minor.y = element_line(colour = "grey85", linetype = "dotted"),
+        panel.grid.major.x = element_blank(),
+        plot.title = element_text(size=10, face = "bold", hjust=0.5),
+        axis.title = element_text(size =9),
+        legend.position = "none")
+
+# Making the charts interactive with coordinating views
+girafe(
+  code = print((p1+p2)+
+                 plot_annotation(
+                   title="Overview of HDB Resale Market, Singapore 2022",
+                   subtitle = "Comparison between 3-room and 4-room HDB",
+                   caption="Data on 2022 Singapore resale prices from Data.gov.sg",
+                   theme = theme(plot.title = element_text(face = "bold", size = 13),
+                                 plot.caption = element_text(face = "italic", size=7))
+                 )),
+  width_svg = 8,
+  height_svg = 8*0.618,
+  options = list(
+    opts_hover_inv(css = "opacity:0.2;"),
+    opts_hover(css = "none"),
+    opts_tooltip(css = tooltip_css)
+  )
+)
+```
+
+::: {.callout-tip collapse="false"}
+# Insights
+
+In 2022, 
+
+- Singapore has more 4-room resale transactions than 3-room's transactions.
+- 4-room resale price ranges from S$288k to S\$1.37mil and is average at S\$549k.
+- 3-room resale price ranges from S$200k to S\$958k and is average at S\$389k.
+
+:::
+
+### 3.2. Average resale prices vs number of transactions for each town.
+
+This visualization showcases the resale prices and number of transactions by town for each flat type. It helps viewers understand the differences between town.
+
+#### i. Design Consideration
+
+The 2 charts are interactive and coordinated. Each town is represented by a point and viewers can hover over each point to view the mean resale price and total number of resale transactions in 2022 in the specific town.
+
+- Scatter plot is chosen to cleanly visualize all the towns and present the relationship between mean resale price and number of transactions, a fitted line is also drawn to show the overall relationship.
+- The individual points are intentionally kept unlabeled to prevent cluttering on the chart. Instead, tooltip is used to present the required details.
+- The 2 charts are coordinated and drawn with the same scale to allow viewers to easily compare the differences between 3-room and 4-room resale market for each town.
+
+#### ii. Preparation Steps: Scatter plot showing the relationship between resale price and number of transactions.
+
+```{r}
+# As the number of towns in dataset exceed the number of colors in palatte,
+# colorRampPalette is used to generate more colors.
+colourCount = length(unique(hdb_data_all$town))
+getPalette = colorRampPalette(brewer.pal(12, "Paired"))
+
+# Preparing the data for scatter plot
+scatter_data <- hdb_data_all %>% 
+  group_by(town, flat_type) %>% 
+  summarise(mean_price = round(mean(resale_price),1), trsn_number = n()) 
+
+# Specifying the break and label for yaxis
+ybrks1 <- seq(200000, 1000000, 100000)
+ylabls1 <- paste0(as.character(c(seq(200, 1000, 100))),"k")
+
+# Plotting the scatter plot
+scatter <- ggplot(scatter_data, aes(x=trsn_number, y=mean_price)) +
+  geom_point_interactive(alpha = 0.7, aes(colour=factor(town), size = 5, data_id=town, 
+                                          tooltip=paste(town,"\nNo. of Transactions: ",
+                                                         format(trsn_number,big.mark = ",", scientific = FALSE),
+                                                         "\nMean Resale Price: ",
+                                                         format(mean_price,big.mark = ",", scientific = FALSE)))) +
+  scale_colour_manual(values = getPalette(colourCount)) +
+  geom_smooth_interactive(method=lm, se=FALSE, col='lightblue',
+                          aes(tooltip="fitted line", data_id="smooth")) + 
+  theme_linedraw() +
+  xlab("Number of Transactions")+
+  labs(caption="Data on 2022 Singapore resale prices from Data.gov.sg")+
+  scale_y_continuous(name = "Mean\nResale Price", 
+                     breaks=ybrks1, labels=ylabls1) +
+  ggtitle("Mean Resale Price vs Number of Resale Transactions by Flat Type, Singapore 2022") +
+  theme(axis.title.y = element_text(angle=0),
+        panel.grid.major.y = element_line(colour="black", 
+                                          linetype = "dotted"),
+        panel.grid.major.x = element_line(colour="black", 
+                                          linetype = "dotted"),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        plot.title = element_text(size=11, hjust=0.5, face = "bold"),
+        plot.caption = element_text(face = "italic", size=7),
+        axis.title = element_text(size =9),
+        legend.position = "none") +
+  
+  # Use facet_wrap to split 3-room and 4-room into 2 plots
+  facet_wrap(~flat_type, ncol = 2)
+
+# Making the plot interactive using girafe
+girafe(
+  ggobj=scatter,
+  width_svg = 9,
+  height_svg = 7*0.618,
+  options = list(
+    opts_hover_inv(css = "opacity:0.1;"),
+    opts_hover(css = "none"),
+    opts_tooltip(css = tooltip_css)
+  )
+)
+```
+
+::: {.callout-tip collapse="false"}
+# Insights
+
+- It seems that there is a negative relationship between average resale price and number of resale transaction, i.e.: towns with more resale transactions have lower average resale price.
+- <b>Sengkang</b> and <b>Punggol</b>, both located in the North-East region, have the highest number of 4-room resale transactions in 2022, while <b>Bedok</b> and <b>Yishun</b> have the highest number of 3-room resale transactions in 2022. All these 4 locations are located at the edges of Singapore.
+- <b>Central area</b> has the highest average resale price for 4-room, while <b>Pasir Ris</b> has the highest average resale price for 3-room.
+- The difference in 3-room and 4-room average resale price is lowest for Pasir Ris, only close to S$50k (~10%) difference. This is far from the overall average difference in 3-room and 4-room resale price, which is around S\$160k (40%). One potential reason for this could be due to other characteristics of the flats, such as age of flats, floor size and location, which are not visualized in this chart.
+- From this visualization, we know that towns in outskirt areas of Singapore have more resale transactions but lower resale prices, and the difference between 3-room and 4-room resale prices varies across towns.
+
+:::
+
+### 3.3. Distribution and range of resale prices by town
+Unlike the previous visualization where only the average resale prices for each town are shown, this section allows viewers to gain more insights based on the distribution of resale prices in each town.
+
+#### i. Design Consideration
+
+- A boxplot is chosen to visualize the distribution of resale prices in each town.
+- The boxplot is coordinated with a bar chart showing the number of resale transactions in each town. With the coordinated view, viewers can easily observe the different characteristics of each town. For example, Central Area has third least number of resale transactions but its 4-room resale price boxplot has the longest interquartile range and whisker. 
+- The towns are ordered by total number of transaction count on the bar chart and ordered by average resale price on the boxplot. 
+- Mean prices are plotted for viewers to easily compare mean and median.
+- Tooltip shows maximum, minimum and median prices, median prices are shown instead of mean as mean can be easily influenced by outliers.
+
+#### ii. Preparation Steps: Coordinated bar chart and boxplot showing resale price distribution by town
+
+```{r}
+# Plotting number of transactions by flat type and town
+group1<- hdb_data_all %>% group_by (town, flat_type) %>% tally()
+
+colourCount = length(unique(hdb_data_all$town))
+getPalette = colorRampPalette(brewer.pal(12, "Paired"))
+
+p4 <- group1 %>%
+  mutate(town = fct_reorder(town, n, .fun='mean')) %>%
+  ggplot(aes(x=reorder(town, n), y=n, fill=factor(town))) + 
+  scale_fill_manual(values = getPalette(colourCount)) +
+  geom_bar_interactive(stat="identity", aes(data_id=town, tooltip=paste("Town: ",town,
+    "\nNumber of Transactions: ",format(n,big.mark = ",", scientific = FALSE))))+
+  xlab("Towns") +
+  theme_linedraw() +
+  scale_y_continuous(name = "Number of \nTransactions") +
+  xlab("Town")+
+  theme(axis.title.y = element_text(angle=0),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        panel.grid.minor.y = element_line(colour = "grey85", linetype = "dotted"),
+        panel.grid.major.x = element_blank(),
+        plot.title = element_text(size=12, hjust = 0.5),
+        axis.title = element_text(size =9),
+        legend.position = "none") +
+  
+  facet_wrap(~flat_type, ncol = 1)
+```
+
+```{r fig.align='center'}
+# plotting boxplot of resale price by flat type and town
+p3 <- ggplot(data = hdb_data_all,
+             aes(x=reorder(town, resale_price), y=resale_price, fill = town)) +
+  geom_boxplot_interactive(aes(tooltip=after_stat({
+        paste0("Min: ", prettyNum(.data$ymin,big.mark = ",", scientific = FALSE),
+          "\nMax: ", prettyNum(.data$ymax,big.mark = ",", scientific = FALSE),
+          "\nMedian: ", prettyNum(.data$middle,big.mark = ",", scientific = FALSE)
+        )
+      }),
+      data_id=town)) +
+  scale_fill_manual(values = getPalette(colourCount)) +
+  stat_summary(fun.y=mean, geom="point", shape = 3, color="white")+
+  theme_linedraw() +
+  scale_y_continuous(name = "Resale \nPrice", 
+                     breaks=ybrks, labels=ylabls) +
+  xlab("Town")+
+  theme(axis.title.y = element_text(angle=0),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        panel.grid.minor.y = element_line(colour="grey85", 
+                                          linetype = "dotted"),
+        panel.grid.major.x = element_blank(),
+        plot.title = element_text(size=12, hjust=0.5),
+        axis.title = element_text(size =9),
+        legend.position = "none") +
+  facet_wrap(~flat_type,ncol = 1)
+
+# Putting the 2 charts together and have a coordinated view
+girafe(
+  code = print((p4+p3) + plot_annotation(
+  title = 'Number of Resale Transactions & Resale Prices by Flat Type & Towns, Singapore 2022',
+  subtitle = "Ordered by transaction count and mean resale price",
+  caption = "Data on 2022 Singapore HDB resale prices from Data.gov.sg",
+  theme = theme(plot.title = element_text(face = "bold", size = 15),
+                plot.caption = element_text(face = "italic", size=7)))),
+  width_svg = 10,
+  height_svg = 11*0.618,
+  options = list(
+    opts_hover_inv(css = "opacity:0.2;"),
+    opts_hover(css = "none"),
+    opts_tooltip(css = tooltip_css))
+)
+```
+
+::: {.callout-tip collapse="false"}
+# Insights
+
+- <b>Central area</b> has the longest resale price boxplot whisker and interquartile range for 4-room flat. Some other towns with long boxplot whisker (huge resale price range) and interquartile range are <b>Clementi, Kallang/Whampoa, Bukit Merah, Toa Payoh, Ang Mo Kio and Geylang</b>. These are all matured towns.
+- <b>Yishun</b> and <b>Sengkang</b> have the highest number of resale transactions, but the resale price range is relatively small (shorter whisker), which means the resale prices for the same flat type are rather consistent within the town.
+- Other towns with relatively shorter whisker and interquartile range include <b>Choa Chu Kang, Sembawang, Bukit Panjang, Pasir Ris, Woodlands, Jurong East and Jurong West</b>. All of these are non-matured towns.
+- Hence, it is reasonable to hypothesize that resale prices of the same flat type in non-matured towns moves within smaller range as compared to matured towns. 
+
+:::
+
+### 3.4. Geographic representation of towns and their respective resale prices.
+
+Considering that not all viewers are familiar with the geographical location of each town in Singapore, a choropleth map is prepared to show where each town is located at.
+
+#### i. Design Consideration
+
+- An interactive choropleth map with color gradient is chosen to represent the average resale prices of each towns.
+- The mean resale price per sqm is shown using tooltip.
+- Viewers can deselect the "mpsz_price" layer on the map to view the street view.
+
+#### ii. Preparation Steps: choropleth map showing the geographical location of town and their resale prices
+```{r}
+# Calculating mean prices by town
+mean_prices <- hdb_data_all %>%
+  group_by(town) %>% 
+  summarise("Mean Resale Price Per Sqm" = mean(price_sqm))
+
+# reading the map file
+mpsz <- st_read(dsn = 'master-plan-2014-subzone-boundary-web-shp',
+                layer = 'MP14_SUBZONE_WEB_PL',
+                crs = 3414) 
+
+singapore <- st_transform(mpsz, 4326)
+```
+
+```{r fig.align='center'}
+# Preparing the choropleth map
+mpsz_price <- left_join(singapore, mean_prices, by = c("PLN_AREA_N" = "town"))
+tmap_mode("view")
+tm_shape(mpsz_price)+
+  tmap_options(check.and.fix = TRUE)+
+  tm_fill("Mean Resale Price Per Sqm", id=paste("PLN_AREA_N"),
+          n = 6,
+          style = "pretty", 
+          palette = "Greens") +
+  tm_borders(alpha = 0.7)
+
+```
+
+::: {.callout-tip collapse="false"}
+# Insights
+
+- Towns around south of Singapore carry highest average resale prices per sqm.
+- Towns around west of Singapore carry low average resale price per sqm.
+
+:::
+
+# [<u>Section 4:</u><br>Correlation Analysis and Confirmatory Analysis]{style="color: #0D644C;"}
+
+In this section, correlation analysis is performed to find out the correlation between resale prices and other variables. Then, hypothesis testing is done to evaluate our hypotheses and produce statistical inferences. 
+
+### 4.1. Correlation Analysis
+
+With correlation analysis, we aim to answer 2 questions:
+
+- Which of the variables have the highest correlation coefficient with resale prices?
+- Which of the correlation coefficient is statistically significant?
+
+Through this analysis, viewers can identify the correlated variables. However, do be mindful that correlation does not imply causation.
+
+#### i. Design Consideration
+
+- A correlation matrix is plotted to provide a one-glance view of the pairwise correlation coefficients across the continuous variables.
+- The correlation matrix is color coded with a gradient to clearly show the magnitude of the correlation.
+- The pairwise correlation coefficients are calculated separately for each flat type, as the variables of each flat type might be correlated in different way.
+- A significance level of 0.05 is used, for correlation that is not statistically significant, a red cross will be marked on the correlation coefficient.
+
+#### ii. Preparation Steps:
+```{r fig.align='center', fig.height=6, fig.width=9}
+# Selecting all the numeric factors
+hdb_numeric <- hdb_data_all1 %>% 
+  select(flat_type, resale_price, storey_low, floor_area_sqm, 
+         nearest_distance_to_mrt, remaining_lease_year) %>%
+  rename("Resale Price" = resale_price, "Storey"=storey_low, 
+         "Floor Area"=floor_area_sqm, 
+         "Distance to nearest MRT/LRT"=nearest_distance_to_mrt, 
+         "Remaining Lease (Year)"=remaining_lease_year)
+hdb_numeric$Storey <- as.numeric(hdb_numeric$Storey)
+
+# Plotting the correlation matrix
+grouped_ggcorrmat(
+    data = hdb_numeric,
+    grouping.var = flat_type,
+    hc.order = TRUE,
+    matrix.type = "lower",
+    output="plot",
+    plotgrid.args = list(ncol = 2),
+    ggcorrplot.args = list(outline.color = "black",
+                           lab_col = "navy",
+                           lab_size = 3.2,
+                           pch.col = "red",
+                           pch.cex = 1),
+    annotation.args = list(tag_levels = "i",
+    title    = "Pairwise Correlation of Numeric Variables",
+    subtitle = "Resale price most highly correlated with remaining lease and storey",
+    caption = "Data on 2022 Singapore resale prices from Data.gov.sg"),
+    ggplot.component = list(theme_void(base_size = 8),
+                            theme(plot.title = element_text(size=12),
+                                plot.subtitle = element_text(size=7),
+                                plot.caption = element_text(size=2),
+                                legend.text = element_text(size=7),
+                                axis.text.x = element_text(size = 8, angle = 90, vjust = 0.5,hjust = 0.9),
+                                axis.text.y = element_text(size = 8, hjust = 1),
+                                strip.text.x = element_text(size = 7),
+                                legend.key.size = unit(3, 'mm')
+                                ))
+    )
+```
+::: {.callout-tip collapse="false"}
+# Insights
+
+- All pairwise correlations are statistically significant.
+- 3-room resale price is most highly correlated with remaining lease with correlation coefficient of 0.61. (longer remaining lease, higher resale price)
+- 4-room resale price is most highly correlated with storey with correlation coefficient of 0.58. (higher floor, higher resale price)
+- Resale price has a weak negative correlation with distance to nearest train station (the nearer a flat is to a train station, the higher the resale price).
+- It is also observed that floor area is positively correlated with 3-room resale price (0.25) but negatively correlated (-0.05) with 4-room resale price.
+- Interestingly, storey and remaining lease has a moderate positive correlation. This could be the result of the taller HDB developments in the more recent years.
+- For 4-room flats, remaining lease has negative correlation with floor area. This could be the result of the smaller flats built in more recent years.
+
+:::
+
+### 4.2. How much does resale prices increase with longer remaining lease and higher storey in each town.
+
+From 4.1, we saw that resale prices are most highly correlated with remaining lease and storey, hence, we want to find out how sensitive the resale prices is to remaining lease and storey in each town.
+
+#### i. Design Consideration
+
+- Heatmap is used here as it can cleanly visualize 3-dimensional data (Remaining Lease, Town, Resale Price & Storey, Town, Resale Price). 
+- With color gradient, viewers can distinctly identify the resale price pattern against remaining lease and storey at each town.
+- Tooltip is used to provide information on average resale price per sqm.
+
+#### ii. Preparation Steps:
+```{r}
+# Creating the dataset required for heatmap
+hdb_by_lease<- hdb_data_all %>%
+  group_by(town, flat_type, remaining_lease_year) %>% 
+  summarise(Mean_price_per_sqm = median(price_sqm)) 
+
+# group the remaining lease into 7 groups
+hdb_by_lease <- hdb_by_lease %>% 
+  mutate(lease_cat = 
+           cut(remaining_lease_year, 
+               breaks = c(0,39,49,59,69,79,89,99),
+               labels = c("<40 years","40-49 years","50-59 years","61-69 years","70-79 years", "80-89 years", "90-99 years")))
+
+# plotting the heatmap for remaining lease
+heatmap1 <- ggplot(data = hdb_by_lease, 
+                  mapping = aes(x = town, y = lease_cat,fill = Mean_price_per_sqm)) +
+            geom_tile_interactive(stat="identity", 
+                                  aes(data_id=town,tooltip=paste(town,"\n",lease_cat,"\nMean Price Per Sqm: ", 
+                                                                 prettyNum(round(Mean_price_per_sqm,0), 
+                                                                           big.mark = ",", scientific = FALSE)))) +
+  labs(title = "Heatmap showing resale price/sqm by remaining lease and storey", y = "Remaining \nLease") +
+  scale_fill_distiller(name = "Mean Resale Price per Sqm", palette = "Purples",direction=1)+
+  theme_linedraw() +
+  theme(axis.title.y = element_text(angle=0),
+        axis.title.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.text.x = element_text(size = 6, angle = 90, vjust = 0.5, hjust=1),
+        axis.text.y = element_text(size = 6),
+        panel.grid.major.y = element_blank(),
+        panel.grid.major.x = element_blank(),
+        plot.title = element_text(size=12, hjust=0.5),
+        axis.title = element_text(size =9),
+        legend.key.height= unit(0.5, 'cm'),
+        legend.key.width= unit(1.8, 'cm'),
+        legend.title = element_text(size=8),
+        legend.text = element_text(size=6),
+        legend.position = "top") +
+  
+  facet_wrap(~flat_type)
+```
+```{r fig.align='center'}
+# Creating the dataset required for heatmap
+hdb_by_storey<- hdb_data_all %>%
+  group_by(town, flat_type, storey_range) %>% 
+  summarise(Mean_price_per_sqm = median(price_sqm)) 
+
+# plotting the heatmap for storey
+heatmap2 <- ggplot(data = hdb_by_storey, 
+                  mapping = aes(x = town, y = storey_range,fill = Mean_price_per_sqm)) +
+            geom_tile_interactive(stat="identity", aes(data_id=town,tooltip=paste(town,"\n",storey_range,"\nMean Price Per Sqm: ",prettyNum(round(Mean_price_per_sqm,0), big.mark = ",", scientific = FALSE))))+
+  labs(caption = "Data on 2022 Singapore resale prices from Data.gov.sg", x = "Town", y = "Storey") +
+  scale_fill_distiller(name = "Mean Resale Price per Sqm", palette = "YlGn", direction=1)+
+  theme_linedraw() +
+  theme(axis.title.y = element_text(angle=0),
+        axis.ticks.x = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.text.x = element_text(size = 6, angle = 90, vjust = 0.5, hjust=1),
+        axis.text.y = element_text(size = 6),
+        panel.grid.major.y = element_blank(),
+        panel.grid.major.x = element_blank(),
+        plot.title = element_text(size=12, hjust=0.5, face="bold"),
+        plot.caption = element_text(size=7, face = "italic"),
+        axis.title = element_text(size =9),
+        legend.key.height= unit(0.5, 'cm'),
+        legend.key.width= unit(1.8, 'cm'),
+        legend.title = element_text(size=8),
+        legend.text = element_text(size=6),
+        legend.position = "top") +
+  
+  facet_wrap(~flat_type)
+
+# Putting the 2 heatmap together and have a coordinated view
+girafe(
+  code = print(heatmap1/heatmap2),
+  width_svg = 6,
+  height_svg = 12*0.618,
+  options = list(
+    opts_hover_inv(css = "opacity:0.05;"),
+    opts_hover(css = "none"),
+    opts_tooltip(css = tooltip_css)
+  )
+)
+```
+
+::: {.callout-tip collapse="false"}
+# Insights
+
+- In line with previous correlation analysis, the heatmap shows that generally, longer remaining lease and higher storey command higher resale prices per sqm (darker color).
+- However, kallng/whampoa 3-room resale prices show an unusual trend where flats with short remaining lease of below 50 years command higher prices as compared to flats with 50-89 remaining years. 
+- It is observed that the price differential varies across town. Price differential for different remaining lease group is relatively lower in towns like Yishun, Woodlands, Jurong East and Jurong West, which are all non-mature towns nearer to the North and West edges of Singapore.
+- Towns like Sembawang, Sengkang and Punggol do not have resale transactions with remaining lease of less than 70 years, indicating that these are newer residential towns.
+- Price differential for different storey vaires across town as well, with central area 4-room showing the biggest resale price differential between low floor and super high floor. For towns like Yishun, Woodlands, Sengkang, Sembawang, Punggol, Jurong East, and Jurong West, the price differential is relatively lower than the price differential in other towns.
+- Not all towns have super high floor. Towns like Yishun, Pasir Ris, Tampines, Serangoon, and Bukit Timah seem to have only shorter HDB. While Central Area has the tallest high-rise HDB.
+
+:::
+
+### 4.3. Do the mean prices differ across regions and town maturity?
+
+In the previous sections, we observed that resale prices seem to vary across towns. Hence, we form our hypotheses and perform hypothesis tests to find out if the means between groups are significantly different.
+
+#### i. Design Consideration
+
+<u>First set of hypotheses:</u><br>
+H0 : The mean resale prices are equal across 5 regions.
+H1 : The mean resale prices are not equal across 5 regions.
+
+<u>Second set of hypotheses:</u><br>
+H0 : The mean resale prices are equal between mature and non-mature towns.
+H1 : The mean resale prices are not equal between mature and non-mature towns.
+
+- Non-parametric tests are used as we are unsure if the prices are normally distributed.
+- To prevent cluttering the charts, only the p-value of non-significant pairs are shown at the top of the chart.
+
+#### ii. Preparation Steps:
+```{r fig.align='center',fig.height=6, fig.width=12}
+# plot mean prices by region
+s1 <- grouped_ggbetweenstats(
+  data = hdb_data_all,
+  x = Region, 
+  y = price_sqm,
+  grouping.var = flat_type,
+  xlab = "Region",
+  ylab = "Mean Resale Price",
+  type = "np",
+  pairwise.comparisons = TRUE,
+  pairwise.display = "non-significant",
+  k =2,
+  messages = FALSE,
+  plotgrid.args = list(nrow = 1),
+  ggtheme = ggplot2::theme_bw(),
+  annotation.args = list(title = "Mean Resale Price across Regions, Singapore 2022",
+                         subtitle = "Only 2 pairs under 3-Room are not statistically significant"),) +
+  scale_fill_manual(values = getPalette(colourCount))
+
+```
+
+```{r fig.align='center',fig.height=6, fig.width=12}
+# plot mean prices by town maturity
+s2 <- grouped_ggbetweenstats(
+  data = hdb_data_all,
+  x = Maturity, 
+  y = price_sqm,
+  grouping.var = flat_type,
+  xlab = "Town Maturity",
+  ylab = "Mean Resale Price",
+  type = "np",
+  pairwise.comparisons = TRUE,
+  pairwise.display = "all",
+  k =2,
+  messages = FALSE,
+  plotgrid.args = list(nrow = 1),
+  ggtheme = ggplot2::theme_bw(),
+  annotation.args = list(title = "Mean Resale Price by Town Maturity, Singapore 2022",
+                         subtitle = "The pairs are statistically significant")) +
+  scale_fill_manual(values = getPalette(colourCount))
+
+```
+
+```{r fig.align='center',fig.height=11, fig.width=11}
+# Putting the 2 charts together using patchwork
+s1/s2 + plot_annotation(
+  title = 'Confirmatory Analysis: Testing the differences in mean resale prices across groups, 2022',
+  subtitle = "Tests for different regions and town maturity",
+  caption = "Data on 2022 Singapore resale prices from Data.gov.sg",
+  theme = theme(plot.title = element_text(face = "bold", size = 15),
+                plot.subtitle = element_text(size=12),
+                plot.caption = element_text(face = "italic", size = 7))
+)
+```
+
+::: {.callout-tip collapse="false"}
+# Insights
+
+- For first set of hypothesis test (across regions): at 95% confidence level, we reject the null hypothesis and infer that the mean resale prices across 5 regions are not equal for both 3-room and 4-room. For pairwise analysis, 2 pairs of regions under 3-room have p-value > 0.05 (not enough statistical evidence to reject the null hypothesis), hence, we can infer that the 3-room mean resale prices are equal between East & North, and between Central & North-East.
+- For second set of hypothesis (mature vs non-mature): at 95% confidence level, we reject the null hypothesis and infer that the mean resale prices are not equal between mature and non-mature towns.
+- From the violin plots, it is also observed that Central region has the longest tail, indicating the highest price differential (largest resale price range).
+- Mature towns also have longer tail, indicating higher price differential (largest resale price range) as compared to non-mature towns. This is in line with the observation in section 3.3.
+
+:::
+
+# [<u>Section 5:</u><br>Quick interactive guide for home buyers]{style="color: #0D644C;"}
+
+With the insights and inferences obtained from section 3 & 4, two visualization tools are designed for viewers to gain insights quickly and make clear and well-informed decision when selecting a resale flat based on their budgets and preferences.
+
+### 5.1. Multi-dimentsion bubble plot showing remaining lease, price per sqm and floor level by town
+
+In this section, a bubble plot is designed for viewers to easily view the average resale prices in each towns, against the key characteristics of the flats. This could help viewers to effectively shortlist the suitable towns for their resale flats.
+
+#### i. Design Consideration
+
+- The bubble charts contain information about the 2 variables (storey and remaining lease) that are most highly correlated to resale price.
+- The bubbles are coordinated. When viewer hovers to one bubble, the other bubbles representing the same town will be highlighted. This allows viewers to quickly gain insights on the resale price of flats with different characteristics in the same town. With this, viewers can select the town within their budget and see the other options they might have within the town.
+- Tooltips are used here to indicate the key information
+
+#### ii. Preparation Steps:
+
+```{r}
+# Computing the required fields for bubble plot
+bubble_data <- hdb_data_all1 %>% 
+  group_by(town, flat_type, storey) %>% 
+  summarise(mean_price_per_sqm = mean(price_sqm), mean_lease = mean(remaining_lease_year)) %>%
+  arrange(desc(mean_lease))
+
+# Plotting the bubble plot
+bubble <- ggplot(bubble_data, aes(x=mean_lease, y=mean_price_per_sqm, size=mean_price_per_sqm, fill= storey)) +
+  geom_point_interactive(aes(data_id=town, tooltip=paste(town,"\n",storey,"floor\nMean Price/sqm: ",
+                                                         prettyNum(round(mean_price_per_sqm,0),big.mark=","))), 
+                         alpha = 0.5, shape=21, color="black") +
+  scale_size(range=c(.1,18),name="Mean Price per Sqm") +
+
+  theme_linedraw() +
+  ylab("Avg. Price \nper Sqm") +
+  xlab("Avg. Lease Remaining")+
+  theme(axis.title.y = element_text(angle=0),
+        panel.grid.major.y = element_line(colour="black", 
+                                          linetype = "dotted"),
+        panel.grid.major.x = element_line(colour="black", 
+                                          linetype = "dotted"),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        plot.title = element_text(size=12, hjust=0.5),
+        axis.title = element_text(size =9),
+        legend.title = element_text(size=8),
+        legend.text = element_text(size=8),
+        legend.position = "right") +
+  scale_fill_viridis(discrete=TRUE, option="D") +
+  
+  facet_wrap(~flat_type)
+
+# Making the bubble plot interactive with girafe
+girafe(
+  ggobj=bubble + plot_annotation(
+  title = 'Interactive Bubble Plot for Town Selection',
+  subtitle = "Avg. Reasle Price vs Avg. Lease Remaining for Each Town",
+  caption = "Data on 2022 Singapore HDB resale prices from Data.gov.sg",
+  theme = theme(plot.title = element_text(face = "bold", size = 15),
+                plot.caption = element_text(face = "italic", size=7))),
+  width_svg = 8,
+  height_svg = 8*0.618,
+  options = list(
+    opts_hover_inv(css = "opacity:0.1;"),
+    opts_hover(css = "none"),
+    opts_tooltip(css = tooltip_css)
+  ) 
+)
+
+
+```
+
+
+### 5.2 Interactive tool with easy filtering and flat details
+
+Viewers who have specific preferences in mind for their resale flats can use this tool to help them shortlist the specific HDB blocks or addresses that fit their criteria. This tool is also suitable for viewers who would like to see more details about each resale transaction.
+
+#### i. Design Consideration
+
+- Filter fields are built-in on the left, allowing viewers to freely calibrate based on their preferences and selection criteria. The selection made on filter will be reflected directly on the scatter plot.
+- Scatter plot is prepared to visualize each resale transaction. Viewers will be able to directly select the specific transaction(s) on the scatter plot using rectangular or lasso brush. Information about the selected resale transactions on the scatter plot will be shown in the table.
+- Tooltip on scatter plot is designed to showcase all relevant information about the resale transactions.
+- Viewers will also be able to filter directly from the table to find transactions that fit their preferences and criteria.
+
+#### ii. Preparation Steps: Scatter plot with filter and datatable
+
+```{r}
+# Extract the required columns
+selected_col <- hdb_data_all1 %>%
+  select(Region, town, address, resale_price, flat_type, storey_range, storey,
+         floor_area_sqm, flat_model, lease_commence_date, remaining_lease, 
+         nearest_mrt, nearest_distance_to_mrt)
+
+# Building interactive filters
+d <- highlight_key(selected_col)
+
+filter_tools <- htmltools::div(
+  filter_select("town", "Town", d, ~town),
+  filter_checkbox("flat_type", "Flat Type", d, ~flat_type, inline = TRUE),
+  filter_slider("lease_commence_date", "Lease Commence Year", d, ~lease_commence_date),
+  filter_slider("nearest_distance_to_mrt", "Distance to Nearest MRT/LRT", d, ~nearest_distance_to_mrt),
+  filter_checkbox("storey", "Storey", d, ~storey, inline = TRUE))
+
+# plotting interactive scatter plot using plotly
+p <- plot_ly(data=d,
+        type= "scatter",
+        mode= "markers",
+        x= ~lease_commence_date, 
+        y= ~resale_price,
+        color= ~storey,
+        colors= "Accent",
+        marker= list(size=5, opacity = 0.5,
+                     line=list(width=0.2, color="black")),
+        text= ~paste("Town:",town,
+                     "\nYear:",lease_commence_date,
+                     "\nLocation:",address,
+                     "\nType:",flat_type,
+                     "\nResale Price:",prettyNum(resale_price,big.mark=","),
+                     "\nStorey:",storey_range,
+                     "\nNearest MRT:",nearest_mrt," ~",nearest_distance_to_mrt,"km"
+                     )) %>% 
+  layout(title = list(text="<b>Resale Price vs Lease Commencement Year, Singapore 2022</b>"),
+         hoverlabel = list(align = "left"),
+         legend = list(orientation = "h", y = 1, x = 0),
+         xaxis = list(title="Lease Commencement Year"),
+         yaxis = list(title="Resale Price (S$)")) 
+
+gg <- highlight(p, "plotly_selected")
+
+
+# Using crosstalk bscols to put all 3 elements (filter, scatter plot, datatable) together.
+crosstalk::bscols(filter_tools,gg,DT::datatable(d, class= "display",
+                                                filter=list(position="top", clear=FALSE),
+                                                options=list(pageLength = 10,scrollY = TRUE,
+                                                             iDisplayLength = 25),
+                                                ),
+                  widths = c(3,9,12),
+                  annotations = list(caption = "Data from Data.gov.sg"))
+
+```
+
+
+# [<u>Bonus Section:</u><br>The impact of cooling measure on HDB resale transactions and prices]{style="color: #0D644C;"}
+
+On 30 Sept 2022, Singapore government implemented cooling measure with the aim to moderate the heated residential property market and ensure housing affordability. In this section, we want to find out if the cooling measure did achieve it's stated objective.
+
+```{r}
+# Computing the count and avg price per sqm
+hdb_month <- hdb_data_all %>% 
+  group_by (month, flat_type) %>% 
+  summarise(mean_price_per_sqm = round(mean(price_sqm),0), trsn_number = n()) 
+
+# Plotting the chart
+p5 <- ggplot(hdb_month,aes(x=month, y=trsn_number, fill=flat_type))+
+  geom_bar_interactive(stat="identity", aes(data_id=month, tooltip=paste(
+    "Number of Transactions =",format(trsn_number,big.mark = ",", scientific = FALSE))))+
+  geom_text(aes(label=trsn_number),vjust=1.5, size=2.5, color = "white")+
+  geom_point_interactive(aes(x=month,y=mean_price_per_sqm/10,data_id=month,
+                             tooltip=paste(
+    "Avg. price per sqm =",format(mean_price_per_sqm,big.mark = ",", scientific = FALSE))),
+                         stat="identity",color="red", size=2)+
+  geom_vline_interactive(xintercept="2022-10",lwd=0.5,colour="grey55",linetype="dashed",
+                         tooltip="Cooling Measure from 30 Sep 2022",
+                         show.legend = TRUE) + 
+  annotate("text",x="2022-10",y=20,label="Cooling Measure", size=3, angle=90, hjust=0)+
+  theme_linedraw() + xlab("Month") +
+  scale_y_continuous(name = "No. of\nTransactions",
+                     sec.axis=sec_axis(trans=~.*10,name="Avg.\nResale Price\nper Sqm")) +
+  ggtitle("Number of Resale Transactions & Average Resale Price per Sqm by Month")+
+  theme(axis.title.y = element_text(angle=0, hjust=1),
+        axis.title.y.right = element_text(angle=0, vjust=1, hjust=0),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=0.5),
+        axis.ticks.x = element_blank(),
+        panel.grid.minor.y = element_line(colour = "grey85", linetype = "dotted"),
+        panel.grid.major.x = element_blank(),
+        plot.title = element_text(size=12, face = "bold", hjust=0.5),
+        axis.title = element_text(size =9),
+        legend.position = "none") +
+  facet_wrap(~flat_type)
+
+girafe(
+  ggobj=p5,
+  width_svg = 8,
+  height_svg = 7*0.618,
+  options = list(
+    opts_hover_inv(css = "opacity:0.3;"),
+    opts_hover(css = "none"),
+    opts_tooltip(css = tooltip_css)
+  )
+)
+```
+
+::: {.callout-tip collapse="false"}
+# Insights
+
+- A sharp drop in number of transactions is observed for both flat type at the start of the cooling measure. However, the number of transactions seem to have climbed back pretty quickly in the subsequent 2 months.
+- Average resale prices per sqm did not appear to vary much after the cooling measure.
+- That being said, the impact of cooling measure might not be obvious over the shorter term. Hence, study should be done over a longer period for more insights. 
+
+:::
+
+
+:::
