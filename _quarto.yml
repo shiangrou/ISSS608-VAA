@@ -9,7 +9,6 @@ website:
       - icon: house-door
         href: index.qmd
         text: Home
-      - about.qmd
 
     right:
       - icon: hand-index
