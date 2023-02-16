@@ -2,42 +2,48 @@
 title: "In Class Exercise 5"
 author: "Law Shiang Rou"
 date: 11 February 2023
-date-modified: "`r Sys.Date()`"
 execute: 
   echo: true
   eval: true
   warning: false
 format:
   html:
+    toc: true
     code-fold: "show"
     code-summary: "Hide the code"
     code-block-border-left: "#63B9A0"
     code-line-numbers: true
 editor: visual
 ---
+
 ## Plot correlation matrix
 
 ### Load the required packages
+
 ```{r}
 pacman::p_load(corrplot, tidyverse, ggstatsplot)
 ```
 
 ### Import the data
+
 ```{r}
 wine <- read_csv("data/wine_quality.csv")
 ```
 
 ### Build a basic correlation matrix
+
 ```{r}
 pairs(wine[,1:11])
 ```
 
 ### Build basic correlation matrix (only lower corner)
+
 ```{r}
 pairs(wine[,1:11], upper.panel = NULL)
 ```
 
 ### Plot correlation matrix using ggcorrmat()
+
 ```{r}
 #|fig-width = 15
 #|fig-height = 15
@@ -54,7 +60,9 @@ ggstatsplot::ggcorrmat(
 ```
 
 ### Plot correlation matrix using corrplot()
+
 corrplot has more features as compared to ggcorrmat - geometry object and ordering method. A correlation matrix needs to be calculated first before corrplot can be ploted.
+
 ```{r}
 wine.cor <- cor(wine[, 1:11])
 ```
@@ -66,6 +74,7 @@ corrplot(wine.cor,
          diag = FALSE,
          tl.col = "black")
 ```
+
 We can choose to reorder the correlation matrix using hclust (grouping the similar variables together)
 
 ```{r}
@@ -79,6 +88,7 @@ corrplot(wine.cor,
 ```
 
 ## Use ternary plot to visualize 3 dimensions
+
 ```{r}
 pacman::p_load(ggtern, plotly)
 ```
@@ -88,6 +98,7 @@ pop_data <- read_csv("data/respopagsex2000to2018_tidy.csv")
 ```
 
 ### Import the data
+
 ```{r}
 agpop_mutated <- pop_data %>%
   mutate(`Year` = as.character(Year))%>%
@@ -106,7 +117,9 @@ ggtern(data=agpop_mutated, aes(x=YOUNG,y=ACTIVE, z=OLD)) +
   labs(title="Population structure, 2018") +
   theme_rgbw()
 ```
+
 ### Plot interactive ternary diagram
+
 ```{r}
 label <- function(txt) {
   list(
@@ -147,6 +160,7 @@ plot_ly(
 ```
 
 ## Plot heatmap
+
 ```{r}
 pacman::p_load(seriation, dendextend, heatmaply)
 ```
@@ -156,19 +170,24 @@ wh <- read_csv("data/WHData-2018.csv")
 ```
 
 ### Transform the data frame
+
 Make "country" the row name (index) so that country will be used as label in heatmap
+
 ```{r}
 row.names(wh) <- wh$Country
 ```
 
 Transform the dataframe into a matrix (take columns number 4 and 7-12)
+
 ```{r}
 wh1 <- dplyr::select(wh, c(3, 7:12))
 wh_matrix <- data.matrix(wh)
 ```
 
-### Create heatmap using heatmaply 
+### Create heatmap using heatmaply
+
 -c means excluding the columns
+
 ```{r}
 heatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),
           Colv=NA,

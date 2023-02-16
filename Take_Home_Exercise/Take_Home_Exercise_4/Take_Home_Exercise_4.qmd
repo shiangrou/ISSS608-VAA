@@ -10,9 +10,9 @@ execute:
   message: false
 format:
   html:
-    page-layout: full
     toc: true
-    smooth-scroll: true
+    toc-location: right
+    page-layout: full
     code-fold: true
     code-summary: "Show the code"
     code-block-border-left: "#63B9A0"
@@ -20,15 +20,37 @@ format:
     code-copy: hover
     title-block-banner: true
     fig-align: center
-    reader-mode: true
 ---
+
 ![](images/coronavirus.jpeg){width=65%, fig.align='center'}
 
-::: {.column-page-inset}
 <br>
 
 ## [<b>Section 1</b>: Overview]{style="color: #0D644C;"}
-
+In this take home exercise
 
 ## [<b>Section 2</b>: Data Preparation]{style="color: #0D644C;"}
-:::
+empty
+
+## [<b>Section 3</b>: ]{style="color: #0D644C;"}
+
+empty
+
+## [<b>Section 4</b>: ]{style="color: #0D644C;"}
+
+empty
+
+## [<b>Section 5</b>: ]{style="color: #0D644C;"}
+
+empty
+
+## [<b>Section 6</b>: ]{style="color: #0D644C;"}
+
+empty
+
+## [<b>Section 7</b>: ]{style="color: #0D644C;"}
+
+empty
+
+
+

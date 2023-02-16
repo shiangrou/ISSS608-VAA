@@ -3,12 +3,16 @@ project:
 
 website:
   title: "Visual Analytics"
+  page-navigation: true
+  reader-mode: true
   navbar: 
     collapse: true
     left:
       - icon: house-door
         href: index.qmd
         text: Home
+      - icon: github
+        href: https://github.com/shiangrou/ISSS608-VAA
 
     right:
       - icon: hand-index
