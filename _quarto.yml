@@ -35,6 +35,8 @@ website:
             href: "In-class_Exercise/In-class_Ex04.html"
           - text: "In-Class Exercise 5"
             href: "In-class_Exercise/In-class_Ex05.html"
+          - text: "In-Class Exercise 6"
+            href: "In-class_Exercise/In-class_Ex06.html"
       - icon: graph-up
         text: "Take Home Exercise"
         menu: 
@@ -45,7 +47,6 @@ website:
           - text: "Take Home Exercise 3"
             href: "Take_Home_Exercise/Take_Home_Exercise_3/Take_Home_Exercise_3.html"
           - text: "Take Home Exercise 4"
-            href: "Take_Home_Exercise/Take_Home_Exercise_4/Take_Home_Exercise_4.html"
 
 format:
   html:

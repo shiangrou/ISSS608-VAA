@@ -3,7 +3,6 @@ title: "Take Home Exercise 3"
 subtitle: "Uncover the salient patterns of Singapore public housing resale prices with R"
 author: "Law Shiang Rou"
 date: 5 February 2023
-date-modified: "`r Sys.Date()`"
 date-format: medium
 execute:
   warning: false
@@ -24,11 +23,11 @@ format:
     reader-mode: true
 ---
 
-::: {.column-screen}
+::: column-screen
 ![](images/1.png){width="100%"}
 :::
 
-::: {.column-page-inset}
+::: column-page-inset
 # [<u>Section 1:</u><br>Overview]{style="color: #0D644C;"}
 
 In take-home exercise 3, various interactive visualizations are prepared using R packages and functions such as ggiraph, ggplot2, and ggstatsplot to showcase the salient patterns of the Singapore public housing resale prices in 2022. The focus of this exercise is on 4-room and 5-room public houses (HDB flats).
@@ -41,13 +40,13 @@ The main dataset used is obtained from [data.gov.sg](https://data.gov.sg/dataset
 
 Some required libraries include:
 
-- <b>ggiraph, plotly</b>: To produce interactive visualization
-- <b>tmap</b>: To plot interactive choropleth map
-- <b>patchwork</b>: To combine separate ggplots into the same graphic
-- <b>heatmaply</b>: To plot interactive heatmaps
-- <b>ggstatsplot</b>: To create graphics with details from statistical tests
-- <b>tidyverse</b>: A suite of data wrangling and visualization packages such as tidyr, ggplot2, knitr and so on
-- <b>crosstalk</b>: To connect HTML widgets and allow them to communicate with each other
+-   <b>ggiraph, plotly</b>: To produce interactive visualization
+-   <b>tmap</b>: To plot interactive choropleth map
+-   <b>patchwork</b>: To combine separate ggplots into the same graphic
+-   <b>heatmaply</b>: To plot interactive heatmaps
+-   <b>ggstatsplot</b>: To create graphics with details from statistical tests
+-   <b>tidyverse</b>: A suite of data wrangling and visualization packages such as tidyr, ggplot2, knitr and so on
+-   <b>crosstalk</b>: To connect HTML widgets and allow them to communicate with each other
 
 ```{r}
 pacman::p_load(ggiraph, plotly, patchwork, hrbrthemes, ggthemes, readxl,
@@ -96,8 +95,7 @@ hdb_data_all <- left_join(hdb_data1, mrt_data, by = c("address" = "address"))
 
 ### 2.6. Calculate "resale price per sqm" and "remaining lease (year)"
 
-In order to perform further analysis, the resale price per sqm is computed by dividing resale_price by floor_area_sqm.<br>
-Remaining lease in year is also calculated by taking the substring of the remaining_lease column.
+In order to perform further analysis, the resale price per sqm is computed by dividing resale_price by floor_area_sqm.<br> Remaining lease in year is also calculated by taking the substring of the remaining_lease column.
 
 ```{r}
 # Calculating resale price per sqm
@@ -111,10 +109,10 @@ hdb_data_all$remaining_lease_year <- as.numeric(substr(hdb_data_all$remaining_le
 
 The original storey_range field contains too many categories, making it difficult to analyse. Hence, we re-categorize storey_range into 4 categories.<br>
 
-- Level 3 and below = Low<br>
-- Level 4-9 = Middle<br>
-- Level 10-24 = High<br>
-- Level 25 and above = Super High<br>
+-   Level 3 and below = Low<br>
+-   Level 4-9 = Middle<br>
+-   Level 10-24 = High<br>
+-   Level 25 and above = Super High<br>
 
 ```{r}
 hdb_data_all1 <- hdb_data_all %>% 
@@ -129,7 +127,7 @@ paged_table(hdb_data_all1, options = list(rows.print = 5))
 
 # [<u>Section 3:</u><br>Exploratory Analysis & Insights]{style="color: #0D644C;"}
 
-In this section, exploratory data analysis is performed using various visualization methods to uncover patterns of the HDB resale market in Singapore and identify the differences between the various flat types and towns. 
+In this section, exploratory data analysis is performed using various visualization methods to uncover patterns of the HDB resale market in Singapore and identify the differences between the various flat types and towns.
 
 ### 3.1. Overview of the Singapore HDB resale market
 
@@ -139,11 +137,11 @@ This section aims to provide viewers with a basic overview on Singapore 3-room a
 
 The 2 interactive charts are designed to showcase the overall number of resale transactions in 2022 and the resale price range for both 3-room and 4-room flats across Singapore. Through the visuals, viewers can also identify the differences between the resale market for 3-room vs 4-room flats.
 
-- Boxplot is used to display the resale price range, viewers can easily identify the difference in resale prices range between both flat types.
-- Tooltips shows information on mean, median, minimum, maximum, lower and upper quartile price.
-- Bar chart is used to clearly display the number of transaction for each flat type.
-- Mean resale prices are plotted (white dot on boxplot) for viewers to easily compare mean and median.
-- The boxplot and bar chart are coordinated for viewers to have multiple view when hover over the 2 flat types.
+-   Boxplot is used to display the resale price range, viewers can easily identify the difference in resale prices range between both flat types.
+-   Tooltips shows information on mean, median, minimum, maximum, lower and upper quartile price.
+-   Bar chart is used to clearly display the number of transaction for each flat type.
+-   Mean resale prices are plotted (white dot on boxplot) for viewers to easily compare mean and median.
+-   The boxplot and bar chart are coordinated for viewers to have multiple view when hover over the 2 flat types.
 
 #### ii. Preparation Steps: Coordinated boxplot and bar chart for overview
 
@@ -249,12 +247,11 @@ girafe(
 ::: {.callout-tip collapse="false"}
 # Insights
 
-In 2022, 
+In 2022,
 
-- Singapore has more 4-room resale transactions than 3-room's transactions.
-- 4-room resale price ranges from S$288k to S\$1.37mil and is average at S\$549k.
-- 3-room resale price ranges from S$200k to S\$958k and is average at S\$389k.
-
+-   Singapore has more 4-room resale transactions than 3-room's transactions.
+-   4-room resale price ranges from S\$288k to S\$1.37mil and is average at S\$549k.
+-   3-room resale price ranges from S\$200k to S\$958k and is average at S\$389k.
 :::
 
 ### 3.2. Average resale prices vs number of transactions for each town.
@@ -265,9 +262,9 @@ This visualization showcases the resale prices and number of transactions by tow
 
 The 2 charts are interactive and coordinated. Each town is represented by a point and viewers can hover over each point to view the mean resale price and total number of resale transactions in 2022 in the specific town.
 
-- Scatter plot is chosen to cleanly visualize all the towns and present the relationship between mean resale price and number of transactions, a fitted line is also drawn to show the overall relationship.
-- The individual points are intentionally kept unlabeled to prevent cluttering on the chart. Instead, tooltip is used to present the required details.
-- The 2 charts are coordinated and drawn with the same scale to allow viewers to easily compare the differences between 3-room and 4-room resale market for each town.
+-   Scatter plot is chosen to cleanly visualize all the towns and present the relationship between mean resale price and number of transactions, a fitted line is also drawn to show the overall relationship.
+-   The individual points are intentionally kept unlabeled to prevent cluttering on the chart. Instead, tooltip is used to present the required details.
+-   The 2 charts are coordinated and drawn with the same scale to allow viewers to easily compare the differences between 3-room and 4-room resale market for each town.
 
 #### ii. Preparation Steps: Scatter plot showing the relationship between resale price and number of transactions.
 
@@ -333,24 +330,24 @@ girafe(
 ::: {.callout-tip collapse="false"}
 # Insights
 
-- It seems that there is a negative relationship between average resale price and number of resale transaction, i.e.: towns with more resale transactions have lower average resale price.
-- <b>Sengkang</b> and <b>Punggol</b>, both located in the North-East region, have the highest number of 4-room resale transactions in 2022, while <b>Bedok</b> and <b>Yishun</b> have the highest number of 3-room resale transactions in 2022. All these 4 locations are located at the edges of Singapore.
-- <b>Central area</b> has the highest average resale price for 4-room, while <b>Pasir Ris</b> has the highest average resale price for 3-room.
-- The difference in 3-room and 4-room average resale price is lowest for Pasir Ris, only close to S$50k (~10%) difference. This is far from the overall average difference in 3-room and 4-room resale price, which is around S\$160k (40%). One potential reason for this could be due to other characteristics of the flats, such as age of flats, floor size and location, which are not visualized in this chart.
-- From this visualization, we know that towns in outskirt areas of Singapore have more resale transactions but lower resale prices, and the difference between 3-room and 4-room resale prices varies across towns.
-
+-   It seems that there is a negative relationship between average resale price and number of resale transaction, i.e.: towns with more resale transactions have lower average resale price.
+-   <b>Sengkang</b> and <b>Punggol</b>, both located in the North-East region, have the highest number of 4-room resale transactions in 2022, while <b>Bedok</b> and <b>Yishun</b> have the highest number of 3-room resale transactions in 2022. All these 4 locations are located at the edges of Singapore.
+-   <b>Central area</b> has the highest average resale price for 4-room, while <b>Pasir Ris</b> has the highest average resale price for 3-room.
+-   The difference in 3-room and 4-room average resale price is lowest for Pasir Ris, only close to S\$50k (\~10%) difference. This is far from the overall average difference in 3-room and 4-room resale price, which is around S\$160k (40%). One potential reason for this could be due to other characteristics of the flats, such as age of flats, floor size and location, which are not visualized in this chart.
+-   From this visualization, we know that towns in outskirt areas of Singapore have more resale transactions but lower resale prices, and the difference between 3-room and 4-room resale prices varies across towns.
 :::
 
 ### 3.3. Distribution and range of resale prices by town
+
 Unlike the previous visualization where only the average resale prices for each town are shown, this section allows viewers to gain more insights based on the distribution of resale prices in each town.
 
 #### i. Design Consideration
 
-- A boxplot is chosen to visualize the distribution of resale prices in each town.
-- The boxplot is coordinated with a bar chart showing the number of resale transactions in each town. With the coordinated view, viewers can easily observe the different characteristics of each town. For example, Central Area has third least number of resale transactions but its 4-room resale price boxplot has the longest interquartile range and whisker. 
-- The towns are ordered by total number of transaction count on the bar chart and ordered by average resale price on the boxplot. 
-- Mean prices are plotted for viewers to easily compare mean and median.
-- Tooltip shows maximum, minimum and median prices, median prices are shown instead of mean as mean can be easily influenced by outliers.
+-   A boxplot is chosen to visualize the distribution of resale prices in each town.
+-   The boxplot is coordinated with a bar chart showing the number of resale transactions in each town. With the coordinated view, viewers can easily observe the different characteristics of each town. For example, Central Area has third least number of resale transactions but its 4-room resale price boxplot has the longest interquartile range and whisker.
+-   The towns are ordered by total number of transaction count on the bar chart and ordered by average resale price on the boxplot.
+-   Mean prices are plotted for viewers to easily compare mean and median.
+-   Tooltip shows maximum, minimum and median prices, median prices are shown instead of mean as mean can be easily influenced by outliers.
 
 #### ii. Preparation Steps: Coordinated bar chart and boxplot showing resale price distribution by town
 
@@ -431,11 +428,10 @@ girafe(
 ::: {.callout-tip collapse="false"}
 # Insights
 
-- <b>Central area</b> has the longest resale price boxplot whisker and interquartile range for 4-room flat. Some other towns with long boxplot whisker (huge resale price range) and interquartile range are <b>Clementi, Kallang/Whampoa, Bukit Merah, Toa Payoh, Ang Mo Kio and Geylang</b>. These are all matured towns.
-- <b>Yishun</b> and <b>Sengkang</b> have the highest number of resale transactions, but the resale price range is relatively small (shorter whisker), which means the resale prices for the same flat type are rather consistent within the town.
-- Other towns with relatively shorter whisker and interquartile range include <b>Choa Chu Kang, Sembawang, Bukit Panjang, Pasir Ris, Woodlands, Jurong East and Jurong West</b>. All of these are non-matured towns.
-- Hence, it is reasonable to hypothesize that resale prices of the same flat type in non-matured towns moves within smaller range as compared to matured towns. 
-
+-   <b>Central area</b> has the longest resale price boxplot whisker and interquartile range for 4-room flat. Some other towns with long boxplot whisker (huge resale price range) and interquartile range are <b>Clementi, Kallang/Whampoa, Bukit Merah, Toa Payoh, Ang Mo Kio and Geylang</b>. These are all matured towns.
+-   <b>Yishun</b> and <b>Sengkang</b> have the highest number of resale transactions, but the resale price range is relatively small (shorter whisker), which means the resale prices for the same flat type are rather consistent within the town.
+-   Other towns with relatively shorter whisker and interquartile range include <b>Choa Chu Kang, Sembawang, Bukit Panjang, Pasir Ris, Woodlands, Jurong East and Jurong West</b>. All of these are non-matured towns.
+-   Hence, it is reasonable to hypothesize that resale prices of the same flat type in non-matured towns moves within smaller range as compared to matured towns.
 :::
 
 ### 3.4. Geographic representation of towns and their respective resale prices.
@@ -444,11 +440,12 @@ Considering that not all viewers are familiar with the geographical location of 
 
 #### i. Design Consideration
 
-- An interactive choropleth map with color gradient is chosen to represent the average resale prices of each towns.
-- The mean resale price per sqm is shown using tooltip.
-- Viewers can deselect the "mpsz_price" layer on the map to view the street view.
+-   An interactive choropleth map with color gradient is chosen to represent the average resale prices of each towns.
+-   The mean resale price per sqm is shown using tooltip.
+-   Viewers can deselect the "mpsz_price" layer on the map to view the street view.
 
 #### ii. Preparation Steps: choropleth map showing the geographical location of town and their resale prices
+
 ```{r}
 # Calculating mean prices by town
 mean_prices <- hdb_data_all %>%
@@ -480,32 +477,32 @@ tm_shape(mpsz_price)+
 ::: {.callout-tip collapse="false"}
 # Insights
 
-- Towns around south of Singapore carry highest average resale prices per sqm.
-- Towns around west of Singapore carry low average resale price per sqm.
-
+-   Towns around south of Singapore carry highest average resale prices per sqm.
+-   Towns around west of Singapore carry low average resale price per sqm.
 :::
 
 # [<u>Section 4:</u><br>Correlation Analysis and Confirmatory Analysis]{style="color: #0D644C;"}
 
-In this section, correlation analysis is performed to find out the correlation between resale prices and other variables. Then, hypothesis testing is done to evaluate our hypotheses and produce statistical inferences. 
+In this section, correlation analysis is performed to find out the correlation between resale prices and other variables. Then, hypothesis testing is done to evaluate our hypotheses and produce statistical inferences.
 
 ### 4.1. Correlation Analysis
 
 With correlation analysis, we aim to answer 2 questions:
 
-- Which of the variables have the highest correlation coefficient with resale prices?
-- Which of the correlation coefficient is statistically significant?
+-   Which of the variables have the highest correlation coefficient with resale prices?
+-   Which of the correlation coefficient is statistically significant?
 
 Through this analysis, viewers can identify the correlated variables. However, do be mindful that correlation does not imply causation.
 
 #### i. Design Consideration
 
-- A correlation matrix is plotted to provide a one-glance view of the pairwise correlation coefficients across the continuous variables.
-- The correlation matrix is color coded with a gradient to clearly show the magnitude of the correlation.
-- The pairwise correlation coefficients are calculated separately for each flat type, as the variables of each flat type might be correlated in different way.
-- A significance level of 0.05 is used, for correlation that is not statistically significant, a red cross will be marked on the correlation coefficient.
+-   A correlation matrix is plotted to provide a one-glance view of the pairwise correlation coefficients across the continuous variables.
+-   The correlation matrix is color coded with a gradient to clearly show the magnitude of the correlation.
+-   The pairwise correlation coefficients are calculated separately for each flat type, as the variables of each flat type might be correlated in different way.
+-   A significance level of 0.05 is used, for correlation that is not statistically significant, a red cross will be marked on the correlation coefficient.
 
 #### ii. Preparation Steps:
+
 ```{r fig.align='center', fig.height=6, fig.width=9}
 # Selecting all the numeric factors
 hdb_numeric <- hdb_data_all1 %>% 
@@ -546,17 +543,17 @@ grouped_ggcorrmat(
                                 ))
     )
 ```
+
 ::: {.callout-tip collapse="false"}
 # Insights
 
-- All pairwise correlations are statistically significant.
-- 3-room resale price is most highly correlated with remaining lease with correlation coefficient of 0.61. (longer remaining lease, higher resale price)
-- 4-room resale price is most highly correlated with storey with correlation coefficient of 0.58. (higher floor, higher resale price)
-- Resale price has a weak negative correlation with distance to nearest train station (the nearer a flat is to a train station, the higher the resale price).
-- It is also observed that floor area is positively correlated with 3-room resale price (0.25) but negatively correlated (-0.05) with 4-room resale price.
-- Interestingly, storey and remaining lease has a moderate positive correlation. This could be the result of the taller HDB developments in the more recent years.
-- For 4-room flats, remaining lease has negative correlation with floor area. This could be the result of the smaller flats built in more recent years.
-
+-   All pairwise correlations are statistically significant.
+-   3-room resale price is most highly correlated with remaining lease with correlation coefficient of 0.61. (longer remaining lease, higher resale price)
+-   4-room resale price is most highly correlated with storey with correlation coefficient of 0.58. (higher floor, higher resale price)
+-   Resale price has a weak negative correlation with distance to nearest train station (the nearer a flat is to a train station, the higher the resale price).
+-   It is also observed that floor area is positively correlated with 3-room resale price (0.25) but negatively correlated (-0.05) with 4-room resale price.
+-   Interestingly, storey and remaining lease has a moderate positive correlation. This could be the result of the taller HDB developments in the more recent years.
+-   For 4-room flats, remaining lease has negative correlation with floor area. This could be the result of the smaller flats built in more recent years.
 :::
 
 ### 4.2. How much does resale prices increase with longer remaining lease and higher storey in each town.
@@ -565,11 +562,12 @@ From 4.1, we saw that resale prices are most highly correlated with remaining le
 
 #### i. Design Consideration
 
-- Heatmap is used here as it can cleanly visualize 3-dimensional data (Remaining Lease, Town, Resale Price & Storey, Town, Resale Price). 
-- With color gradient, viewers can distinctly identify the resale price pattern against remaining lease and storey at each town.
-- Tooltip is used to provide information on average resale price per sqm.
+-   Heatmap is used here as it can cleanly visualize 3-dimensional data (Remaining Lease, Town, Resale Price & Storey, Town, Resale Price).
+-   With color gradient, viewers can distinctly identify the resale price pattern against remaining lease and storey at each town.
+-   Tooltip is used to provide information on average resale price per sqm.
 
 #### ii. Preparation Steps:
+
 ```{r}
 # Creating the dataset required for heatmap
 hdb_by_lease<- hdb_data_all %>%
@@ -611,6 +609,7 @@ heatmap1 <- ggplot(data = hdb_by_lease,
   
   facet_wrap(~flat_type)
 ```
+
 ```{r fig.align='center'}
 # Creating the dataset required for heatmap
 hdb_by_storey<- hdb_data_all %>%
@@ -658,13 +657,12 @@ girafe(
 ::: {.callout-tip collapse="false"}
 # Insights
 
-- In line with previous correlation analysis, the heatmap shows that generally, longer remaining lease and higher storey command higher resale prices per sqm (darker color).
-- However, kallng/whampoa 3-room resale prices show an unusual trend where flats with short remaining lease of below 50 years command higher prices as compared to flats with 50-89 remaining years. 
-- It is observed that the price differential varies across town. Price differential for different remaining lease group is relatively lower in towns like Yishun, Woodlands, Jurong East and Jurong West, which are all non-mature towns nearer to the North and West edges of Singapore.
-- Towns like Sembawang, Sengkang and Punggol do not have resale transactions with remaining lease of less than 70 years, indicating that these are newer residential towns.
-- Price differential for different storey vaires across town as well, with central area 4-room showing the biggest resale price differential between low floor and super high floor. For towns like Yishun, Woodlands, Sengkang, Sembawang, Punggol, Jurong East, and Jurong West, the price differential is relatively lower than the price differential in other towns.
-- Not all towns have super high floor. Towns like Yishun, Pasir Ris, Tampines, Serangoon, and Bukit Timah seem to have only shorter HDB. While Central Area has the tallest high-rise HDB.
-
+-   In line with previous correlation analysis, the heatmap shows that generally, longer remaining lease and higher storey command higher resale prices per sqm (darker color).
+-   However, kallng/whampoa 3-room resale prices show an unusual trend where flats with short remaining lease of below 50 years command higher prices as compared to flats with 50-89 remaining years.
+-   It is observed that the price differential varies across town. Price differential for different remaining lease group is relatively lower in towns like Yishun, Woodlands, Jurong East and Jurong West, which are all non-mature towns nearer to the North and West edges of Singapore.
+-   Towns like Sembawang, Sengkang and Punggol do not have resale transactions with remaining lease of less than 70 years, indicating that these are newer residential towns.
+-   Price differential for different storey vaires across town as well, with central area 4-room showing the biggest resale price differential between low floor and super high floor. For towns like Yishun, Woodlands, Sengkang, Sembawang, Punggol, Jurong East, and Jurong West, the price differential is relatively lower than the price differential in other towns.
+-   Not all towns have super high floor. Towns like Yishun, Pasir Ris, Tampines, Serangoon, and Bukit Timah seem to have only shorter HDB. While Central Area has the tallest high-rise HDB.
 :::
 
 ### 4.3. Do the mean prices differ across regions and town maturity?
@@ -673,18 +671,15 @@ In the previous sections, we observed that resale prices seem to vary across tow
 
 #### i. Design Consideration
 
-<u>First set of hypotheses:</u><br>
-H0 : The mean resale prices are equal across 5 regions.
-H1 : The mean resale prices are not equal across 5 regions.
+<u>First set of hypotheses:</u><br> H0 : The mean resale prices are equal across 5 regions. H1 : The mean resale prices are not equal across 5 regions.
 
-<u>Second set of hypotheses:</u><br>
-H0 : The mean resale prices are equal between mature and non-mature towns.
-H1 : The mean resale prices are not equal between mature and non-mature towns.
+<u>Second set of hypotheses:</u><br> H0 : The mean resale prices are equal between mature and non-mature towns. H1 : The mean resale prices are not equal between mature and non-mature towns.
 
-- Non-parametric tests are used as we are unsure if the prices are normally distributed.
-- To prevent cluttering the charts, only the p-value of non-significant pairs are shown at the top of the chart.
+-   Non-parametric tests are used as we are unsure if the prices are normally distributed.
+-   To prevent cluttering the charts, only the p-value of non-significant pairs are shown at the top of the chart.
 
 #### ii. Preparation Steps:
+
 ```{r fig.align='center',fig.height=6, fig.width=12}
 # plot mean prices by region
 s1 <- grouped_ggbetweenstats(
@@ -744,11 +739,10 @@ s1/s2 + plot_annotation(
 ::: {.callout-tip collapse="false"}
 # Insights
 
-- For first set of hypothesis test (across regions): at 95% confidence level, we reject the null hypothesis and infer that the mean resale prices across 5 regions are not equal for both 3-room and 4-room. For pairwise analysis, 2 pairs of regions under 3-room have p-value > 0.05 (not enough statistical evidence to reject the null hypothesis), hence, we can infer that the 3-room mean resale prices are equal between East & North, and between Central & North-East.
-- For second set of hypothesis (mature vs non-mature): at 95% confidence level, we reject the null hypothesis and infer that the mean resale prices are not equal between mature and non-mature towns.
-- From the violin plots, it is also observed that Central region has the longest tail, indicating the highest price differential (largest resale price range).
-- Mature towns also have longer tail, indicating higher price differential (largest resale price range) as compared to non-mature towns. This is in line with the observation in section 3.3.
-
+-   For first set of hypothesis test (across regions): at 95% confidence level, we reject the null hypothesis and infer that the mean resale prices across 5 regions are not equal for both 3-room and 4-room. For pairwise analysis, 2 pairs of regions under 3-room have p-value \> 0.05 (not enough statistical evidence to reject the null hypothesis), hence, we can infer that the 3-room mean resale prices are equal between East & North, and between Central & North-East.
+-   For second set of hypothesis (mature vs non-mature): at 95% confidence level, we reject the null hypothesis and infer that the mean resale prices are not equal between mature and non-mature towns.
+-   From the violin plots, it is also observed that Central region has the longest tail, indicating the highest price differential (largest resale price range).
+-   Mature towns also have longer tail, indicating higher price differential (largest resale price range) as compared to non-mature towns. This is in line with the observation in section 3.3.
 :::
 
 # [<u>Section 5:</u><br>Quick interactive guide for home buyers]{style="color: #0D644C;"}
@@ -761,9 +755,9 @@ In this section, a bubble plot is designed for viewers to easily view the averag
 
 #### i. Design Consideration
 
-- The bubble charts contain information about the 2 variables (storey and remaining lease) that are most highly correlated to resale price.
-- The bubbles are coordinated. When viewer hovers to one bubble, the other bubbles representing the same town will be highlighted. This allows viewers to quickly gain insights on the resale price of flats with different characteristics in the same town. With this, viewers can select the town within their budget and see the other options they might have within the town.
-- Tooltips are used here to indicate the key information
+-   The bubble charts contain information about the 2 variables (storey and remaining lease) that are most highly correlated to resale price.
+-   The bubbles are coordinated. When viewer hovers to one bubble, the other bubbles representing the same town will be highlighted. This allows viewers to quickly gain insights on the resale price of flats with different characteristics in the same town. With this, viewers can select the town within their budget and see the other options they might have within the town.
+-   Tooltips are used here to indicate the key information
 
 #### ii. Preparation Steps:
 
@@ -820,17 +814,16 @@ girafe(
 
 ```
 
-
 ### 5.2 Interactive tool with easy filtering and flat details
 
 Viewers who have specific preferences in mind for their resale flats can use this tool to help them shortlist the specific HDB blocks or addresses that fit their criteria. This tool is also suitable for viewers who would like to see more details about each resale transaction.
 
 #### i. Design Consideration
 
-- Filter fields are built-in on the left, allowing viewers to freely calibrate based on their preferences and selection criteria. The selection made on filter will be reflected directly on the scatter plot.
-- Scatter plot is prepared to visualize each resale transaction. Viewers will be able to directly select the specific transaction(s) on the scatter plot using rectangular or lasso brush. Information about the selected resale transactions on the scatter plot will be shown in the table.
-- Tooltip on scatter plot is designed to showcase all relevant information about the resale transactions.
-- Viewers will also be able to filter directly from the table to find transactions that fit their preferences and criteria.
+-   Filter fields are built-in on the left, allowing viewers to freely calibrate based on their preferences and selection criteria. The selection made on filter will be reflected directly on the scatter plot.
+-   Scatter plot is prepared to visualize each resale transaction. Viewers will be able to directly select the specific transaction(s) on the scatter plot using rectangular or lasso brush. Information about the selected resale transactions on the scatter plot will be shown in the table.
+-   Tooltip on scatter plot is designed to showcase all relevant information about the resale transactions.
+-   Viewers will also be able to filter directly from the table to find transactions that fit their preferences and criteria.
 
 #### ii. Preparation Steps: Scatter plot with filter and datatable
 
@@ -889,7 +882,6 @@ crosstalk::bscols(filter_tools,gg,DT::datatable(d, class= "display",
 
 ```
 
-
 # [<u>Bonus Section:</u><br>The impact of cooling measure on HDB resale transactions and prices]{style="color: #0D644C;"}
 
 On 30 Sept 2022, Singapore government implemented cooling measure with the aim to moderate the heated residential property market and ensure housing affordability. In this section, we want to find out if the cooling measure did achieve it's stated objective.
@@ -943,11 +935,9 @@ girafe(
 ::: {.callout-tip collapse="false"}
 # Insights
 
-- A sharp drop in number of transactions is observed for both flat type at the start of the cooling measure. However, the number of transactions seem to have climbed back pretty quickly in the subsequent 2 months.
-- Average resale prices per sqm did not appear to vary much after the cooling measure.
-- That being said, the impact of cooling measure might not be obvious over the shorter term. Hence, study should be done over a longer period for more insights. 
+-   A sharp drop in number of transactions is observed for both flat type at the start of the cooling measure. However, the number of transactions seem to have climbed back pretty quickly in the subsequent 2 months.
+-   Average resale prices per sqm did not appear to vary much after the cooling measure.
+-   That being said, the impact of cooling measure might not be obvious over the shorter term. Hence, study should be done over a longer period for more insights.
 
 :::
-
-
 :::

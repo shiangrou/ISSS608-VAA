@@ -1,0 +1,80 @@
+---
+title: "In Class Exercise 6"
+author: "Law Shiang Rou"
+date: 18 February 2023
+date-format: medium
+execute:
+  warning: false
+  error: false
+  message: false
+format:
+  html:
+    mainfont: Arial
+    fontsize: 14px
+    toc: true
+    toc-location: right
+    page-layout: full
+    code-fold: true
+    code-summary: "Show the code"
+    code-block-border-left: "#63B9A0"
+    code-block-bg: "#f2f6f9"
+    code-copy: hover
+    title-block-banner: true
+    fig-align: center
+---
+
+
+## Overview
+In this take home exercise, we will learn ways to visualize time series data in Tableau.
+
+# Section 1
+
+## i. Dataset used
+
+"Arrival by Air" can be obtained from [Singapore Tourism Board](https://stan.stb.gov.sg/content/stan/en/tourism-statistics.html).
+
+## ii. Pivot (longer)
+The original dataset is organized with each country as a column, which is not very useful when building visualization. Hence, we pivot the table to convert the country columns into rows.
+
+![](images/in-class6-1.png){width=80%, fig.align='center'}
+
+## iiI. Building a simple line chart by country
+We can easily create a line chart in Tableau with country and date as filters to show time-series pattern. 
+![](images/in-class6-2.png){width=80%, fig.align='center'}
+
+## iV. Visualising cyclical patterns using cycle plot
+The purpose of this is for viewers to visualise the trend more easily.
+![](images/in-class6-3.png){width=80%, fig.align='center'}
+From the line chart on the left, we can clearly see that tourist number from Italy is the highest in the month of August. And from the cycle plot, we see that for the month of August, the number of tourists from Italy increases sharply over years.
+
+The interactive Tableau dashboard can be found on [Tableau](https://public.tableau.com/app/profile/law.shiang.rou/viz/In-classexercise6-Itsabouttime/Dashboard1)
+
+# Section 3
+
+## i. Dataset used
+"eventlog.csv" can be obtained from [Github](https://github.com/shiangrou/ISSS608-VAA/tree/master/In-class_Exercise/data)
+
+## ii. Plotting a calander heatmap
+![](images/in-class6-4.png){width=80%, fig.align='center'}
+The interactive Tableau dashboard can be found on [Tableau](https://public.tableau.com/app/profile/law.shiang.rou/viz/In-classexercise62-heatmap/CalanderHeatmap)
+
+# Section 4
+
+## i. Dataset used
+"rice.csv" can be obtained from [Github](https://github.com/shiangrou/ISSS608-VAA/tree/master/In-class_Exercise/data)
+
+## ii. Plotting a slopegraph
+![](images/in-class6-5.png){width=80%, fig.align='center'}
+
+The interactive Tableau dashboard can be found on [Tableau](https://public.tableau.com/app/profile/law.shiang.rou/viz/In-classexercise63-Slopegraphs/Slopegraphs)
+
+# Section 5
+
+## i. Dataset used
+
+"GlobalPopulation.xls" can be obtained from [Github](https://github.com/shiangrou/ISSS608-VAA/tree/master/In-class_Exercise/data)
+
+## ii. Plotting a bubbleplot
+![](images/in-class6-6.png){width=80%, fig.align='center'}
+
+The interactive Tableau dashboard can be found on [Tableau](https://public.tableau.com/app/profile/law.shiang.rou/viz/In-classexercise64-BubblePlot/BubblePlot)

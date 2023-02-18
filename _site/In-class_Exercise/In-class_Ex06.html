@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Law Shiang Rou">
+
+<title>Visual Analytics - In Class Exercise 6</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Visual Analytics</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"><i class="bi bi-house-door" role="img">
+</i> 
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/shiangrou/ISSS608-VAA"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-hands-on-exercise" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-hand-index" role="img">
+</i> 
+ <span class="menu-text">Hands-on Exercise</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-hands-on-exercise">    
+        <li>
+    <a class="dropdown-item" href="../Hands-on_exercise/Hands-on_EX01/Hands-on_EX01.html">
+ <span class="dropdown-text">Hands-on Exercise 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Hands-on_exercise/Hands-on_EX02/Hands-on_EX02.html">
+ <span class="dropdown-text">Hands-on Exercise 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Hands-on_exercise/Hands-on_EX03/Hands-on_EX03.html">
+ <span class="dropdown-text">Hands-on Exercise 3</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Hands-on_exercise/Hands-on_EX04/Hands-on_EX04.html">
+ <span class="dropdown-text">Hands-on Exercise 4</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-in-class-exercise" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-person-square" role="img">
+</i> 
+ <span class="menu-text">In-Class Exercise</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-in-class-exercise">    
+        <li>
+    <a class="dropdown-item" href="../In-class_Exercise/In-class_Ex03.html">
+ <span class="dropdown-text">In-Class Exercise 3</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../In-class_Exercise/In-class_Ex04.html">
+ <span class="dropdown-text">In-Class Exercise 4</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../In-class_Exercise/In-class_Ex05.html">
+ <span class="dropdown-text">In-Class Exercise 5</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../In-class_Exercise/In-class_Ex06.html">
+ <span class="dropdown-text">In-Class Exercise 6</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-take-home-exercise" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+      <i class="bi bi-graph-up" role="img">
+</i> 
+ <span class="menu-text">Take Home Exercise</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-menu-take-home-exercise">    
+        <li>
+    <a class="dropdown-item" href="../Take_Home_Exercise/Take_Home_Exercise_1/Take_Home_Exercise_1.html">
+ <span class="dropdown-text">Take Home Exercise 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Take_Home_Exercise/Take_Home_Exercise_2/Take_Home_Exercise_2.html">
+ <span class="dropdown-text">Take Home Exercise 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../Take_Home_Exercise/Take_Home_Exercise_3/Take_Home_Exercise_3.html">
+ <span class="dropdown-text">Take Home Exercise 3</span></a>
+  </li>  
+        <li class="dropdown-header">Take Home Exercise 4</li>
+    </ul>
+  </li>
+</ul>
+              <div class="quarto-toggle-container">
+                  <a href="" class="quarto-reader-toggle nav-link" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+              </div>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page-left">
+      <h1 class="title">In Class Exercise 6</h1>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Law Shiang Rou </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">Feb 18, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
+  <li><a href="#section-1" id="toc-section-1" class="nav-link" data-scroll-target="#section-1">Section 1</a>
+  <ul class="collapse">
+  <li><a href="#i.-dataset-used" id="toc-i.-dataset-used" class="nav-link" data-scroll-target="#i.-dataset-used">i. Dataset used</a></li>
+  <li><a href="#ii.-pivot-longer" id="toc-ii.-pivot-longer" class="nav-link" data-scroll-target="#ii.-pivot-longer">ii. Pivot (longer)</a></li>
+  <li><a href="#iii.-building-a-simple-line-chart-by-country" id="toc-iii.-building-a-simple-line-chart-by-country" class="nav-link" data-scroll-target="#iii.-building-a-simple-line-chart-by-country">iiI. Building a simple line chart by country</a></li>
+  <li><a href="#iv.-visualising-cyclical-patterns-using-cycle-plot" id="toc-iv.-visualising-cyclical-patterns-using-cycle-plot" class="nav-link" data-scroll-target="#iv.-visualising-cyclical-patterns-using-cycle-plot">iV. Visualising cyclical patterns using cycle plot</a></li>
+  </ul></li>
+  <li><a href="#section-3" id="toc-section-3" class="nav-link" data-scroll-target="#section-3">Section 3</a>
+  <ul class="collapse">
+  <li><a href="#i.-dataset-used-1" id="toc-i.-dataset-used-1" class="nav-link" data-scroll-target="#i.-dataset-used-1">i. Dataset used</a></li>
+  <li><a href="#ii.-plotting-a-calander-heatmap" id="toc-ii.-plotting-a-calander-heatmap" class="nav-link" data-scroll-target="#ii.-plotting-a-calander-heatmap">ii. Plotting a calander heatmap</a></li>
+  </ul></li>
+  <li><a href="#section-4" id="toc-section-4" class="nav-link" data-scroll-target="#section-4">Section 4</a>
+  <ul class="collapse">
+  <li><a href="#i.-dataset-used-2" id="toc-i.-dataset-used-2" class="nav-link" data-scroll-target="#i.-dataset-used-2">i. Dataset used</a></li>
+  <li><a href="#ii.-plotting-a-slopegraph" id="toc-ii.-plotting-a-slopegraph" class="nav-link" data-scroll-target="#ii.-plotting-a-slopegraph">ii. Plotting a slopegraph</a></li>
+  </ul></li>
+  <li><a href="#section-5" id="toc-section-5" class="nav-link" data-scroll-target="#section-5">Section 5</a>
+  <ul class="collapse">
+  <li><a href="#i.-dataset-used-3" id="toc-i.-dataset-used-3" class="nav-link" data-scroll-target="#i.-dataset-used-3">i. Dataset used</a></li>
+  <li><a href="#ii.-plotting-a-bubbleplot" id="toc-ii.-plotting-a-bubbleplot" class="nav-link" data-scroll-target="#ii.-plotting-a-bubbleplot">ii. Plotting a bubbleplot</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+
+
+
+
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<p>In this take home exercise, we will learn ways to visualize time series data in Tableau.</p>
+</section>
+<section id="section-1" class="level1">
+<h1>Section 1</h1>
+<section id="i.-dataset-used" class="level2">
+<h2 class="anchored" data-anchor-id="i.-dataset-used">i. Dataset used</h2>
+<p>“Arrival by Air” can be obtained from <a href="https://stan.stb.gov.sg/content/stan/en/tourism-statistics.html">Singapore Tourism Board</a>.</p>
+</section>
+<section id="ii.-pivot-longer" class="level2">
+<h2 class="anchored" data-anchor-id="ii.-pivot-longer">ii. Pivot (longer)</h2>
+<p>The original dataset is organized with each country as a column, which is not very useful when building visualization. Hence, we pivot the table to convert the country columns into rows.</p>
+<p><img src="images/in-class6-1.png" class="img-fluid" data-fig.align="center"></p>
+</section>
+<section id="iii.-building-a-simple-line-chart-by-country" class="level2">
+<h2 class="anchored" data-anchor-id="iii.-building-a-simple-line-chart-by-country">iiI. Building a simple line chart by country</h2>
+<p>We can easily create a line chart in Tableau with country and date as filters to show time-series pattern. <img src="images/in-class6-2.png" class="img-fluid" data-fig.align="center"></p>
+</section>
+<section id="iv.-visualising-cyclical-patterns-using-cycle-plot" class="level2">
+<h2 class="anchored" data-anchor-id="iv.-visualising-cyclical-patterns-using-cycle-plot">iV. Visualising cyclical patterns using cycle plot</h2>
+<p>The purpose of this is for viewers to visualise the trend more easily. <img src="images/in-class6-3.png" class="img-fluid" data-fig.align="center"> From the line chart on the left, we can clearly see that tourist number from Italy is the highest in the month of August. And from the cycle plot, we see that for the month of August, the number of tourists from Italy increases sharply over years.</p>
+<p>The interactive Tableau dashboard can be found on <a href="https://public.tableau.com/app/profile/law.shiang.rou/viz/In-classexercise6-Itsabouttime/Dashboard1">Tableau</a></p>
+</section>
+</section>
+<section id="section-3" class="level1">
+<h1>Section 3</h1>
+<section id="i.-dataset-used-1" class="level2">
+<h2 class="anchored" data-anchor-id="i.-dataset-used-1">i. Dataset used</h2>
+<p>“eventlog.csv” can be obtained from <a href="https://github.com/shiangrou/ISSS608-VAA/tree/master/In-class_Exercise/data">Github</a></p>
+</section>
+<section id="ii.-plotting-a-calander-heatmap" class="level2">
+<h2 class="anchored" data-anchor-id="ii.-plotting-a-calander-heatmap">ii. Plotting a calander heatmap</h2>
+<p><img src="images/in-class6-4.png" class="img-fluid" data-fig.align="center"> The interactive Tableau dashboard can be found on <a href="https://public.tableau.com/app/profile/law.shiang.rou/viz/In-classexercise62-heatmap/CalanderHeatmap">Tableau</a></p>
+</section>
+</section>
+<section id="section-4" class="level1">
+<h1>Section 4</h1>
+<section id="i.-dataset-used-2" class="level2">
+<h2 class="anchored" data-anchor-id="i.-dataset-used-2">i. Dataset used</h2>
+<p>“rice.csv” can be obtained from <a href="https://github.com/shiangrou/ISSS608-VAA/tree/master/In-class_Exercise/data">Github</a></p>
+</section>
+<section id="ii.-plotting-a-slopegraph" class="level2">
+<h2 class="anchored" data-anchor-id="ii.-plotting-a-slopegraph">ii. Plotting a slopegraph</h2>
+<p><img src="images/in-class6-5.png" class="img-fluid" data-fig.align="center"></p>
+<p>The interactive Tableau dashboard can be found on <a href="https://public.tableau.com/app/profile/law.shiang.rou/viz/In-classexercise63-Slopegraphs/Slopegraphs">Tableau</a></p>
+</section>
+</section>
+<section id="section-5" class="level1">
+<h1>Section 5</h1>
+<section id="i.-dataset-used-3" class="level2">
+<h2 class="anchored" data-anchor-id="i.-dataset-used-3">i. Dataset used</h2>
+<p>“GlobalPopulation.xls” can be obtained from <a href="https://github.com/shiangrou/ISSS608-VAA/tree/master/In-class_Exercise/data">Github</a></p>
+</section>
+<section id="ii.-plotting-a-bubbleplot" class="level2">
+<h2 class="anchored" data-anchor-id="ii.-plotting-a-bubbleplot">ii. Plotting a bubbleplot</h2>
+<p><img src="images/in-class6-6.png" class="img-fluid" data-fig.align="center"></p>
+<p>The interactive Tableau dashboard can be found on <a href="https://public.tableau.com/app/profile/law.shiang.rou/viz/In-classexercise64-BubblePlot/BubblePlot">Tableau</a></p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

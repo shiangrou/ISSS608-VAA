@@ -63,6 +63,34 @@
     "text": "Loading required packages\n\npacman::p_load(ggstatsplot, tidyverse)\n\n\n\nImporting data\n\nexam <- read_csv(\"data/Exam_data.csv\")\n\n\n\nOne-sample test: gghistostats() method\nUse gghistostats() to build a visual of one-sample test on English scores.\n\nset.seed(1234)\n\ngghistostats(\n  data = exam,\n  x = ENGLISH,\n  type = \"bayes\",\n  test.value = 60,\n  xlab = \"English scores\"\n)\n\n\n\n\n\n\nTwo-sample mean test: ggbetweenstats()\nUse ggbetweenstats() to build a visual for two-sample mean test of Maths scores by gender.\n\nggbetweenstats(\n  data = exam,\n  x = GENDER, \n  y = MATHS,\n  type = \"np\",\n  messages = FALSE\n)\n\n\n\n\n\n\nOneway ANOVA Test: ggbetweenstats() method\nUse ggbetweenstats() to build a visual for One-way ANOVA test on English score by race.\n\nggbetweenstats(\n  data = exam,\n  x = RACE, \n  y = ENGLISH,\n  type = \"p\",\n  mean.ci = TRUE, \n  pairwise.comparisons = TRUE, \n  pairwise.display = \"s\",\n  p.adjust.method = \"fdr\",\n  messages = FALSE\n)\n\n\n\n\n\n\nSignificant Test of Correlation: ggscatterstats()\nUse ggscatterstats() to build a visual for Significant Test of Correlation between Maths scores and English scores.\n\nggscatterstats(\n  data = exam,\n  x = MATHS,\n  y = ENGLISH,\n  marginal = FALSE,\n  )"
   },
   {
+    "objectID": "In-class_Exercise/Hands-on_Ex06-VisTime.html",
+    "href": "In-class_Exercise/Hands-on_Ex06-VisTime.html",
+    "title": "Hands-on Exercise 6: Visualising and Analysing Time-oriented Data",
+    "section": "",
+    "text": "By the end of this hands-on exercise you will be able create the followings data visualisation by using R packages:\n\nplotting a calender heatmap by using ggplot2 functions,\nplotting a cycle plot by using ggplot2 function,\nplotting a horizon chart"
+  },
+  {
+    "objectID": "In-class_Exercise/Hands-on_Ex06-VisTime.html#getting-started",
+    "href": "In-class_Exercise/Hands-on_Ex06-VisTime.html#getting-started",
+    "title": "Hands-on Exercise 6: Visualising and Analysing Time-oriented Data",
+    "section": "Getting Started",
+    "text": "Getting Started\n::: callout-info ## Do It Yourself Write a code chunk to check, install and launch the following R packages: scales, viridis, lubridate, ggthemes, gridExtra, readxl, knitr, data.table and tidyverse.\n\n\nShow the code\npacman::p_load(scales, viridis, lubridate, ggthemes, gridExtra, tidyverse, readxl, knitr, data.table)"
+  },
+  {
+    "objectID": "In-class_Exercise/Hands-on_Ex06-VisTime.html#plotting-calendar-heatmap",
+    "href": "In-class_Exercise/Hands-on_Ex06-VisTime.html#plotting-calendar-heatmap",
+    "title": "Hands-on Exercise 6: Visualising and Analysing Time-oriented Data",
+    "section": "Plotting Calendar Heatmap",
+    "text": "Plotting Calendar Heatmap\nIn this section, you will learn how to plot a calender heatmap programmetically by using ggplot2 package.\n\nBy the end of this section, you will be able to:\n\nplot a calender heatmap by using ggplot2 functions and extension,\nto write function using R programming,\nto derive specific date and time related field by using base R and lubridate packages\nto perform data preparation task by using tidyr and dplyr packages.\n\n\nThe Data\nFor the purpose of this hands-on exercise, eventlog.csv file will be used. This data file consists of 199,999 rows of time-series cyber attack records by country.\n\n\nImporting the data\nFirst, you will use the code chunk below to import eventlog.csv file into R environment and called the data frame as attacks.\n\nattacks <- read_csv(\"data/eventlog.csv\")\n\n\n\nExamining the data structure\nIt is always a good practice to examine the imported data frame before further analysis is performed.\nFor example, kable() can be used to review the structure of the imported data frame.\n\nkable(head(attacks))\n\n\n\n\ntimestamp\nsource_country\ntz\n\n\n\n\n2015-03-12 15:59:16\nCN\nAsia/Shanghai\n\n\n2015-03-12 16:00:48\nFR\nEurope/Paris\n\n\n2015-03-12 16:02:26\nCN\nAsia/Shanghai\n\n\n2015-03-12 16:02:38\nUS\nAmerica/Chicago\n\n\n2015-03-12 16:03:22\nCN\nAsia/Shanghai\n\n\n2015-03-12 16:03:45\nCN\nAsia/Shanghai\n\n\n\n\n\nThere are three columns, namely timestamp, source_country and tz.\n\ntimestamp field stores date-time values in POSIXct format.\nsource_country field stores the source of the attack. It is in ISO 3166-1 alpha-2 country code.\n\ntz field stores time zone of the source IP address.\n\n\n\n\n\n\ntimestamp\nsource_country\ntz\n\n\n\n\n2015-03-12 15:59:16\nCN\nAsia/Shanghai\n\n\n2015-03-12 16:00:48\nFR\nEurope/Paris\n\n\n2015-03-12 16:02:26\nCN\nAsia/Shanghai\n\n\n2015-03-12 16:02:38\nUS\nAmerica/Chicago\n\n\n2015-03-12 16:03:22\nCN\nAsia/Shanghai\n\n\n2015-03-12 16:03:45\nCN\nAsia/Shanghai\n\n\n\n\n\n\n\nData Preparation\nStep 1: Deriving weekday and hour of day fields\nBefore we can plot the calender heatmap, two new fields namely wkday and hour need to be derived. In this step, we will write a function to perform the task.\n\nmake_hr_wkday <- function(ts, sc, tz) {\n  real_times <- ymd_hms(ts, \n                        tz = tz[1], \n                        quiet = TRUE)\n  dt <- data.table(source_country = sc,\n                   wkday = weekdays(real_times),\n                   hour = hour(real_times))\n  return(dt)\n  }\n\nNote: ymd_hms() and hour() are from lubridate package and weekdays() is a base R function.\nStep 2: Deriving the attacks tibble data frame\n\nwkday_levels <- c('Saturday', 'Friday', \n                  'Thursday', 'Wednesday', \n                  'Tuesday', 'Monday', \n                  'Sunday')\n\nattacks <- attacks %>%\n  group_by(tz) %>%\n  do(make_hr_wkday(.$timestamp, \n                   .$source_country, \n                   .$tz)) %>% \n  ungroup() %>% \n  mutate(wkday = factor(\n    wkday, levels = wkday_levels),\n    hour  = factor(\n      hour, levels = 0:23))\n\nNote: Beside extracting the necessary data into attacks data frame, mutate() of dplyr package is used to convert wkday and hour fields into factor so they’ll be ordered when plotting\nTable below shows the tidy tibble table after processing.\n\nkable(head(attacks))\n\n\n\n\ntz\nsource_country\nwkday\nhour\n\n\n\n\nAfrica/Cairo\nBG\nSaturday\n20\n\n\nAfrica/Cairo\nTW\nSunday\n6\n\n\nAfrica/Cairo\nTW\nSunday\n8\n\n\nAfrica/Cairo\nCN\nSunday\n11\n\n\nAfrica/Cairo\nUS\nSunday\n15\n\n\nAfrica/Cairo\nCA\nMonday\n11\n\n\n\n\n\n\n\nBuilding the Calendar Heatmaps\n\ngrouped <- attacks %>% \n  count(wkday, hour) %>% \n  ungroup() %>%\n  na.omit()\n\nggplot(grouped, \n       aes(hour, \n           wkday, \n           fill = n)) + \ngeom_tile(color = \"white\", \n          size = 0.1) + \ntheme_tufte(base_family = \"Helvetica\") + \ncoord_equal() +\nscale_fill_gradient(name = \"# of attacks\",\n                    low = \"sky blue\", \n                    high = \"dark blue\") +\nlabs(x = NULL, \n     y = NULL, \n     title = \"Attacks by weekday and time of day\") +\ntheme(axis.ticks = element_blank(),\n      plot.title = element_text(hjust = 0.5),\n      legend.title = element_text(size = 8),\n      legend.text = element_text(size = 6) )\n\n\n\n\nThings to learn from the code chunk: - a tibble data table called grouped is derived by aggregating the attack by wkday and hour fields. - a new field called n is derived by using group_by() and count() functions. - na.omit() is used to exclude missing value. - geom_tile() is used to plot tiles (grids) at each x and y position. color and size arguments are used to specify the border color and line size of the tiles. - theme_tufte() of ggthemes package is used to remove unnecessary chart junk. To learn which visual components of default ggplot2 have been excluded, you are encouraged to comment out this line to examine the default plot. - coord_equal() is used to ensure the plot will have an aspect ratio of 1:1. - scale_fill_gradient() function is used to creates a two colour gradient (low-high).\n\n\n\n\n\nThen we can simply group the count by hour and wkday and plot it, since we know that we have values for every combination there’s no need to further preprocess the data.\n\n\nBuilding Multiple Calendar Heatmaps\nChallenge: Building multiple heatmaps for the top four countries with the highest number of attacks.\n\n\n\nPlotting Multiple Calendar Heatmaps\nStep 1: Deriving attack by country object\nIn order to identify the top 4 countries with the highest number of attacks, you are required to do the followings:\n\ncount the number of attacks by country,\ncalculate the percent of attackes by country, and\nsave the results in a tibble data frame.\n\n\nattacks_by_country <- count(\n  attacks, source_country) %>%\n  mutate(percent = percent(n/sum(n))) %>%\n  arrange(desc(n))\n\nStep 2: Preparing the tidy data frame\nIn this step, you are required to extract the attack records of the top 4 countries from attacks data frame and save the data in a new tibble data frame (i.e. top4_attacks).\n\ntop4 <- attacks_by_country$source_country[1:4]\ntop4_attacks <- attacks %>%\n  filter(source_country %in% top4) %>%\n  count(source_country, wkday, hour) %>%\n  ungroup() %>%\n  mutate(source_country = factor(\n    source_country, levels = top4)) %>%\n  na.omit()\n\n\n\nPlotting Multiple Calendar Heatmaps\nStep 3: Plotting the Multiple Calender Heatmap by using ggplot2 package.\n\nggplot(top4_attacks, \n       aes(hour, \n           wkday, \n           fill = n)) + \n  geom_tile(color = \"white\", \n          size = 0.1) + \n  theme_tufte(base_family = \"Helvetica\") + \n  coord_equal() +\n  scale_fill_gradient(name = \"# of attacks\",\n                    low = \"sky blue\", \n                    high = \"dark blue\") +\n  facet_wrap(~source_country, ncol = 2) +\n  labs(x = NULL, y = NULL, \n     title = \"Attacks on top 4 countries by weekday and time of day\") +\n  theme(axis.ticks = element_blank(),\n        axis.text.x = element_text(size = 7),\n        plot.title = element_text(hjust = 0.5),\n        legend.title = element_text(size = 8),\n        legend.text = element_text(size = 6) )"
+  },
+  {
+    "objectID": "In-class_Exercise/Hands-on_Ex06-VisTime.html#cycle-plot",
+    "href": "In-class_Exercise/Hands-on_Ex06-VisTime.html#cycle-plot",
+    "title": "Hands-on Exercise 6: Visualising and Analysing Time-oriented Data",
+    "section": "Cycle Plot",
+    "text": "Cycle Plot\nIn this section, you will learn how to plot a cycle plot showing the time-series patterns and trend of visitor arrivals from Vietnam programmatically by using ggplot2 functions.\n\n\nData Preparation\n\nStep 1: Data Import\nFor the purpose of this hands-on exercise, arrivals_by_air.xlsx will be used.\nThe code chunk below imports arrivals_by_air.xlsx by using read_excel() of readxl package and save it as a tibble data frame called air.\n\nair <- read_excel(\"data/arrivals_by_air.xlsx\")\n\n\n\nStep 2: Deriving month and year fields\nNext, two new fields called month and year are derived from Month-Year field.\n\nair$month <- factor(month(air$`Month-Year`), \n                    levels=1:12, \n                    labels=month.abb, \n                    ordered=TRUE) \nair$year <- year(ymd(air$`Month-Year`))\n\n\n\nStep 4: Extracting the target country\nNext, the code chunk below is use to extract data for the target country (i.e. Vietnam)\n\nVietnam <- air %>% \n  select(`Vietnam`, \n         month, \n         year) %>%\n  filter(year >= 2010)\n\n\n\nStep 5: Computing year average arrivals by month\nThe code chunk below uses group_by() and summarise() of dplyr to compute year average arrivals by month.\n\nhline.data <- Vietnam %>% \n  group_by(month) %>%\n  summarise(avgvalue = mean(`Vietnam`))\n\n\n\n\nPlotting the cycle plot\nThe code chunk below is used to plot the cycle plot as shown in Slide 12/23.\n\nggplot() + \n  geom_line(data=Vietnam,\n            aes(x=year, \n                y=`Vietnam`, \n                group=month), \n            colour=\"black\") +\n  geom_hline(aes(yintercept=avgvalue), \n             data=hline.data, \n             linetype=6, \n             colour=\"red\", \n             size=0.5) + \n  facet_grid(~month) +\n  labs(axis.text.x = element_blank(),\n       title = \"Visitor arrivals from Vietnam by air, Jan 2010-Dec 2019\") +\n  xlab(\"\") +\n  ylab(\"No. of Visitors\")"
+  },
+  {
     "objectID": "In-class_Exercise/In-class_Ex03.html",
     "href": "In-class_Exercise/In-class_Ex03.html",
     "title": "In-class Exercise 3",
@@ -96,6 +124,83 @@
     "title": "In Class Exercise 5",
     "section": "Plot heatmap",
     "text": "Plot heatmap\n\n\nHide the code\npacman::p_load(seriation, dendextend, heatmaply)\n\n\n\n\nHide the code\nwh <- read_csv(\"data/WHData-2018.csv\")\n\n\n\nTransform the data frame\nMake “country” the row name (index) so that country will be used as label in heatmap\n\n\nHide the code\nrow.names(wh) <- wh$Country\n\n\nTransform the dataframe into a matrix (take columns number 4 and 7-12)\n\n\nHide the code\nwh1 <- dplyr::select(wh, c(3, 7:12))\nwh_matrix <- data.matrix(wh)\n\n\n\n\nCreate heatmap using heatmaply\n-c means excluding the columns\n\n\nHide the code\nheatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),\n          Colv=NA,\n          seriate = \"none\",\n          colors = Blues,\n          k_row = 5,\n          margins = c(NA,200,60,NA),\n          fontsize_row = 5,\n          fontsize_col = 5,\n          main=\"World Happiness Score and Variables by Country, 2018 \\nDataTransformation using Normalise Method\",\n          xlab = \"World Happiness Indicators\",\n          ylab = \"World Countries\"\n          )"
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex06.html",
+    "href": "In-class_Exercise/In-class_Ex06.html",
+    "title": "In Class Exercise 6",
+    "section": "",
+    "text": "In this take home exercise, we will learn ways to visualize time series data in Tableau."
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex06.html#i.-dataset-used",
+    "href": "In-class_Exercise/In-class_Ex06.html#i.-dataset-used",
+    "title": "In Class Exercise 6",
+    "section": "i. Dataset used",
+    "text": "i. Dataset used\n“Arrival by Air” can be obtained from Singapore Tourism Board."
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex06.html#ii.-pivot-longer",
+    "href": "In-class_Exercise/In-class_Ex06.html#ii.-pivot-longer",
+    "title": "In Class Exercise 6",
+    "section": "ii. Pivot (longer)",
+    "text": "ii. Pivot (longer)\nThe original dataset is organized with each country as a column, which is not very useful when building visualization. Hence, we pivot the table to convert the country columns into rows."
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex06.html#iii.-building-a-simple-line-chart-by-country",
+    "href": "In-class_Exercise/In-class_Ex06.html#iii.-building-a-simple-line-chart-by-country",
+    "title": "In Class Exercise 6",
+    "section": "iiI. Building a simple line chart by country",
+    "text": "iiI. Building a simple line chart by country\nWe can easily create a line chart in Tableau with country and date as filters to show time-series pattern."
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex06.html#iv.-visualising-cyclical-patterns-using-cycle-plot",
+    "href": "In-class_Exercise/In-class_Ex06.html#iv.-visualising-cyclical-patterns-using-cycle-plot",
+    "title": "In Class Exercise 6",
+    "section": "iV. Visualising cyclical patterns using cycle plot",
+    "text": "iV. Visualising cyclical patterns using cycle plot\nThe purpose of this is for viewers to visualise the trend more easily.  From the line chart on the left, we can clearly see that tourist number from Italy is the highest in the month of August. And from the cycle plot, we see that for the month of August, the number of tourists from Italy increases sharply over years.\nThe interactive Tableau dashboard can be found on Tableau"
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex06.html#i.-dataset-used-1",
+    "href": "In-class_Exercise/In-class_Ex06.html#i.-dataset-used-1",
+    "title": "In Class Exercise 6",
+    "section": "i. Dataset used",
+    "text": "i. Dataset used\n“eventlog.csv” can be obtained from Github"
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex06.html#ii.-plotting-a-calander-heatmap",
+    "href": "In-class_Exercise/In-class_Ex06.html#ii.-plotting-a-calander-heatmap",
+    "title": "In Class Exercise 6",
+    "section": "ii. Plotting a calander heatmap",
+    "text": "ii. Plotting a calander heatmap\n The interactive Tableau dashboard can be found on Tableau"
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex06.html#i.-dataset-used-2",
+    "href": "In-class_Exercise/In-class_Ex06.html#i.-dataset-used-2",
+    "title": "In Class Exercise 6",
+    "section": "i. Dataset used",
+    "text": "i. Dataset used\n“rice.csv” can be obtained from Github"
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex06.html#ii.-plotting-a-slopegraph",
+    "href": "In-class_Exercise/In-class_Ex06.html#ii.-plotting-a-slopegraph",
+    "title": "In Class Exercise 6",
+    "section": "ii. Plotting a slopegraph",
+    "text": "ii. Plotting a slopegraph\n\nThe interactive Tableau dashboard can be found on Tableau"
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex06.html#i.-dataset-used-3",
+    "href": "In-class_Exercise/In-class_Ex06.html#i.-dataset-used-3",
+    "title": "In Class Exercise 6",
+    "section": "i. Dataset used",
+    "text": "i. Dataset used\n“GlobalPopulation.xls” can be obtained from Github"
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex06.html#ii.-plotting-a-bubbleplot",
+    "href": "In-class_Exercise/In-class_Ex06.html#ii.-plotting-a-bubbleplot",
+    "title": "In Class Exercise 6",
+    "section": "ii. Plotting a bubbleplot",
+    "text": "ii. Plotting a bubbleplot\n\nThe interactive Tableau dashboard can be found on Tableau"
   },
   {
     "objectID": "index.html",
@@ -200,14 +305,14 @@
     "href": "Take_Home_Exercise/Take_Home_Exercise_4/Take_Home_Exercise_4.html#section-2-data-preparation",
     "title": "Take Home Exercise 4",
     "section": "Section 2: Data Preparation",
-    "text": "Section 2: Data Preparation\nempty"
+    "text": "Section 2: Data Preparation\nDatset used can be downloaded from Deaprtment of Statistics Singapore. The Excel file contains Singapore monthly import and export data from 1976 to 2022.\n\n2.1. Load the required packages\n\n\nShow the code\npacman::p_load(readxl, rmarkdown, tidyverse, ggiraph, plotly, viridis, scales,\n               patchwork)\n\n\n\n\n2.2. Import data\nThe Excel file contains 2 sheets, import and export, we load both sheets into R separately.\ni. Import\n\n\nShow the code\n# Load \"import\" data, replace \"na\" with 0 and convert all fields to numeric.\n\nimport = read_excel(\"outputFile.xlsx\", \"T1\", skip=9)[1:119,] %>%\n  mutate_all(funs(str_replace(.,\"na\",\"0\"))) %>%\n  rename(\"trade_partner\"=\"Data Series\")\n\nimport[2:ncol(import)] = lapply(import[2:ncol(import)], FUN = function(y){as.numeric(y)})\n\npaged_table(import, options = list(rows.print = 5))\n\n\n\n\n  \n\n\n\nii. Export\n\n\nShow the code\n# Load \"export\" data, replace \"na\" with 0 and convert all fields to numeric.\n# \"Total Merchandise Exports (Thousand Dollars)\" row is excluded\n\nexport = read_excel(\"outputFile.xlsx\", \"T2\", skip=9)[1:91,] %>%\n  mutate_all(funs(str_replace(.,\"na\",\"0\"))) %>%\n  rename(\"trade_partner\"=\"Data Series\")\n\nexport[2:ncol(export)] = lapply(export[2:ncol(export)], FUN = function(y){as.numeric(y)})\nexport[1]\n\n\n# A tibble: 91 × 1\n   trade_partner                               \n   <chr>                                       \n 1 Total Merchandise Exports (Thousand Dollars)\n 2 America (Million Dollars)                   \n 3 Asia (Million Dollars)                      \n 4 Europe (Million Dollars)                    \n 5 Oceania (Million Dollars)                   \n 6 Africa (Million Dollars)                    \n 7 European Union (Million Dollars)            \n 8 Belgium (Thousand Dollars)                  \n 9 Denmark (Thousand Dollars)                  \n10 France (Thousand Dollars)                   \n# … with 81 more rows\n\n\nShow the code\npaged_table(export, options = list(rows.print = 5))\n\n\n\n\n  \n\n\n\n For the purpose of this exercise, only data between the period of January 2020 to December 2022 is used.\n\n\nShow the code\n# Extract only the dates required\n\nimport_filt <- import[,1:37]\nexport_filt <- export[,1:37]"
   },
   {
-    "objectID": "Take_Home_Exercise/Take_Home_Exercise_4/Take_Home_Exercise_4.html#section-3",
-    "href": "Take_Home_Exercise/Take_Home_Exercise_4/Take_Home_Exercise_4.html#section-3",
+    "objectID": "Take_Home_Exercise/Take_Home_Exercise_4/Take_Home_Exercise_4.html#section-3-overview",
+    "href": "Take_Home_Exercise/Take_Home_Exercise_4/Take_Home_Exercise_4.html#section-3-overview",
     "title": "Take Home Exercise 4",
-    "section": "Section 3:",
-    "text": "Section 3:\nempty"
+    "section": "Section 3: Overview",
+    "text": "Section 3: Overview\nIn this section, the visuals are prepared to provide an overall view of\nBalance of trade (BOT) = Value of Exports − Value of Imports\n\n\nShow the code\n# Use only the first row of each data table (total import & export) for overview\n\n# Transpose the import dataframe\nimport_total <- as.data.frame.table(t(import_filt[1,-1])) %>%\n  rename_with(.cols=1,~\"Date\") %>%\n  select(Date,Freq) %>%\n  rename_with(.cols=2,~\"total_import\")\n\n# Transpose the export dataframe\nexport_total <- as.data.frame.table(t(export_filt[1,-1])) %>%\n  rename_with(.cols=1,~\"Date\") %>%\n  select(Date,Freq) %>%\n  rename_with(.cols=2,~\"total_export\") \n\n# Join the 2 datasets\nall_total <- left_join(import_total, export_total, by = \"Date\") %>% map_df(rev)\npaged_table(all_total, options = list(rows.print = 5))\n\n\n\n\n  \n\n\n\n\n\nShow the code\n# specifying ybreaks and ylables\nybrks <- seq(30000000, 70000000, 2000000)\nylabls <- paste0(as.character(c(seq(30, 70, 2))),\"bn.\")\n\n# customizing the appearance of tooltips\ntooltip_css <- \"background-color:white;padding:8px;border-radius:10px 10px 10px 10px;\nfont-style:bold; color:black;\"\n\n# Plotting a lollipop chart\np1 <- ggplot(all_total,x=Date) +\n  geom_segment_interactive(aes(x=Date, xend=Date, y=total_import,yend=total_export, \n                               colour=total_export-total_import,\n                               data_id=Date,\n                               tooltip=paste(\"Import:\",prettyNum(round(total_import/1000000,2), big.mark=\",\"),\"Bn\", \n                                             \"\\nExport:\",prettyNum(round(total_export/1000000,2), big.mark=\",\"),\"Bn\", \n                                             \"\\nTrade Balance:\", round((total_export-total_import)/1000000,2),\"Bn\")), size=4.6) +\n  scale_color_gradient_interactive(low=\"#ffe586\",high=\"#1b953d\",labels=comma)+\n  geom_point_interactive(aes(x=Date, y=total_import, fill=\"Import\",data_id=Date), \n                         size=3.7, color=\"grey20\", stroke=1.7, shape=21, show.legend = TRUE) +\n  geom_point_interactive(aes(x=Date, y=total_export, fill=\"Export\",data_id=Date), \n                         size=3.7, color=\"grey20\", stroke=1.7, shape=21, show.legend = TRUE) +\n  #geom_text_interactive(aes(label=paste(round((total_export-total_import)/1000000,0),\"Bn\"),\n  #                                 x=Date, y=(total_export-total_import)/2+total_import,\n  #                          data_id=Date), size=3, angle=90, color=\"black\") +\n  scale_x_discrete(limits = rev(levels(all_total$Date))) + \n  scale_y_continuous(name = \"Total Import \\n& Export ($)\",\n                     breaks=ybrks, labels=ylabls) +\n  theme_linedraw() +\n  theme(axis.title.y = element_text(angle=0),\n        axis.ticks.x = element_blank(),\n        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),\n        panel.grid.major.y = element_line(colour = \"grey80\"),\n        panel.grid.minor.y = element_blank(),\n        panel.grid.major.x = element_line(colour = \"grey80\", linetype = \"dotted\"),\n        axis.title = element_text(size =9),\n        legend.position = \"right\",\n        legend.title = element_text(size=8))+\n  labs(fill = \"Trade\", colour = \"Trade Balance ('000)\")+\n  scale_fill_viridis(discrete=TRUE, option=\"A\")\n\n# Making the charts interactive with girafe\ngirafe(\n  ggobj=p1 + plot_annotation(\n    title=\"Singapore Monthly Trade Balance (2020-2022)\",\n    subtitle = \"Singapore experienced trade surplus over the 3 years\",\n    caption=\"Source:Singstat.gov.sg\",\n    theme = theme(plot.title = element_text(face = \"bold\", size = 13),\n                  plot.caption = element_text(face = \"italic\", size=7))),\n  width_svg = 9,\n  height_svg = 9*0.618,\n  options = list(\n    opts_hover_inv(css = \"opacity:0.25;\"),\n    opts_hover(css = \"none\"),\n    opts_tooltip(css = tooltip_css)\n  )\n)\n\n\n\n\n\n\n7 Feb 2020 - Dorscon to orange 3 Apr 2020 - Circuit Breaker 26 April 2022 - Dorscon to yellow plot against covid cases & political news"
   },
   {
     "objectID": "Take_Home_Exercise/Take_Home_Exercise_4/Take_Home_Exercise_4.html#section-4",

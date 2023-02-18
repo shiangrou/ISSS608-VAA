@@ -10,6 +10,8 @@ execute:
   message: false
 format:
   html:
+    mainfont: Arial
+    fontsize: 15px
     toc: true
     toc-location: right
     page-layout: full
@@ -27,14 +29,150 @@ format:
 <br>
 
 ## [<b>Section 1</b>: Overview]{style="color: #0D644C;"}
+
 In this take home exercise
 
 ## [<b>Section 2</b>: Data Preparation]{style="color: #0D644C;"}
-empty
 
-## [<b>Section 3</b>: ]{style="color: #0D644C;"}
+Datset used can be downloaded from [Deaprtment of Statistics Singapore.](https://www.singstat.gov.sg/find-data/search-by-theme/trade-and-investment/merchandise-trade/latest-data) The Excel file contains Singapore monthly import and export data from 1976 to 2022.
 
-empty
+### [<b>2.1.</b> Load the required packages]{style="color: #0D644C;"}
+```{r}
+pacman::p_load(readxl, rmarkdown, tidyverse, ggiraph, plotly, viridis, scales,
+               patchwork)
+```
+
+### [<b>2.2.</b> Import data]{style="color: #0D644C;"}
+
+The Excel file contains 2 sheets, import and export, we load both sheets into R separately.
+
+<b>i. Import</b>
+```{r}
+# Load "import" data, replace "na" with 0 and convert all fields to numeric.
+
+import = read_excel("outputFile.xlsx", "T1", skip=9)[1:119,] %>%
+  mutate_all(funs(str_replace(.,"na","0"))) %>%
+  rename("trade_partner"="Data Series")
+
+import[2:ncol(import)] = lapply(import[2:ncol(import)], FUN = function(y){as.numeric(y)})
+
+paged_table(import, options = list(rows.print = 5))
+```
+
+<b>ii. Export</b>
+```{r}
+
+# Load "export" data, replace "na" with 0 and convert all fields to numeric.
+# "Total Merchandise Exports (Thousand Dollars)" row is excluded
+
+export = read_excel("outputFile.xlsx", "T2", skip=9)[1:91,] %>%
+  mutate_all(funs(str_replace(.,"na","0"))) %>%
+  rename("trade_partner"="Data Series")
+
+export[2:ncol(export)] = lapply(export[2:ncol(export)], FUN = function(y){as.numeric(y)})
+export[1]
+
+paged_table(export, options = list(rows.print = 5))
+```
+<br>
+For the purpose of this exercise, only data between the period of January 2020 to December 2022 is used. 
+```{r}
+# Extract only the dates required
+
+import_filt <- import[,1:37]
+export_filt <- export[,1:37]
+```
+
+
+## [<b>Section 3</b>: Overview]{style="color: #0D644C;"}
+
+In this section, the visuals are prepared to provide an overall view of 
+
+Balance of trade (BOT) = Value of Exports − Value of Imports
+
+```{r}
+# Use only the first row of each data table (total import & export) for overview
+
+# Transpose the import dataframe
+import_total <- as.data.frame.table(t(import_filt[1,-1])) %>%
+  rename_with(.cols=1,~"Date") %>%
+  select(Date,Freq) %>%
+  rename_with(.cols=2,~"total_import")
+
+# Transpose the export dataframe
+export_total <- as.data.frame.table(t(export_filt[1,-1])) %>%
+  rename_with(.cols=1,~"Date") %>%
+  select(Date,Freq) %>%
+  rename_with(.cols=2,~"total_export") 
+
+# Join the 2 datasets
+all_total <- left_join(import_total, export_total, by = "Date") %>% map_df(rev)
+paged_table(all_total, options = list(rows.print = 5))
+```
+
+```{r fig.align='center'}
+# specifying ybreaks and ylables
+ybrks <- seq(30000000, 70000000, 2000000)
+ylabls <- paste0(as.character(c(seq(30, 70, 2))),"bn.")
+
+# customizing the appearance of tooltips
+tooltip_css <- "background-color:white;padding:8px;border-radius:10px 10px 10px 10px;
+font-style:bold; color:black;"
+
+# Plotting a lollipop chart
+p1 <- ggplot(all_total,x=Date) +
+  geom_segment_interactive(aes(x=Date, xend=Date, y=total_import,yend=total_export, 
+                               colour=total_export-total_import,
+                               data_id=Date,
+                               tooltip=paste("Import:",prettyNum(round(total_import/1000000,2), big.mark=","),"Bn", 
+                                             "\nExport:",prettyNum(round(total_export/1000000,2), big.mark=","),"Bn", 
+                                             "\nTrade Balance:", round((total_export-total_import)/1000000,2),"Bn")), size=4.6) +
+  scale_color_gradient_interactive(low="#ffe586",high="#1b953d",labels=comma)+
+  geom_point_interactive(aes(x=Date, y=total_import, fill="Import",data_id=Date), 
+                         size=3.7, color="grey20", stroke=1.7, shape=21, show.legend = TRUE) +
+  geom_point_interactive(aes(x=Date, y=total_export, fill="Export",data_id=Date), 
+                         size=3.7, color="grey20", stroke=1.7, shape=21, show.legend = TRUE) +
+  #geom_text_interactive(aes(label=paste(round((total_export-total_import)/1000000,0),"Bn"),
+  #                                 x=Date, y=(total_export-total_import)/2+total_import,
+  #                          data_id=Date), size=3, angle=90, color="black") +
+  scale_x_discrete(limits = rev(levels(all_total$Date))) + 
+  scale_y_continuous(name = "Total Import \n& Export ($)",
+                     breaks=ybrks, labels=ylabls) +
+  theme_linedraw() +
+  theme(axis.title.y = element_text(angle=0),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        panel.grid.major.y = element_line(colour = "grey80"),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.x = element_line(colour = "grey80", linetype = "dotted"),
+        axis.title = element_text(size =9),
+        legend.position = "right",
+        legend.title = element_text(size=8))+
+  labs(fill = "Trade", colour = "Trade Balance ('000)")+
+  scale_fill_viridis(discrete=TRUE, option="A")
+
+# Making the charts interactive with girafe
+girafe(
+  ggobj=p1 + plot_annotation(
+    title="Singapore Monthly Trade Balance (2020-2022)",
+    subtitle = "Singapore experienced trade surplus over the 3 years",
+    caption="Source:Singstat.gov.sg",
+    theme = theme(plot.title = element_text(face = "bold", size = 13),
+                  plot.caption = element_text(face = "italic", size=7))),
+  width_svg = 9,
+  height_svg = 9*0.618,
+  options = list(
+    opts_hover_inv(css = "opacity:0.25;"),
+    opts_hover(css = "none"),
+    opts_tooltip(css = tooltip_css)
+  )
+)
+
+```
+7 Feb 2020 - Dorscon to orange
+3 Apr 2020 - Circuit Breaker
+26 April 2022 - Dorscon to yellow
+plot against covid cases & political news
 
 ## [<b>Section 4</b>: ]{style="color: #0D644C;"}
 
