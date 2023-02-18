@@ -44,19 +44,25 @@ We can easily create a line chart in Tableau with country and date as filters to
 
 ## iV. Visualising cyclical patterns using cycle plot
 The purpose of this is for viewers to visualise the trend more easily.
+
 ![](images/in-class6-3.png){width=80%, fig.align='center'}
+
 From the line chart on the left, we can clearly see that tourist number from Italy is the highest in the month of August. And from the cycle plot, we see that for the month of August, the number of tourists from Italy increases sharply over years.
 
-The interactive Tableau dashboard can be found on [Tableau](https://public.tableau.com/app/profile/law.shiang.rou/viz/In-classexercise6-Itsabouttime/Dashboard1)
+The interactive dashboard can be found on [Tableau](https://public.tableau.com/app/profile/law.shiang.rou/viz/In-classexercise6-Itsabouttime/Dashboard1)
 
 # Section 3
 
 ## i. Dataset used
 "eventlog.csv" can be obtained from [Github](https://github.com/shiangrou/ISSS608-VAA/tree/master/In-class_Exercise/data)
 
-## ii. Plotting a calander heatmap
+## ii. Plotting a calendar heatmap
+
 ![](images/in-class6-4.png){width=80%, fig.align='center'}
-The interactive Tableau dashboard can be found on [Tableau](https://public.tableau.com/app/profile/law.shiang.rou/viz/In-classexercise62-heatmap/CalanderHeatmap)
+
+From the heatmap, we can clearly see that the boxes are darker in color for certain dates, which represents more events on those dates.
+
+The interactive dashboard can be found on [Tableau](https://public.tableau.com/app/profile/law.shiang.rou/viz/In-classexercise62-heatmap/CalanderHeatmap)
 
 # Section 4
 
@@ -66,7 +72,7 @@ The interactive Tableau dashboard can be found on [Tableau](https://public.table
 ## ii. Plotting a slopegraph
 ![](images/in-class6-5.png){width=80%, fig.align='center'}
 
-The interactive Tableau dashboard can be found on [Tableau](https://public.tableau.com/app/profile/law.shiang.rou/viz/In-classexercise63-Slopegraphs/Slopegraphs)
+The interactive dashboard can be found on [Tableau](https://public.tableau.com/app/profile/law.shiang.rou/viz/In-classexercise63-Slopegraphs/Slopegraphs)
 
 # Section 5
 
@@ -77,4 +83,6 @@ The interactive Tableau dashboard can be found on [Tableau](https://public.table
 ## ii. Plotting a bubbleplot
 ![](images/in-class6-6.png){width=80%, fig.align='center'}
 
-The interactive Tableau dashboard can be found on [Tableau](https://public.tableau.com/app/profile/law.shiang.rou/viz/In-classexercise64-BubblePlot/BubblePlot)
+This chart is animated to showcase the changes of young and old population over years. Viewers can also select a country (represented by one bubble) to see the history train of how the demographic has changed over years.
+
+The interactive dashboard can be found on [Tableau](https://public.tableau.com/app/profile/law.shiang.rou/viz/In-classexercise64-BubblePlot/BubblePlot)

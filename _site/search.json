@@ -158,7 +158,7 @@
     "href": "In-class_Exercise/In-class_Ex06.html#iv.-visualising-cyclical-patterns-using-cycle-plot",
     "title": "In Class Exercise 6",
     "section": "iV. Visualising cyclical patterns using cycle plot",
-    "text": "iV. Visualising cyclical patterns using cycle plot\nThe purpose of this is for viewers to visualise the trend more easily.  From the line chart on the left, we can clearly see that tourist number from Italy is the highest in the month of August. And from the cycle plot, we see that for the month of August, the number of tourists from Italy increases sharply over years.\nThe interactive Tableau dashboard can be found on Tableau"
+    "text": "iV. Visualising cyclical patterns using cycle plot\nThe purpose of this is for viewers to visualise the trend more easily.\n\nFrom the line chart on the left, we can clearly see that tourist number from Italy is the highest in the month of August. And from the cycle plot, we see that for the month of August, the number of tourists from Italy increases sharply over years.\nThe interactive dashboard can be found on Tableau"
   },
   {
     "objectID": "In-class_Exercise/In-class_Ex06.html#i.-dataset-used-1",
@@ -168,11 +168,11 @@
     "text": "i. Dataset used\n“eventlog.csv” can be obtained from Github"
   },
   {
-    "objectID": "In-class_Exercise/In-class_Ex06.html#ii.-plotting-a-calander-heatmap",
-    "href": "In-class_Exercise/In-class_Ex06.html#ii.-plotting-a-calander-heatmap",
+    "objectID": "In-class_Exercise/In-class_Ex06.html#ii.-plotting-a-calendar-heatmap",
+    "href": "In-class_Exercise/In-class_Ex06.html#ii.-plotting-a-calendar-heatmap",
     "title": "In Class Exercise 6",
-    "section": "ii. Plotting a calander heatmap",
-    "text": "ii. Plotting a calander heatmap\n The interactive Tableau dashboard can be found on Tableau"
+    "section": "ii. Plotting a calendar heatmap",
+    "text": "ii. Plotting a calendar heatmap\n\nFrom the heatmap, we can clearly see that the boxes are darker in color for certain dates, which represents more events on those dates.\nThe interactive dashboard can be found on Tableau"
   },
   {
     "objectID": "In-class_Exercise/In-class_Ex06.html#i.-dataset-used-2",
@@ -186,7 +186,7 @@
     "href": "In-class_Exercise/In-class_Ex06.html#ii.-plotting-a-slopegraph",
     "title": "In Class Exercise 6",
     "section": "ii. Plotting a slopegraph",
-    "text": "ii. Plotting a slopegraph\n\nThe interactive Tableau dashboard can be found on Tableau"
+    "text": "ii. Plotting a slopegraph\n\nThe interactive dashboard can be found on Tableau"
   },
   {
     "objectID": "In-class_Exercise/In-class_Ex06.html#i.-dataset-used-3",
@@ -200,7 +200,7 @@
     "href": "In-class_Exercise/In-class_Ex06.html#ii.-plotting-a-bubbleplot",
     "title": "In Class Exercise 6",
     "section": "ii. Plotting a bubbleplot",
-    "text": "ii. Plotting a bubbleplot\n\nThe interactive Tableau dashboard can be found on Tableau"
+    "text": "ii. Plotting a bubbleplot\n\nThis chart is animated to showcase the changes of young and old population over years. Viewers can also select a country (represented by one bubble) to see the history train of how the demographic has changed over years.\nThe interactive dashboard can be found on Tableau"
   },
   {
     "objectID": "index.html",
@@ -305,7 +305,7 @@
     "href": "Take_Home_Exercise/Take_Home_Exercise_4/Take_Home_Exercise_4.html#section-2-data-preparation",
     "title": "Take Home Exercise 4",
     "section": "Section 2: Data Preparation",
-    "text": "Section 2: Data Preparation\nDatset used can be downloaded from Deaprtment of Statistics Singapore. The Excel file contains Singapore monthly import and export data from 1976 to 2022.\n\n2.1. Load the required packages\n\n\nShow the code\npacman::p_load(readxl, rmarkdown, tidyverse, ggiraph, plotly, viridis, scales,\n               patchwork)\n\n\n\n\n2.2. Import data\nThe Excel file contains 2 sheets, import and export, we load both sheets into R separately.\ni. Import\n\n\nShow the code\n# Load \"import\" data, replace \"na\" with 0 and convert all fields to numeric.\n\nimport = read_excel(\"outputFile.xlsx\", \"T1\", skip=9)[1:119,] %>%\n  mutate_all(funs(str_replace(.,\"na\",\"0\"))) %>%\n  rename(\"trade_partner\"=\"Data Series\")\n\nimport[2:ncol(import)] = lapply(import[2:ncol(import)], FUN = function(y){as.numeric(y)})\n\npaged_table(import, options = list(rows.print = 5))\n\n\n\n\n  \n\n\n\nii. Export\n\n\nShow the code\n# Load \"export\" data, replace \"na\" with 0 and convert all fields to numeric.\n# \"Total Merchandise Exports (Thousand Dollars)\" row is excluded\n\nexport = read_excel(\"outputFile.xlsx\", \"T2\", skip=9)[1:91,] %>%\n  mutate_all(funs(str_replace(.,\"na\",\"0\"))) %>%\n  rename(\"trade_partner\"=\"Data Series\")\n\nexport[2:ncol(export)] = lapply(export[2:ncol(export)], FUN = function(y){as.numeric(y)})\nexport[1]\n\n\n# A tibble: 91 × 1\n   trade_partner                               \n   <chr>                                       \n 1 Total Merchandise Exports (Thousand Dollars)\n 2 America (Million Dollars)                   \n 3 Asia (Million Dollars)                      \n 4 Europe (Million Dollars)                    \n 5 Oceania (Million Dollars)                   \n 6 Africa (Million Dollars)                    \n 7 European Union (Million Dollars)            \n 8 Belgium (Thousand Dollars)                  \n 9 Denmark (Thousand Dollars)                  \n10 France (Thousand Dollars)                   \n# … with 81 more rows\n\n\nShow the code\npaged_table(export, options = list(rows.print = 5))\n\n\n\n\n  \n\n\n\n For the purpose of this exercise, only data between the period of January 2020 to December 2022 is used.\n\n\nShow the code\n# Extract only the dates required\n\nimport_filt <- import[,1:37]\nexport_filt <- export[,1:37]"
+    "text": "Section 2: Data Preparation\nDatset used can be downloaded from Deaprtment of Statistics Singapore. The Excel file contains Singapore monthly import and export data from 1976 to 2022.\n\n2.1. Load the required packages\n\n\nShow the code\npacman::p_load(readxl, rmarkdown, tidyverse, ggiraph, plotly, viridis, scales,\n               patchwork, gifski_renderer)\n\n\n\n\n2.2. Import data\nThe Excel file contains 2 sheets, import and export, we load both sheets into R separately.\ni. Import\n\n\nShow the code\n# Load \"import\" data, replace \"na\" with 0 and convert all fields to numeric.\n\nimport = read_excel(\"outputFile.xlsx\", \"T1\", skip=9)[1:119,] %>%\n  mutate_all(funs(str_replace(.,\"na\",\"0\"))) %>%\n  rename(\"trade_partner\"=\"Data Series\")\n\nimport[2:ncol(import)] = lapply(import[2:ncol(import)], FUN = function(y){as.numeric(y)})\n\npaged_table(import, options = list(rows.print = 5))\n\n\n\n\n  \n\n\n\nii. Export\n\n\nShow the code\n# Load \"export\" data, replace \"na\" with 0 and convert all fields to numeric.\n# \"Total Merchandise Exports (Thousand Dollars)\" row is excluded\n\nexport = read_excel(\"outputFile.xlsx\", \"T2\", skip=9)[1:91,] %>%\n  mutate_all(funs(str_replace(.,\"na\",\"0\"))) %>%\n  rename(\"trade_partner\"=\"Data Series\")\n\nexport[2:ncol(export)] = lapply(export[2:ncol(export)], FUN = function(y){as.numeric(y)})\nexport[1]\n\n\n# A tibble: 91 × 1\n   trade_partner                               \n   <chr>                                       \n 1 Total Merchandise Exports (Thousand Dollars)\n 2 America (Million Dollars)                   \n 3 Asia (Million Dollars)                      \n 4 Europe (Million Dollars)                    \n 5 Oceania (Million Dollars)                   \n 6 Africa (Million Dollars)                    \n 7 European Union (Million Dollars)            \n 8 Belgium (Thousand Dollars)                  \n 9 Denmark (Thousand Dollars)                  \n10 France (Thousand Dollars)                   \n# … with 81 more rows\n\n\nShow the code\npaged_table(export, options = list(rows.print = 5))\n\n\n\n\n  \n\n\n\n For the purpose of this exercise, only data between the period of January 2020 to December 2022 is used.\n\n\nShow the code\n# Extract only the dates required\n\nimport_filt <- import[,1:37]\nexport_filt <- export[,1:37]"
   },
   {
     "objectID": "Take_Home_Exercise/Take_Home_Exercise_4/Take_Home_Exercise_4.html#section-3-overview",
@@ -340,6 +340,6 @@
     "href": "Take_Home_Exercise/Take_Home_Exercise_4/Take_Home_Exercise_4.html#section-7",
     "title": "Take Home Exercise 4",
     "section": "Section 7:",
-    "text": "Section 7:\nempty"
+    "text": "Section 7:\nempty\ngghoriplot ggbraid ggedit sugrrants - Graphs for Analysing Temporal Data with ggplot2. ggimg"
   }
 ]

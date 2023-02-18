@@ -39,7 +39,7 @@ Datset used can be downloaded from [Deaprtment of Statistics Singapore.](https:/
 ### [<b>2.1.</b> Load the required packages]{style="color: #0D644C;"}
 ```{r}
 pacman::p_load(readxl, rmarkdown, tidyverse, ggiraph, plotly, viridis, scales,
-               patchwork)
+               patchwork, gifski_renderer)
 ```
 
 ### [<b>2.2.</b> Import data]{style="color: #0D644C;"}
@@ -189,6 +189,12 @@ empty
 ## [<b>Section 7</b>: ]{style="color: #0D644C;"}
 
 empty
+
+gghoriplot
+ggbraid
+ggedit
+sugrrants - Graphs for Analysing Temporal Data with ggplot2.
+ggimg
 
 
 
