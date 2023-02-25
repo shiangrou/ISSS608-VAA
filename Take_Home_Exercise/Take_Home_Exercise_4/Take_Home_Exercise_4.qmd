@@ -24,75 +24,95 @@ format:
     fig-align: center
 ---
 
-![](images/coronavirus.jpeg){width=65%, fig.align='center'}
+![](images/coronavirus.jpeg){width="65%," fig.align="center"}
 
 <br>
 
 ## [<b>Section 1</b>: Overview]{style="color: #0D644C;"}
 
-In this take home exercise
+In this take home exercise, we study the import, export and trade balance of Singapore during the covid era (from 2020 to 2022) and apply appropriate visualization tools to uncover the impact of Covid-19 and political dynamic on Singapore trade.
 
 ## [<b>Section 2</b>: Data Preparation]{style="color: #0D644C;"}
 
-Datset used can be downloaded from [Deaprtment of Statistics Singapore.](https://www.singstat.gov.sg/find-data/search-by-theme/trade-and-investment/merchandise-trade/latest-data) The Excel file contains Singapore monthly import and export data from 1976 to 2022.
+The datset used in this exercise can be downloaded from [Deaprtment of Statistics Singapore.](https://www.singstat.gov.sg/find-data/search-by-theme/trade-and-investment/merchandise-trade/latest-data) The Excel file contains Singapore monthly import and export data from 1976 to 2022.
 
 ### [<b>2.1.</b> Load the required packages]{style="color: #0D644C;"}
+
+Some required packages include:
+
+-   <b>ggiraph</b>: To produce interactive visualization
+-   <b>patchwork</b>: To combine separate ggplots into the same graphic
+-   <b>lubridate</b>: To work with date-times data (eg: parsing of date)
+-   <b>ggaminate</b>: To create animated ggplots
+-   <b>tidyverse</b>: A suite of data wrangling and visualization packages such as tidyr, ggplot2, knitr and so on
+-   <b>ggHoriPlot</b>: To build horizon plots
+-   <b>CGPfunctions</b>: to create slope graph
+-   <b>crosstalk</b>: To connect HTML widgets and allow them to communicate with each other
+
 ```{r}
-pacman::p_load(readxl, rmarkdown, tidyverse, ggiraph, plotly, viridis, scales,
-               patchwork, gifski_renderer)
+pacman::p_load(readxl, rmarkdown, tidyverse, ggiraph, viridis, lubridate, scales,
+               patchwork, data.table, gganimate, CGPfunctions, ggHoriPlot, ggthemes)
 ```
 
 ### [<b>2.2.</b> Import data]{style="color: #0D644C;"}
 
-The Excel file contains 2 sheets, import and export, we load both sheets into R separately.
+The Excel file contains 2 sheets, "T1" (import data) and "T2" (export data), we load both sheets into R separately.
 
 <b>i. Import</b>
+
 ```{r}
+#| output: false
 # Load "import" data, replace "na" with 0 and convert all fields to numeric.
-
 import = read_excel("outputFile.xlsx", "T1", skip=9)[1:119,] %>%
-  mutate_all(funs(str_replace(.,"na","0"))) %>%
   rename("trade_partner"="Data Series")
-
+import[,-1] %>%
+  mutate_all(funs(str_replace(.,"na","0")))
+  
 import[2:ncol(import)] = lapply(import[2:ncol(import)], FUN = function(y){as.numeric(y)})
-
+```
+```{r}
+# print the import table
 paged_table(import, options = list(rows.print = 5))
 ```
 
 <b>ii. Export</b>
-```{r}
 
+```{r}
+#| output: false
 # Load "export" data, replace "na" with 0 and convert all fields to numeric.
-# "Total Merchandise Exports (Thousand Dollars)" row is excluded
 
 export = read_excel("outputFile.xlsx", "T2", skip=9)[1:91,] %>%
-  mutate_all(funs(str_replace(.,"na","0"))) %>%
   rename("trade_partner"="Data Series")
+export[,-1] %>%
+  mutate_all(funs(str_replace(.,"na","0"))) 
 
 export[2:ncol(export)] = lapply(export[2:ncol(export)], FUN = function(y){as.numeric(y)})
-export[1]
-
+```
+```{r}
+# print the export table
 paged_table(export, options = list(rows.print = 5))
 ```
-<br>
-For the purpose of this exercise, only data between the period of January 2020 to December 2022 is used. 
-```{r}
-# Extract only the dates required
 
+<br> For the purpose of this exercise, only data from January 2020 to December 2022 is studied. The below code chunk extracts the required data.
+
+```{r}
+
+# Extract only the required dates
 import_filt <- import[,1:37]
 export_filt <- export[,1:37]
+
+# Multiply row 2-7 by 1000 so that all values are standardized to be in Thousand Dollars
+import_filt[2:7,-1] <- import_filt[2:7,-1]*1000
+export_filt[2:7,-1] <- export_filt[2:7,-1]*1000
+
+# remove unnecessary characters from trade_partner column
+import_filt$trade_partner <- gsub("Million Dollars|Thousand Dollars|[\\(|\\))]","",as.character(import_filt$trade_partner)) %>% str_trim("right")
+export_filt$trade_partner <- gsub("Million Dollars|Thousand Dollars|[\\(|\\))]","",as.character(export_filt$trade_partner)) %>% str_trim("right")
 ```
 
-
-## [<b>Section 3</b>: Overview]{style="color: #0D644C;"}
-
-In this section, the visuals are prepared to provide an overall view of 
-
-Balance of trade (BOT) = Value of Exports − Value of Imports
+<br> We transpose the table to get total import and total export columns for plotting.
 
 ```{r}
-# Use only the first row of each data table (total import & export) for overview
-
 # Transpose the import dataframe
 import_total <- as.data.frame.table(t(import_filt[1,-1])) %>%
   rename_with(.cols=1,~"Date") %>%
@@ -110,6 +130,49 @@ all_total <- left_join(import_total, export_total, by = "Date") %>% map_df(rev)
 paged_table(all_total, options = list(rows.print = 5))
 ```
 
+<br> The below code converts the "Date" column to date format and derive the "month" and "year" fields
+
+```{r}
+# convert to date format
+all_total$Dates <- parse_date_time(all_total$Date, orders=c("Yb","%Y %b","%Y%b","Y b"))
+
+# derive year
+all_total$year <- year(ymd(all_total$Dates))
+
+# derive month
+all_total$month <- factor(month(all_total$Dates),
+                        levels=1:12,
+                        labels=month.abb,
+                        ordered=TRUE)
+```
+
+## [<b>Section 3</b>: Overview of Singapore export, import and trade balance]{style="color: #0D644C;"}
+Trade balance might not be a topic that everyone is familiar with, hence, it's important to provide viewers some basic understanding on the topic of study before any detailed analysis. <br><br>
+In this section, we leverage on interactive visualizations to provide viewers with an overview of Singapore trades for the past 3 years. 
+
+The data covered in this exercise include:
+
+i. Total import across time
+ii. Total export across time
+iii. Trade balance across time (Total Exports − Total Imports)
+
+*Note: A positive trade balance (export > import) is known as trade surplus, whereas a negative trade balance (export < import) is known as trade deficit.*
+
+### [<b>3.1.</b> One-glance view of data with key news events]{style="color: #0D644C;"}
+
+In 3.1, we use ribbon chart to showcase import, export and trade balance. The main reason why ribbon chart is chosen is because it can clearly display all the 3 information in 1 chart and it helps viewers grasp the trend pretty quickly.
+
+However, using ribbon plot has it's cons as well. While it produces beautiful visual, some viewers might misinterpret the chart as described in this [SAS blog post](https://blogs.sas.com/content/sastraining/2015/08/03/creating-a-better-graph-to-show-trade-deficit/). We took this into consideration when designing the chart to ensure it is as clear to all and as easy to interpret as possible.
+
+#### a. Design Consideration
+
+i. Clear title to inform viewers that the chart is plotted using monthly data.
+ii. Markers are added on the line chart to mark each data point clearly.
+iii. Tooltips are used to indicate the months, import, export and trade balance values in the month.
+iv. Hover effect is used so that when viewers hover to a particular point, other points belonging to other months will be made transparent, intentionally focusing the viewer's attention on the export and import values of the same month to prevent misinterpretation as mentioned in the article above.
+v. News events with tooltips are added using vertical lines for viewers to enjoy a quick one glance view of key related events and observe any shift in trade pattern around the event period.
+vi. Color selection for trade balance is made intuitive, with green representing trade surplus and red representing trade deficit.
+
 ```{r fig.align='center'}
 # specifying ybreaks and ylables
 ybrks <- seq(30000000, 70000000, 2000000)
@@ -119,37 +182,183 @@ ylabls <- paste0(as.character(c(seq(30, 70, 2))),"bn.")
 tooltip_css <- "background-color:white;padding:8px;border-radius:10px 10px 10px 10px;
 font-style:bold; color:black;"
 
+p <- ggplot(all_total) +
+  geom_point_interactive(aes(x=Dates, y=total_export, data_id=Dates, color="Export", 
+                             tooltip=paste(year, month, "\nExport:", prettyNum(total_export, big.mark=","),
+                                           "\nTrade Balance",prettyNum(total_export-total_import, big.mark=","))),
+                         size=2)+
+  geom_point_interactive(aes(x=Dates, y=total_import, data_id=Dates, color="Import", 
+                             tooltip=paste(year, month, "\nImport:", prettyNum(total_import, big.mark=","), 
+                                           "\nTrade Balance",prettyNum(total_export-total_import, big.mark=","))),
+                         size=2)+
+  geom_line_interactive(aes(x=Dates, y=total_export),color="darkgreen", size=1) +
+  geom_line_interactive(aes(x=Dates, y=total_import),color="grey10", size=1, linetype=2) +
+  geom_ribbon_interactive(aes(x=Dates, ymin = total_import, ymax = total_export, 
+                  fill=total_export>total_import), data = all_total, alpha = 0.3) +
+  scale_colour_manual(name=NULL ,values=c("Export"='black', "Import"='red'))+
+  scale_fill_manual(values=c("lightgreen", "salmon")) +
+  guides(linetype = "none", fill="none") +
+  scale_y_continuous(name = "Import/ \n Export/\n Trade Balance($)",
+                     breaks=ybrks, labels=ylabls) +
+  theme_bw() +
+  theme(axis.title.y = element_text(size=8, angle=0, hjust=1),
+        axis.title.x = element_text(size=8),
+        panel.grid.major.y = element_line(colour = "grey95"),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.x = element_line(colour = "grey95"),
+        legend.position = "bottom",
+        legend.title = element_text(size=8)) +
+
+  # adding vertical lines and annotation to showcase key political and covid-related events
+  geom_vline_interactive(xintercept=as.POSIXct(as.Date("2020-03-11")),lwd=0.4,colour="red",linetype="dashed",
+                         tooltip="11 March 2020:\nWHO declared pandemic",
+                         show.legend = TRUE) + 
+  geom_label_interactive(aes(x=as.POSIXct(as.Date("2020-03-11")),y=58000000,label="Declared\nPandemic"), 
+                         tooltip="11 March 2020:\nWHO declared pandemic",
+             fill="red", size=2.5, angle=0, hjust=0.5, color="white") + 
+  
+  geom_vline_interactive(xintercept=as.POSIXct(as.Date("2020-02-07")),lwd=0.4,colour="orange",linetype="dashed",
+                         tooltip="7 Feb 2020:\nSingapore DORSCON level raised to Orange",
+                         show.legend = TRUE) + 
+  geom_label_interactive(aes(x=as.POSIXct(as.Date("2020-02-07")),y=62000000,label="DORSCON\nOrange"), 
+                         tooltip="7 Feb 2020:\nSingapore DORSCON level raised to Orange",
+             fill="orange", size=2.5, angle=0, hjust=0.5, color="black") +
+  
+  geom_vline_interactive(xintercept=as.POSIXct(as.Date("2020-04-07")),lwd=0.4,colour="salmon",linetype="dashed",
+                         tooltip="7 Apr 2020:\nSingapore started Circuit breaker",
+                         show.legend = TRUE) + 
+  geom_label_interactive(aes(x=as.POSIXct(as.Date("2020-04-07")),y=54000000,label="Circuit\nBreaker"), 
+                         tooltip="7 Apr 2020:\nSingapore started Circuit breaker",
+             fill="salmon", size=2.5, angle=0, hjust=0.5, color="black") + 
+  
+  geom_vline_interactive(xintercept=as.POSIXct(as.Date("2020-06-02")),lwd=0.4,colour="#acb770",linetype="dashed",
+                         tooltip="2 Jun 2020:\nSingapore exited Circuit breaker and moved to Phase 1 reopening",
+                         show.legend = TRUE) + 
+  geom_label_interactive(aes(x=as.POSIXct(as.Date("2020-06-02")),y=50000000,label="Reopen\nPhase 1"), 
+                         tooltip="2 Jun 2020:\nSingapore exited Circuit breaker and moved to Phase 1 reopening",
+             fill="#D7E58C", size=2.5, angle=0, hjust=0.5, color="black") + 
+  
+  geom_vline_interactive(xintercept=as.POSIXct(as.Date("2020-07-10")),lwd=0.4,colour="#9fc5e8",linetype="dashed",
+                         tooltip="10 July 2020:\nSingapore general election",
+                         show.legend = TRUE) + 
+  geom_label_interactive(aes(x=as.POSIXct(as.Date("2020-07-10")),y=62000000,label="Singapore\nElection"), 
+                         tooltip="10 July 2020:\nSingapore general election",
+             fill="lightblue", size=2.5, angle=0, hjust=0.5, color="black") +
+  
+  geom_vline_interactive(xintercept=as.POSIXct(as.Date("2020-12-28")),lwd=0.4,colour="#DD9E7B",linetype="dashed",
+                         tooltip="28 Dec 2020:\nSingapore entered Phase 3 reopening",
+                         show.legend = TRUE) + 
+  geom_label_interactive(aes(x=as.POSIXct(as.Date("2020-12-28")),y=60000000,label="Reopen\nPhase 3"), 
+                         tooltip="28 Dec 2020:\nSingapore entered Phase 3 reopening",
+             fill="#DD9E7B", size=2.5, angle=0, hjust=0.5, color="black") +
+  
+  geom_vline_interactive(xintercept=as.POSIXct(as.Date("2021-01-27")),lwd=0.4,colour="#bf78bc",linetype="dashed",
+                         tooltip="27 Jan 2021:\nVaccination for public in Singapore started",
+                         show.legend = TRUE) + 
+  geom_label_interactive(aes(x=as.POSIXct(as.Date("2021-01-27")),y=34000000,label="Vaccination\nstarted"), 
+                         tooltip="27 Jan 2021:\nVaccination for public in Singapore started",
+             fill="#e5c9e4", size=2.5, angle=0, hjust=0.5, color="black") +
+  
+  geom_vline_interactive(xintercept=as.POSIXct(as.Date("2021-12-07")),lwd=0.4,colour="#ada275",linetype="dashed",
+                         tooltip='07 Dec 2021:\nUnusual Russian troop movement reported.
+                         US threatened Russia with "strong measures" if it invades',
+                         show.legend = TRUE) + 
+  geom_label_interactive(aes(x=as.POSIXct(as.Date("2021-12-07")),y=34000000,label="War\nSpeculation"), 
+                         tooltip='07 Dec 2021:\nUnusual Russian troop movement reported.
+                         US threatened Russia with "strong measures" if it invades Ukraine',
+             fill="#d0cab0", size=2.5, angle=0, hjust=0.5, color="black") +
+  
+  geom_vline_interactive(xintercept=as.POSIXct(as.Date("2022-02-24")),lwd=0.4,colour="#7e9c7a",linetype="dashed",
+                         tooltip='24 Feb 2022:\nRussia invaded Ukraine',
+                         show.legend = TRUE) + 
+  geom_label_interactive(aes(x=as.POSIXct(as.Date("2022-02-24")),y=38000000,label="Russia-Ukraine\nwar"), 
+                         tooltip='24 Feb 2022:\nRussia invaded Ukraine',
+             fill="#b5c6b3", size=2.5, angle=0, hjust=0.5, color="black") +
+  
+  geom_vline_interactive(xintercept=as.POSIXct(as.Date("2022-04-26")),lwd=0.4,colour="#f1c232",linetype="dashed",
+                         tooltip="26 Apr 2022:\nDORSCON level lowered to Yellow",
+                         show.legend = TRUE) + 
+  geom_label_interactive(aes(x=as.POSIXct(as.Date("2022-04-26")),y=42000000,label="Singapore DORSCON\nYellow"), 
+                         tooltip="26 Apr 2022:\nSingapore DORSCON level lowered to Yellow",
+             fill="yellow", size=2.5, angle=0, hjust=0.5, color="black") 
+
+
+# making interactive visual with girafe
+girafe(
+  ggobj=p + plot_annotation(
+    title="Singapore Monthly Trade Balance with key events (2020-2022)",
+    subtitle = "Singapore experienced trade surplus over the 3 years",
+    caption="Source:Singstat.gov.sg",
+    theme = theme(plot.title = element_text(face = "bold", size = 13),
+                  plot.caption = element_text(face = "italic", size=7))),
+  width_svg = 8.6,
+  height_svg = 8.6*0.618,
+  options = list(
+    opts_hover_inv(css = "opacity:0.15;"),
+    opts_hover(css = "opacity:1;" ),
+    opts_tooltip(css = tooltip_css)
+  )
+) 
+```
+
+
+#### b. Insights
+
+i. Overall, imports and exports follow the same ups and downs, and they follow an increasing trend until Sep 2022.
+ii. Within the 3-year period, import and export values were at the lowest in May 2020, right after circuit breaker started.
+iii. Both import and export jumped in March 2021, after the start of phase 3 reopening and vaccination for public.
+iv. Import and export experienced a sharp drop in Feb 2022, during the Russia-Ukraine conflict period, but the drop did not last long, with import and export values resumed in March 2022.
+
+
+### [<b>3.2.</b> Lollipop chart for easier comparison across time]{style="color: #0D644C;"}
+
+In the previous ribbon chart, it is rather difficult for viewers to compare the trade balance across time as viewers need to either gauge the distance between export and import or hover to the tooltip one by one. As an alternative, a lollipop chart is plotted to clearly display the monthly trade balances using colored segments for easier comparison.
+
+#### a. Design Consideration
+
+i. Lollipop chart shows the import and export value, with gradient-colored segment added to make trade balance values crystal clear to viewers. This allows viewers to easily spot the trend and perform year-on-year (YoY) / month-on-month (MoM) comparison.
+ii. Facet wrap is used to split the time series into individual year to allow easier comparison across time.
+iii. Color gradient with intuitive color selection is used, with darker green segments indicating higher trade surplus. 
+iv. Hover effect is done such that when viewers hover to one segment, the segments of the same month across different years will be highlighted and the rest of the segments will be dimmed. This allows viewers to easily perform year-on-year (YoY) comparison.
+
+```{r}
 # Plotting a lollipop chart
-p1 <- ggplot(all_total,x=Date) +
-  geom_segment_interactive(aes(x=Date, xend=Date, y=total_import,yend=total_export, 
+p1 <- ggplot(all_total,x=month) +
+  geom_segment_interactive(aes(x=month, xend=month, y=total_import,yend=total_export, 
                                colour=total_export-total_import,
-                               data_id=Date,
-                               tooltip=paste("Import:",prettyNum(round(total_import/1000000,2), big.mark=","),"Bn", 
+                               data_id=month,
+                               tooltip=paste(month, year,"\nImport:",prettyNum(round(total_import/1000000,2), big.mark=","),"Bn", 
                                              "\nExport:",prettyNum(round(total_export/1000000,2), big.mark=","),"Bn", 
                                              "\nTrade Balance:", round((total_export-total_import)/1000000,2),"Bn")), size=4.6) +
   scale_color_gradient_interactive(low="#ffe586",high="#1b953d",labels=comma)+
-  geom_point_interactive(aes(x=Date, y=total_import, fill="Import",data_id=Date), 
+  geom_point_interactive(aes(x=month, y=total_import, fill="Import",data_id=month), 
                          size=3.7, color="grey20", stroke=1.7, shape=21, show.legend = TRUE) +
-  geom_point_interactive(aes(x=Date, y=total_export, fill="Export",data_id=Date), 
+  geom_point_interactive(aes(x=month, y=total_export, fill="Export",data_id=month), 
                          size=3.7, color="grey20", stroke=1.7, shape=21, show.legend = TRUE) +
-  #geom_text_interactive(aes(label=paste(round((total_export-total_import)/1000000,0),"Bn"),
-  #                                 x=Date, y=(total_export-total_import)/2+total_import,
-  #                          data_id=Date), size=3, angle=90, color="black") +
-  scale_x_discrete(limits = rev(levels(all_total$Date))) + 
+  geom_text_interactive(aes(label=paste0(round((total_export-total_import)/1000000,0),"Bn"),
+                                   x=month, y=(total_export-total_import)/2+total_import,
+                            data_id=month,
+                            tooltip=paste(month, year,"\nImport:",prettyNum(round(total_import/1000000,2), big.mark=","),"Bn", 
+                                             "\nExport:",prettyNum(round(total_export/1000000,2), big.mark=","),"Bn", 
+                                             "\nTrade Balance:", round((total_export-total_import)/1000000,2),"Bn")), 
+                        size=2.3, angle=90, color="navy") +
   scale_y_continuous(name = "Total Import \n& Export ($)",
                      breaks=ybrks, labels=ylabls) +
   theme_linedraw() +
   theme(axis.title.y = element_text(angle=0),
         axis.ticks.x = element_blank(),
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
-        panel.grid.major.y = element_line(colour = "grey80"),
+        panel.grid.major.y = element_line(colour = "grey75"),
         panel.grid.minor.y = element_blank(),
-        panel.grid.major.x = element_line(colour = "grey80", linetype = "dotted"),
+        panel.grid.major.x = element_line(colour = "grey60", linetype = "dotted"),
         axis.title = element_text(size =9),
         legend.position = "right",
         legend.title = element_text(size=8))+
-  labs(fill = "Trade", colour = "Trade Balance ('000)")+
-  scale_fill_viridis(discrete=TRUE, option="A")
+  labs(fill = "Trade", colour = "Trade Balance ('000)", x="Month")+
+  scale_fill_viridis(discrete=TRUE, option="A") +
+  facet_wrap(~year, ncol = 3)
+
 
 # Making the charts interactive with girafe
 girafe(
@@ -162,39 +371,401 @@ girafe(
   width_svg = 9,
   height_svg = 9*0.618,
   options = list(
-    opts_hover_inv(css = "opacity:0.25;"),
+    opts_hover_inv(css = "opacity:0.2;"),
     opts_hover(css = "none"),
     opts_tooltip(css = tooltip_css)
   )
+) 
+
+```
+
+#### b. Insights
+
+i. Within the 3-year period, trade balance was the highest in August 2020 and March 2021, and lowest in May 2022.
+ii. Export peaked at 64billion in June 2022, while import peaked at 61billion in July 2022.
+iii. For all the 3 years, both import and export jump in the month of March, follow by a dip in Apr and May, before heading upward again.
+iv. Trade balance doesn't seem to follow any obvious trend from month to month.
+
+### [<b>3.3.</b> Cycle plot showing the month-of-the-year effect]{style="color: #0D644C;"}
+
+Using both the charts in 3.1 and 3.2, viewers are able to spot some trends over the 3-year period, but some important monthly patterns might not show up very clearly in the 2 charts. Hence, a cycle plot is added below. Cycle plot is a great choice when it comes to showing both the trends and the month-of-the-year effect.
+
+#### a. Design Consideration
+
+i. 2 sets of cycle plot is created to show the patterns on import and export seperately.
+ii. The 2 sets of cycle plot are then patched together for a coordinated view for more intuitive exploration.
+iii. Average import & export lines are added to the respective plots for easy comparison.
+
+```{r}
+xbrk1 <- seq(2020, 2022, 1)
+xlabl1 <- paste0(as.character(c(seq(2020, 2022, 1))))
+
+exp_hline <- all_total %>% 
+  group_by(month) %>%
+  summarise(avgvalue = mean(total_export))
+
+p2 <- ggplot() + 
+  geom_line_interactive(data=all_total,
+            aes(x=year, y=total_export, 
+                group=month, data_id=month), 
+            colour="navy",size=1) +
+  geom_hline_interactive(aes(yintercept=avgvalue,data_id=month,
+                             tooltip=paste("Mean:",prettyNum(avgvalue,big.mark=","))), 
+             data=exp_hline, 
+             linetype="dashed", 
+             colour="maroon", 
+             size=0.5) + 
+  facet_grid(~month) +
+  theme_linedraw() +
+  labs(axis.text.x = element_blank())+
+  scale_x_continuous(breaks=xbrk1, labels=xlabl1) +
+  theme(axis.title.y = element_text(angle=0, size=9,hjust=1),
+        axis.title.x = element_blank(),
+        axis.text.x = element_text(size = 6, angle = 45, vjust = 1, hjust=1),
+        panel.grid.major.y = element_line(colour = "grey80", linetype = "dotted"),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.x = element_line(colour = "grey80", linetype = "dotted"),
+        panel.grid.minor.x = element_blank())+
+  scale_y_continuous(name = "Total\nExport\n($)",
+                     breaks=ybrks, labels=ylabls)
+
+```
+
+```{r}
+imp_hline <- all_total %>% 
+  group_by(month) %>%
+  summarise(avgvalue = mean(total_import))
+
+p3<-ggplot() + 
+  geom_line_interactive(data=all_total,
+            aes(x=year, y=total_import, 
+                group=month, data_id=month), 
+            colour="#1b954f",size=1) +
+  geom_hline_interactive(aes(yintercept=avgvalue, data_id=month,
+                 tooltip=paste("Mean:",prettyNum(avgvalue,big.mark=","))), 
+             data=imp_hline, 
+             linetype="dashed", 
+             colour="maroon", 
+             size=0.5) + 
+  scale_x_continuous(breaks=xbrk1, labels=xlabl1) +
+  facet_grid(~month) +
+  theme_linedraw() +
+  labs(axis.text.x = element_blank())+
+  theme(axis.title.y = element_text(angle=0, size=9,hjust=1),
+        axis.title.x = element_blank(),
+        axis.text.x = element_text(size = 6, angle = 45, vjust = 1, hjust=1),
+        panel.grid.major.y = element_line(colour = "grey85", linetype = "dotted"),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.x = element_line(colour = "grey85", linetype = "dotted"),
+        panel.grid.minor.x = element_blank())+
+  scale_y_continuous(name = "Total\nImport\n($)",
+                     breaks=ybrks, labels=ylabls)
+
+```
+
+```{r}
+girafe(
+  code = print((p2/p3) + plot_annotation(
+  title = "Singapore Monthly Total Export & Import (2020-2022)",
+  subtitle = "Growth in total import & export reversed its course in first and last 2 months of 2021 & 2022",
+  caption = "Source:Singstat.gov.sg",
+  theme = theme(plot.title = element_text(face = "bold", size = 13),
+                plot.caption = element_text(face = "italic", size=7)))),
+  width_svg = 9,
+  height_svg = 10*0.618,
+  options = list(
+    opts_hover_inv(css = "opacity:0.2;"),
+    opts_hover(css = "none"),
+    opts_tooltip(css = tooltip_css))
 )
 
 ```
-7 Feb 2020 - Dorscon to orange
-3 Apr 2020 - Circuit Breaker
-26 April 2022 - Dorscon to yellow
-plot against covid cases & political news
 
-## [<b>Section 4</b>: ]{style="color: #0D644C;"}
+#### b. Insights
 
-empty
+i. Import and export in the month of March to October followed an upward trend.
+ii. For January and February, import and export dipped in 2021 but grew in 2022.
+iii. For November and December, import and export increased in 2021 but dropped in 2022.
+iv. It is interesting to see that in 2022, import and export reversed its course for the first 2 and last 2 months of the year in the opposite direction.
 
-## [<b>Section 5</b>: ]{style="color: #0D644C;"}
+## [<b>Section 4</b>: Singapore trade balance with major trade partners]{style="color: #0D644C;"}
 
-empty
+Based on [Singstat](https://www.singstat.gov.sg/modules/infographics/singapore-international-trade#:~:text=In%202022%2C%20Mainland%20China%2C%20Malaysia,exports%20to%20these%20trading%20partners.&text=Made%20up%2083.0%25%20of%20non%2Doil%20domestic%20exports.), in 2022, Singapore major trading partners include Mainland China, Malaysia, US, Taiwan, Republic of Korea, Japan, Hong Kong, Thailand, Indonesia, and European Union. <br><br>
+In this section, a few visualizations are prepared to help viewers understand Singapore trades with these major partners over time.
 
-## [<b>Section 6</b>: ]{style="color: #0D644C;"}
+### [<b>4.1.</b> Racing bar chart - Fun way to visualize changes over time]{style="color: #0D644C;"}
 
-empty
+Racing bar chart is an animated and highly visual way to present changes over time. It is used here to display the monthly trade balances over the 3-year period in an interesting and fun way to attract viewers' eyeballs.
 
-## [<b>Section 7</b>: ]{style="color: #0D644C;"}
+#### a. Design Consideration
 
-empty
+i. A horizontal bar chart is used as it is one of the easiest to understand chart even for layman. As this chart is animated, using a complex chart type makes it more difficult for viewers, especially layman, to understand and draw key insights.
+ii. X-axis is intentionally made static (without it moving together with the changes in data) so that viewers can focus on the movements of each bar.
+iii. Labels are used to showcase the country name and the trade balance.
 
-gghoriplot
-ggbraid
-ggedit
-sugrrants - Graphs for Analysing Temporal Data with ggplot2.
-ggimg
+```{r}
+# Extract the rows for major trading partners
+partners <- c("European Union", "Mainland China", "Taiwan", "Republic Of Korea", "Hong Kong",
+              "Thailand","Indonesia","Malaysia","Japan","United States")
+import_majorp <- import_filt %>%
+  filter(trade_partner %in% partners) %>% arrange(trade_partner)
+export_majorp <- export_filt %>%
+  filter(trade_partner %in% partners) %>% arrange(trade_partner)
+
+# subtract import amount from export amount to derive trade balance
+trade_bal = as.data.table(as.matrix(export_majorp[,-1])-as.matrix(import_majorp[,-1]))
+trade_bal <- cbind(trade_partner=import_majorp[1], trade_bal)
+
+paged_table(trade_bal, options = list(rows.print = 5))
+```
+Table above shows the trade balance with major trade partners.
+
+```{r}
+# Creating the rank and relative value
+bar_data <- trade_bal %>% 
+  mutate_at(vars(contains("202")),as.numeric) %>% 
+  gather(Date, value, 2:37) 
+bar_data$Date <- parse_date_time(bar_data$Date, orders=c("Yb","%Y %b","%Y%b","Y b"))
+bar_data1 <- bar_data %>%
+  group_by(Date) %>%
+  mutate(rank = rank(-value),
+         Value_rel = value/value[rank==1],
+         Value_lbl = paste0(" ",round(value/1e3))) %>%
+  ungroup()
+```
+
+```{r}
+anim <- ggplot(bar_data1, aes(rank, group = trade_partner, 
+                fill = as.factor(trade_partner), color = as.factor(trade_partner))) +
+  geom_tile(aes(y = value/2,
+                height = value,
+                width = 0.9), alpha = 0.8, color = NA) +
+  geom_text(aes(y = value, label = paste(" ",trade_partner,"\n",Value_lbl)), hjust = 0, color="black") +
+  coord_flip(clip = "off", expand = FALSE) +
+  scale_y_continuous(labels = scales::comma) +
+  scale_x_reverse() +
+  guides(color = FALSE, fill = FALSE) +
+  theme(axis.line=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        legend.position="none",
+        panel.background=element_blank(),
+        panel.border=element_blank(),
+        panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.grid.major.x = element_line(linewidth=.1, color="grey80" ),
+        panel.grid.minor.x = element_line(linewidth=.1, color="grey80" ),
+        plot.title=element_text(size=20, hjust=0.5, face="bold", colour="black"),
+        plot.subtitle=element_text(size=18, hjust=0.5, face="italic", color="grey"),
+        plot.caption =element_text(size=8, hjust=0.5, face="italic", color="grey"),
+        plot.background=element_blank(),
+       plot.margin = margin(2,2, 2, 2, "cm")) 
+
+animated <- anim +
+  transition_states(Date, transition_length = 6, state_length = 1) + 
+  view_follow(fixed_y = c(-4500000,7500000)) +
+  ease_aes('cubic-in-out') + 
+  labs(title = 'Singapore Trade Balance with Major Trade Partners: {closest_state}', 
+       x = "Trade Balance ('000)",
+       caption="Source:Singstat.gov.sg")
+
+animate(animated, 500, fps = 19,  width = 800, height = 600, 
+        renderer = gifski_renderer("gganim.gif"))
+```
+#### b. Insights
+
+i. Hong Kong stayed at number 1 position (highest trade surplus) throughout the 3 years.
+ii. Taiwan stayed at the last position (highest trade deficit) throughout the 3 years.
+iii. It has always been a trade surplus with Indonesia throughout the 3 years.
+iv. Trade balances with other partners change between trade surplus and deficit.
+
+### [<b>4.2.</b> Slope Graph for year-on-year change]{style="color: #0D644C;"}
+
+While the racing bar chart looks appealing, it might be difficult for viewers to keep track of the changes from year to year. Hence, a slope graph is introduced here to highlight the year-on-year change for each trade partner. 
+
+#### a. Design Consideration
+
+i. Each line represents one trading partner. The lines help to call out the different trends with each partner over time.
+ii. Different color is used for each line to help viewers follow the trend easily.
+iii. The average trade balances in each year are used to plot the graph, and the respective average values are labelled on the lines to give viewers more information.
+
+```{r fig.align='center', fig.height=7, fig.width=6}
+tb_yr <- bar_data
+tb_yr$year <- year(ymd(tb_yr$Date))
+tb_year <- tb_yr %>%
+  group_by(trade_partner, year) %>%
+  summarise(mean_tb=round(mean(value),2))
+
+sp <- tb_year %>% 
+  mutate(year = factor(year)) %>%
+  newggslopegraph(year, mean_tb, trade_partner,
+                  Title= "", SubTitle = NULL,
+                  Caption = NULL)
+
+sp1 <- sp + labs(title = "Singapore Trade Balance with Major Trade Partners (2020-2022)",
+                subtitle = "Highest trade surplus with Hong Kong, highest trade deficit with Taiwan",
+                caption = "Source:Singstat.gov.sg")
+sp1
+```
+
+#### b. Insights
+
+i. In line with insights from racing bar chart, Hongkong has the highest trade surplus and Taiwan has the highest trade deficit.
+ii. Trade balances with Taiwan, Japan, United States and Republic of Korea have been dropping year-on-year in the 3-year period.
+iii. Out of the 10 major partners, Indonesia is the one with constant increase in trade balance in the 3-year period.
+iv. Trade balance with Thailand is rather flat across the 3 years.
+V. Trade balance of European Union and Malaysia followed the same trend year-on-year in the 3-year period.
+vi. Trade balance with Mainland China seems to fluctuate from year to year.
+
+### [<b>4.3.</b> Heatmap - monthly trade balance at a glance]{style="color: #0D644C;"}
+
+To deep dive into monthly trend, a heatmap is used. The heatmap uses colors and saturation to represent data values, viewers can easily identify the higher or lower values based on color intensity.
+
+#### a. Design Consideration
+
+i. The heatmaps are ordered according to the trade balance, allowing viewers to immediately distinguish between trade partners with surplus and deficit.
+ii. Intuitive color is chosen to represent deficit with red and surplus with red
+iii. Tooltip is used to show the trade balance value
+
+```{r}
+# Convert Date to date format
+hori_data <- bar_data
+hori_data$Date <- as.Date(hori_data$Date, "%Y-%m-%d")
+
+# create year and month
+hori_data$year <- year(ymd(hori_data$Date))
+hori_data$month <- month(ymd(hori_data$Date))
+
+# Calculate the average for each trade partner
+avg_tb <- hori_data %>% 
+  group_by(trade_partner) %>%
+  summarise(avgvalue = mean(value)) %>%
+  arrange(desc(avgvalue))
+```
 
 
+```{r fig.align='center', fig.height=6, fig.width=7}
+# setting x-axis breaks
+xbrks <- seq(1, 12, 1)
+
+# Plotting the heatmap
+hp <- ggplot(hori_data, 
+       aes(month, 
+           year, 
+           fill = value)) + 
+geom_tile_interactive(aes(data_id = trade_partner,
+                          tooltip=paste(months.Date(Date, abbreviate = TRUE), year, "\nTrade Balance:",
+                                        prettyNum(value, big.mark=","))),
+                      color = "white", size = 0.1) + 
+theme_tufte() + 
+coord_equal() +
+scale_x_continuous(breaks=xbrks) +
+scale_fill_gradient(name = "Trade Balance",
+                    low = "#ff1100", 
+                    high = "green") +
+  facet_wrap(~factor(trade_partner,levels=c("Hong Kong", "Indonesia", "Mainland China",
+                                            "Thailand", "United States", "Japan",
+                                            "Republic Of Korea", "European Union", 
+                                            "Malaysia", "Taiwan")), ncol = 2) +
+  labs(x = "Month", y = "Year") +
+  theme(axis.ticks = element_blank(),
+        axis.text.x = element_text(size = 8), 
+        axis.title.y = element_text(size = 10, angle=0),
+        axis.title.x = element_text(size = 10),
+        plot.title = element_text(hjust = 0.5, size=13, face="bold"),
+        plot.subtitle = element_text(hjust = 0.5, size=12),
+        legend.title = element_text(size = 8),
+        legend.text = element_text(size = 7))
+
+hp1 <- hp + labs(
+     title = "Singapore Trade Balance with Major Trade Partners (2020-2022)",
+     subtitle = "Arrange from highest trade surplus to highest trade deficit") 
+
+# Making the charts interactive with girafe
+girafe(
+  ggobj=hp1,
+  width_svg = 8,
+  height_svg = 8*0.618,
+  options = list(
+    opts_hover_inv(css = "opacity:0.2;"),
+    opts_hover(css = "none"),
+    opts_tooltip(css = tooltip_css)
+  )
+) 
+
+```
+
+#### b. Insights
+
+i. Trade balance with Mainland China and Unites States seem to fluctuate more from month to month as compared to other partners.
+ii. The month-on-month trade balance changes for all partners do not seem to exhibit any specific trend.
+
+### [<b>4.4.</b> Monthly trend condensed into a Horizon Plot]{style="color: #0D644C;"}
+
+Based solely on the heatmap above, it is rather difficult for viewers to see the monthly trend as the color intensity can be quite close. Hence, a horizon plot is added to display the monthly ups and downs. The beauty of horizon plot is that it allows the time series data for multiple partners to be shown in a relatively condensed way, while still allowing viewers to draw insights & patterns.
+
+#### a. Design Consideration
+
+i. Instead of the default "midpoint", "median" is used as origin when plotting the horizon plot. "midpoint" is referring to the value at the midpoint of the time series but this can be difficult for viewers to comprehend, potentially leading to misinterpretation. Also, using the midpoint as origin subject the plot to distortion if extreme peak or valley (outlier) happen at the midpoint. By using median as the origin, viewers can easily understand that green refers to trade balance above median and red refers to trade balance below median, which is more intuitive and less susceptible to outliers.
+ii. Intuitive color of green and red is chosen to showcase positve and negative trade balance.
+
+```{r fig.align='center'}
+ggplot(data=hori_data) +
+  geom_horizon(aes(x=Date, y=value), 
+               origin = "median", 
+               horizonscale = 6)+
+  facet_grid(`trade_partner`~.) +
+    theme_few(base_size = 12) +
+  scale_fill_hcl(palette = 'RdYlGn') +
+  theme(panel.spacing.y=unit(0, "lines"), 
+        strip.text.y = element_text(size = 8, angle = 0, hjust = 0),
+    legend.position = "none",
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(size=6.5, angle = 0, hjust=0.5),
+    axis.title.y = element_blank(),
+    axis.title.x = element_blank(),
+    axis.ticks.y = element_blank(),
+    panel.border = element_blank(),
+    plot.title = element_text(size=13, face="bold")) +
+    scale_x_date(expand=c(0,0), date_breaks = "2 month", date_labels = "%b'%y") +
+  labs(title = 'Singapore Monthly Trade Balance with Major Trade Partners (2020-2022)', 
+       subtitle = "A condensed visualization for trend comparison",
+       caption="Data source:Singstat.gov.sg")
+```
+
+#### b. Insights
+
+i. Trade balances with Republic of Korea and Taiwan seem to follow similar trend, where it is above median before June 2021 and below median after June 2021.
+ii. Some prominent peaks and troughs were spotted in trade balance with Hong Kong, Republic of Korea, mainland China and Taiwan, reflecting that their trade balances fluctuated more as compared to the trade balances with other partners.
+
+## [<b>Section 5</b>: A snapshot on Singapore's trade during the covid era]{style="color: #0D644C;"}
+
+Lastly, 3 charts were combined to produce a snapshot for viewers who would like to quickly inspect the potential impact of Covid-19 and political dynamic on Singapore trade balance.
+
+```{r fig.height=12, fig.width=12}
+# Using patchwork to combine 3 charts
+
+sp2 <- sp + labs(title="Year-on-year change in trade balance") +
+  theme(plot.title = element_text(hjust = 0.5, size=12, face="bold"))
+hp2 <- hp + labs(title="Monthly trade balance with major partners") +
+  theme(plot.title = element_text(hjust = 0.5, size=13.5, face="bold"))
+
+(p / (sp2+hp2)) + plot_annotation(title="Singapore Trade Balance Snapshot (2020-2022)", 
+                                  caption="Data source:Singstat.gov.sg",
+                                  theme = theme(plot.title = element_text(face = "bold", size = 16, hjust=0.5, vjust=0),
+                                                plot.caption = element_text(face = "italic", size=8))) 
+```
+## [<b>Summary of Key Insights</b>]{style="color: #0D644C;"}
+
+1. Overall, imports and exports follow the same ups and downs, and they follow an increasing trend until Sep 2022.
+2. Within the 3-year period, import and export values were at the lowest in May 2020, right after circuit breaker started. Sharp drop was also observed during the Russia-Ukraine conflict period.
+3. A sharp jump was observed in both import and export in March 2021, after the start of phase 3 reopening and vaccination for public.
+4. For all the 3 years, both import and export jumped in the month of March, follow by a dip in Apr and May, before heading upward again.
+5. Hong Kong had the highest trade surplus while Taiwan had the highest trade deficit throughout the 3 years.
+6. Trade balances with Taiwan, Japan, United States and Republic of Korea have been dropping year-on-year in the 3-year period.
+7. Out of the 10 major partners, Indonesia is the one with constant increase in trade balance in the 3-year period.
+8. Trade balance with Thailand is rather flat across the 3 years.
+9. Trade balance with Mainland China and United States seem to fluctuate more from month to month as compared to other partners.
 

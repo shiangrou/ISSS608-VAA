@@ -1,0 +1,169 @@
+---
+title: "In Class Exercise 7"
+subtitle: "Visualising and Analysing Geographic Data"
+author: "Law Shiang Rou"
+date: 25 February 2023
+date-format: medium
+execute:
+  warning: false
+  error: false
+  message: false
+format:
+  html:
+    mainfont: Arial
+    fontsize: 15px
+    toc: true
+    toc-location: right
+    page-layout: full
+    code-fold: true
+    code-summary: "Show the code"
+    code-block-border-left: "#63B9A0"
+    code-block-bg: "#f2f6f9"
+    code-copy: hover
+    title-block-banner: true
+    fig-align: center
+---
+
+# **1. Symbol Maps**
+
+## **Symbol Map with Tableau**
+
+The dataset used is "SGPools.xls" and it can be retrieved from [Github](https://github.com/shiangrou/ISSS608-VAA/tree/master/In-class_Exercise/data).
+
+It is rather easy to create a symbol map with Tableau.
+
+First, we created a point symbol map, with branch and outlet segregated with the different colors.
+
+## ![](images/in-class7-1.png)
+
+## **Proportional Symbol Map with Tableau**
+
+We also created Proportional Symbol Map with the number of winnings represented by the bubble size.
+
+## ![](images/in-class7-2.png)
+
+Using another set of data - ResidentialTransaction to plot proportional symbol map.
+
+## ![](images/in-class7-3.png)
+
+## **Proportional Symbol Map with R**
+
+Using the Singapore Pool data again, we create the Proportional Symbol Map with R.
+
+```{r}
+# Import the required packages
+pacman::p_load(sf, tmap, tidyverse)
+
+# import the data into R
+sgpools <- read_csv("data/aspatial/SGPools_svy21.csv")
+
+# converts sgpools data frame into a simple feature data frame 
+sgpools_sf <- st_as_sf(sgpools, 
+                       coords = c("XCOORD", "YCOORD"),
+                       crs= 3414)
+
+tmap_mode("view")
+# plot the map
+tm_shape(sgpools_sf)+
+tm_bubbles(col = "OUTLET TYPE", 
+          size = "Gp1Gp2 Winnings",
+          border.col = "black",
+          border.lwd = 1)
+```
+
+tmap allows us to do a facet plot with coordinated view.
+
+```{r}
+# Syncing 2 plots
+tm_shape(sgpools_sf) +
+  tm_bubbles(col = "OUTLET TYPE", 
+          size = "Gp1Gp2 Winnings",
+          border.col = "black",
+          border.lwd = 1) +
+  tm_facets(by= "OUTLET TYPE",
+            nrow = 1,
+            sync = TRUE)
+
+tmap_mode("plot")
+```
+
+# **2. Choropleth Maps**
+
+## **Choropleth Map with Tableau**
+
+Next, we plot a choropleth mal with Tableau with Singapore population data (respopagesextod2022.csv).
+
+All the Tableau visualizations can be viewed [here](https://public.tableau.com/app/profile/law.shiang.rou).
+
+## ![](images/in-class7-4.png)
+
+## **Choropleth Map with R**
+
+In the following code, we perform the required data wrangling and plot the choropleth map.
+
+The data and shapefile used can be retrieved from [Github](https://github.com/shiangrou/ISSS608-VAA/tree/master/In-class_Exercise/data).
+
+We use tmap as it already provides all the function required to plot a nice choropleth map.
+
+```{r}
+# Import the required packages
+pacman::p_load(sf, tmap, tidyverse)
+
+# Import shapefile into R
+mpsz <- st_read(dsn = "data/geospatial", 
+                layer = "MP14_SUBZONE_WEB_PL")
+
+# Import data into R
+popdata <- read_csv("data/aspatial/respopagesextod2011to2020.csv")
+
+# Data wrangling
+popdata2020 <- popdata %>%
+  filter(Time == 2020) %>%
+  group_by(PA, SZ, AG) %>%
+  summarise(`POP` = sum(`Pop`)) %>%
+  ungroup()%>%
+  pivot_wider(names_from=AG, 
+              values_from=POP) %>%
+  mutate(YOUNG = rowSums(.[3:6])
+         +rowSums(.[12])) %>%
+mutate(`ECONOMY ACTIVE` = rowSums(.[7:11])+
+rowSums(.[13:15]))%>%
+mutate(`AGED`=rowSums(.[16:21])) %>%
+mutate(`TOTAL`=rowSums(.[3:21])) %>%  
+mutate(`DEPENDENCY` = (`YOUNG` + `AGED`)
+/`ECONOMY ACTIVE`) %>%
+  select(`PA`, `SZ`, `YOUNG`, 
+       `ECONOMY ACTIVE`, `AGED`, 
+       `TOTAL`, `DEPENDENCY`)
+
+# Convert PA and SZ to uppercase
+popdata2020 <- popdata2020 %>%
+  mutate_at(.vars = vars(PA, SZ), 
+          .funs = funs(toupper)) %>%
+  filter(`ECONOMY ACTIVE` > 0)
+
+# join the data to mpsz
+mpsz_pop2020 <- left_join(mpsz, popdata2020,
+                          by = c("SUBZONE_N" = "SZ"))
+
+write_rds(mpsz_pop2020, "data/rds/mpszpop2020.rds")
+
+# plotting a choropleth map
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY", 
+          style = "quantile", 
+          palette = "Blues",
+          title = "Dependency ratio") +
+  tm_layout(main.title = "Distribution of Dependency Ratio by planning subzone",
+            main.title.position = "center",
+            main.title.size = 1.2,
+            legend.height = 0.45, 
+            legend.width = 0.35,
+            frame = TRUE) +
+  tm_borders(alpha = 0.5) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar() +
+  tm_grid(alpha =0.2) +
+  tm_credits("Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA)\n and Population data from Department of Statistics DOS", 
+             position = c("left", "bottom"))
+```

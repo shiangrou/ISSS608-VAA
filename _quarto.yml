@@ -11,8 +11,8 @@ website:
       - icon: house-door
         href: index.qmd
         text: Home
-      - icon: github
-        href: https://github.com/shiangrou/ISSS608-VAA
+#      - icon: github
+#        href: https://github.com/shiangrou/ISSS608-VAA
 
     right:
       - icon: hand-index
@@ -37,6 +37,8 @@ website:
             href: "In-class_Exercise/In-class_Ex05.html"
           - text: "In-Class Exercise 6"
             href: "In-class_Exercise/In-class_Ex06.html"
+          - text: "In-Class Exercise 7"
+            href: "In-class_Exercise/In-class_Ex07.html"
       - icon: graph-up
         text: "Take Home Exercise"
         menu: 
