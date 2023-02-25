@@ -147,7 +147,7 @@ all_total$month <- factor(month(all_total$Dates),
 ```
 
 ## [<b>Section 3</b>: Overview of Singapore export, import and trade balance]{style="color: #0D644C;"}
-Trade balance might not be a topic that everyone is familiar with, hence, it's important to provide viewers some basic understanding on the topic of study before any detailed analysis. <br><br>
+Merchandise trade volume and trade balance might not be a topic that everyone is familiar with, hence, it's important to provide viewers some basic understanding on the topic of study before any detailed analysis. <br><br>
 In this section, we leverage on interactive visualizations to provide viewers with an overview of Singapore trades for the past 3 years. 
 
 The data covered in this exercise include:
@@ -306,8 +306,8 @@ girafe(
 #### b. Insights
 
 i. Overall, imports and exports follow the same ups and downs, and they follow an increasing trend until Sep 2022.
-ii. Within the 3-year period, import and export values were at the lowest in May 2020, right after circuit breaker started.
-iii. Both import and export jumped in March 2021, after the start of phase 3 reopening and vaccination for public.
+ii. Within the 3-year period, merchandise trade volume (import and export) was at the lowest in May 2020, right after circuit breaker started.
+iii. Merchandise trade volume jumped in March 2021, after the start of phase 3 reopening and vaccination for public.
 iv. Import and export experienced a sharp drop in Feb 2022, during the Russia-Ukraine conflict period, but the drop did not last long, with import and export values resumed in March 2022.
 
 
@@ -612,7 +612,7 @@ sp1
 
 #### b. Insights
 
-i. In line with insights from racing bar chart, Hongkong has the highest trade surplus and Taiwan has the highest trade deficit.
+i. In line with insights from racing bar chart, Hong kong has the highest trade surplus and Taiwan has the highest trade deficit.
 ii. Trade balances with Taiwan, Japan, United States and Republic of Korea have been dropping year-on-year in the 3-year period.
 iii. Out of the 10 major partners, Indonesia is the one with constant increase in trade balance in the 3-year period.
 iv. Trade balance with Thailand is rather flat across the 3 years.
@@ -760,8 +760,8 @@ hp2 <- hp + labs(title="Monthly trade balance with major partners") +
 ## [<b>Summary of Key Insights</b>]{style="color: #0D644C;"}
 
 1. Overall, imports and exports follow the same ups and downs, and they follow an increasing trend until Sep 2022.
-2. Within the 3-year period, import and export values were at the lowest in May 2020, right after circuit breaker started. Sharp drop was also observed during the Russia-Ukraine conflict period.
-3. A sharp jump was observed in both import and export in March 2021, after the start of phase 3 reopening and vaccination for public.
+2. Within the 3-year period, merchandise trade volume was at the lowest in May 2020, right after circuit breaker started. Sharp drop was also observed during the Russia-Ukraine conflict period.
+3. A sharp jump was observed in merchandise trade volume in March 2021, after the start of phase 3 reopening and vaccination for public.
 4. For all the 3 years, both import and export jumped in the month of March, follow by a dip in Apr and May, before heading upward again.
 5. Hong Kong had the highest trade surplus while Taiwan had the highest trade deficit throughout the 3 years.
 6. Trade balances with Taiwan, Japan, United States and Republic of Korea have been dropping year-on-year in the 3-year period.
