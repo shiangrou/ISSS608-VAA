@@ -1,0 +1,181 @@
+---
+title: "In Class Exercise 7"
+subtitle: "Graph Analytics"
+author: "Law Shiang Rou"
+date: 11 March 2023
+date-format: medium
+execute:
+  warning: false
+  error: false
+  message: false
+format:
+  html:
+    mainfont: Arial
+    fontsize: 15px
+    toc: true
+    toc-location: right
+    page-layout: full
+    code-fold: true
+    code-summary: "Show the code"
+    code-block-border-left: "#63B9A0"
+    code-block-bg: "#f2f6f9"
+    code-copy: hover
+    title-block-banner: true
+    fig-align: center
+---
+
+![](images/in-class8-1.png){width="50%," fig.align="center"}
+
+## **1. Packages**
+**Network Analysis**
+1. igraph: Network Analysis and Visualization. There is also R CRAN version of documentation.
+2. tidygraph: A Tidy API for Graph Manipulation. 
+
+**Network Visualization**
+1. ggraph
+2. vizNetwork
+
+## **2. Load packages and data**
+```{r}
+pacman::p_load(igraph, tidygraph, ggraph, 
+               visNetwork, lubridate, clock,
+               tidyverse, graphlayouts)
+```
+
+```{r}
+GAStech_nodes <- read_csv("data/GAStech_email_node.csv")
+GAStech_edges <- read_csv("data/GAStech_email_edge-v2.csv")
+glimpse(GAStech_edges)
+```
+
+## **3. Data Wrangling**
+```{r}
+# change to date format
+GAStech_edges <- GAStech_edges %>%
+  mutate(SendDate = dmy(SentDate)) %>%
+  mutate(Weekday = wday(SentDate,
+                        label = TRUE,
+                        abbr = FALSE))
+
+# Aggregate the records and create weight
+GAStech_edges_aggregated <- GAStech_edges %>%
+  filter(MainSubject == "Work related") %>%
+  group_by(source, target, Weekday) %>%
+    summarise(Weight = n()) %>%
+  filter(source!=target) %>%
+  filter(Weight > 1) %>%
+  ungroup()
+```
+
+## **4. Using tbl_graph() to build tidygraph data model**
+```{r}
+GAStech_graph <- tbl_graph(nodes = GAStech_nodes,
+                           edges = GAStech_edges_aggregated, 
+                           directed = TRUE)
+
+GAStech_graph %>%
+  activate(edges) %>%
+  arrange(desc(Weight))
+
+ggraph(GAStech_graph) +
+  geom_edge_link() +
+  geom_node_point()
+```
+
+## **5. Changing the appearance of the graph**
+
+```{r}
+g <- ggraph(GAStech_graph, layout="nicely") + 
+  geom_edge_link(aes(),colour = 'grey60', size=0.4) +
+  geom_node_point(aes(), colour = 'red',size=2.2) 
+
+g + theme_graph()
+```
+
+## **6. Changing the layout of the graph**
+
+```{r}
+# Fruchterman and Reingold layout
+g <- ggraph(GAStech_graph, 
+            layout = "fr") +
+  geom_edge_link(aes()) +
+  geom_node_point(aes())
+
+g + theme_graph()
+```
+```{r}
+# Circle layout
+g <- ggraph(GAStech_graph, 
+            layout = "circle") +
+  geom_edge_link(aes()) +
+  geom_node_point(aes())
+
+g + theme_graph()
+```
+
+
+## **7. Creating facet graphs**
+```{r}
+set_graph_style()
+
+g <- ggraph(GAStech_graph, 
+            layout = "nicely") + 
+  geom_edge_link(aes(width=Weight), 
+                 alpha=0.2) +
+  scale_edge_width(range = c(0.1, 5)) +
+  geom_node_point(aes(colour = Department), 
+                  size = 2) +
+  theme(legend.position = 'bottom')
+
+g + facet_edges(~Weekday) +
+  th_foreground(foreground = "grey80",  
+                border = TRUE) +
+  theme(legend.position = 'bottom')
+```
+
+## **Building Interactive Network Graph with visNetwork**
+```{r}
+GAStech_edges_aggregated <- GAStech_edges %>%
+  left_join(GAStech_nodes, by = c("sourceLabel" = "label")) %>%
+  rename(from = id) %>%
+  left_join(GAStech_nodes, by = c("targetLabel" = "label")) %>%
+  rename(to = id) %>%
+  filter(MainSubject == "Work related") %>%
+  group_by(from, to) %>%
+    summarise(weight = n()) %>%
+  filter(from!=to) %>%
+  filter(weight > 1) %>%
+  ungroup()
+
+visNetwork(GAStech_nodes, 
+           GAStech_edges_aggregated)
+
+visNetwork(GAStech_nodes,
+           GAStech_edges_aggregated) %>%
+  visIgraphLayout(layout = "layout_with_fr") 
+```
+
+## **Changing the visual attributes**
+```{r}
+GAStech_nodes <- GAStech_nodes %>%
+  rename(group = Department) 
+
+visNetwork(GAStech_nodes,
+           GAStech_edges_aggregated) %>%
+  visIgraphLayout(layout = "layout_with_fr") %>%
+  visLegend() %>%
+  visLayout(randomSeed = 123)
+```
+
+## **Adding Interactivity**
+
+```{r}
+visNetwork(GAStech_nodes,
+           GAStech_edges_aggregated) %>%
+  visIgraphLayout(layout = "layout_with_fr") %>%
+  visOptions(highlightNearest = TRUE,
+             nodesIdSelection = TRUE) %>%
+  visLegend() %>%
+  visLayout(randomSeed = 123)
+```
+

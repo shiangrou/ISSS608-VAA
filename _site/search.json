@@ -224,6 +224,76 @@
     "text": "Choropleth Map with R\nIn the following code, we perform the required data wrangling and plot the choropleth map.\nThe data and shapefile used can be retrieved from Github.\nWe use tmap as it already provides all the function required to plot a nice choropleth map.\n\n\nShow the code\n# Import the required packages\npacman::p_load(sf, tmap, tidyverse)\n\n# Import shapefile into R\nmpsz <- st_read(dsn = \"data/geospatial\", \n                layer = \"MP14_SUBZONE_WEB_PL\")\n\n\nReading layer `MP14_SUBZONE_WEB_PL' from data source \n  `D:\\shiangrou\\ISSS608-VAA\\In-class_Exercise\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 323 features and 15 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33\nProjected CRS: SVY21\n\n\nShow the code\n# Import data into R\npopdata <- read_csv(\"data/aspatial/respopagesextod2011to2020.csv\")\n\n# Data wrangling\npopdata2020 <- popdata %>%\n  filter(Time == 2020) %>%\n  group_by(PA, SZ, AG) %>%\n  summarise(`POP` = sum(`Pop`)) %>%\n  ungroup()%>%\n  pivot_wider(names_from=AG, \n              values_from=POP) %>%\n  mutate(YOUNG = rowSums(.[3:6])\n         +rowSums(.[12])) %>%\nmutate(`ECONOMY ACTIVE` = rowSums(.[7:11])+\nrowSums(.[13:15]))%>%\nmutate(`AGED`=rowSums(.[16:21])) %>%\nmutate(`TOTAL`=rowSums(.[3:21])) %>%  \nmutate(`DEPENDENCY` = (`YOUNG` + `AGED`)\n/`ECONOMY ACTIVE`) %>%\n  select(`PA`, `SZ`, `YOUNG`, \n       `ECONOMY ACTIVE`, `AGED`, \n       `TOTAL`, `DEPENDENCY`)\n\n# Convert PA and SZ to uppercase\npopdata2020 <- popdata2020 %>%\n  mutate_at(.vars = vars(PA, SZ), \n          .funs = funs(toupper)) %>%\n  filter(`ECONOMY ACTIVE` > 0)\n\n# join the data to mpsz\nmpsz_pop2020 <- left_join(mpsz, popdata2020,\n                          by = c(\"SUBZONE_N\" = \"SZ\"))\n\nwrite_rds(mpsz_pop2020, \"data/rds/mpszpop2020.rds\")\n\n# plotting a choropleth map\ntm_shape(mpsz_pop2020)+\n  tm_fill(\"DEPENDENCY\", \n          style = \"quantile\", \n          palette = \"Blues\",\n          title = \"Dependency ratio\") +\n  tm_layout(main.title = \"Distribution of Dependency Ratio by planning subzone\",\n            main.title.position = \"center\",\n            main.title.size = 1.2,\n            legend.height = 0.45, \n            legend.width = 0.35,\n            frame = TRUE) +\n  tm_borders(alpha = 0.5) +\n  tm_compass(type=\"8star\", size = 2) +\n  tm_scale_bar() +\n  tm_grid(alpha =0.2) +\n  tm_credits(\"Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA)\\n and Population data from Department of Statistics DOS\", \n             position = c(\"left\", \"bottom\"))"
   },
   {
+    "objectID": "In-class_Exercise/In-class_Ex08.html",
+    "href": "In-class_Exercise/In-class_Ex08.html",
+    "title": "In Class Exercise 7",
+    "section": "",
+    "text": "# 1. Packages Network Analysis 1. igraph: Network Analysis and Visualization. There is also R CRAN version of documentation. 2. tidygraph: A Tidy API for Graph Manipulation.\nNetwork Visualization 1. ggraph 2. vizNetwork"
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex08.html#load-packages-and-data",
+    "href": "In-class_Exercise/In-class_Ex08.html#load-packages-and-data",
+    "title": "In Class Exercise 7",
+    "section": "2. Load packages and data",
+    "text": "2. Load packages and data\n\n\nShow the code\npacman::p_load(igraph, tidygraph, ggraph, \n               visNetwork, lubridate, clock,\n               tidyverse, graphlayouts)\n\n\n\n\nShow the code\nGAStech_nodes <- read_csv(\"data/GAStech_email_node.csv\")\nGAStech_edges <- read_csv(\"data/GAStech_email_edge-v2.csv\")\nglimpse(GAStech_edges)\n\n\nRows: 9,063\nColumns: 8\n$ source      <dbl> 43, 43, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 26, 26, 26…\n$ target      <dbl> 41, 40, 51, 52, 53, 45, 44, 46, 48, 49, 47, 54, 27, 28, 29…\n$ SentDate    <chr> \"6/1/2014\", \"6/1/2014\", \"6/1/2014\", \"6/1/2014\", \"6/1/2014\"…\n$ SentTime    <time> 08:39:00, 08:39:00, 08:58:00, 08:58:00, 08:58:00, 08:58:0…\n$ Subject     <chr> \"GT-SeismicProcessorPro Bug Report\", \"GT-SeismicProcessorP…\n$ MainSubject <chr> \"Work related\", \"Work related\", \"Work related\", \"Work rela…\n$ sourceLabel <chr> \"Sven.Flecha\", \"Sven.Flecha\", \"Kanon.Herrero\", \"Kanon.Herr…\n$ targetLabel <chr> \"Isak.Baza\", \"Lucas.Alcazar\", \"Felix.Resumir\", \"Hideki.Coc…"
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex08.html#data-wrangling",
+    "href": "In-class_Exercise/In-class_Ex08.html#data-wrangling",
+    "title": "In Class Exercise 7",
+    "section": "3. Data Wrangling",
+    "text": "3. Data Wrangling\n\n\nShow the code\n# change to date format\nGAStech_edges <- GAStech_edges %>%\n  mutate(SendDate = dmy(SentDate)) %>%\n  mutate(Weekday = wday(SentDate,\n                        label = TRUE,\n                        abbr = FALSE))\n\n# Aggregate the records and create weight\nGAStech_edges_aggregated <- GAStech_edges %>%\n  filter(MainSubject == \"Work related\") %>%\n  group_by(source, target, Weekday) %>%\n    summarise(Weight = n()) %>%\n  filter(source!=target) %>%\n  filter(Weight > 1) %>%\n  ungroup()"
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex08.html#using-tbl_graph-to-build-tidygraph-data-model",
+    "href": "In-class_Exercise/In-class_Ex08.html#using-tbl_graph-to-build-tidygraph-data-model",
+    "title": "In Class Exercise 7",
+    "section": "4. Using tbl_graph() to build tidygraph data model",
+    "text": "4. Using tbl_graph() to build tidygraph data model\n\n\nShow the code\nGAStech_graph <- tbl_graph(nodes = GAStech_nodes,\n                           edges = GAStech_edges_aggregated, \n                           directed = TRUE)\n\nGAStech_graph %>%\n  activate(edges) %>%\n  arrange(desc(Weight))\n\n\n# A tbl_graph: 54 nodes and 1372 edges\n#\n# A directed multigraph with 1 component\n#\n# Edge Data: 1,372 × 4 (active)\n   from    to Weekday  Weight\n  <int> <int> <ord>     <int>\n1    40    41 Saturday     13\n2    41    43 Monday       11\n3    35    31 Tuesday      10\n4    40    41 Monday       10\n5    40    43 Monday       10\n6    36    32 Sunday        9\n# … with 1,366 more rows\n#\n# Node Data: 54 × 4\n     id label           Department     Title           \n  <dbl> <chr>           <chr>          <chr>           \n1     1 Mat.Bramar      Administration Assistant to CEO\n2     2 Anda.Ribera     Administration Assistant to CFO\n3     3 Rachel.Pantanal Administration Assistant to CIO\n# … with 51 more rows\n\n\nShow the code\nggraph(GAStech_graph) +\n  geom_edge_link() +\n  geom_node_point()"
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex08.html#changing-the-appearance-of-the-graph",
+    "href": "In-class_Exercise/In-class_Ex08.html#changing-the-appearance-of-the-graph",
+    "title": "In Class Exercise 7",
+    "section": "5. Changing the appearance of the graph",
+    "text": "5. Changing the appearance of the graph\n\n\nShow the code\ng <- ggraph(GAStech_graph, layout=\"nicely\") + \n  geom_edge_link(aes(),colour = 'grey60', size=0.4) +\n  geom_node_point(aes(), colour = 'red',size=2.2) \n\ng + theme_graph()"
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex08.html#changing-the-layout-of-the-graph",
+    "href": "In-class_Exercise/In-class_Ex08.html#changing-the-layout-of-the-graph",
+    "title": "In Class Exercise 7",
+    "section": "6. Changing the layout of the graph",
+    "text": "6. Changing the layout of the graph\n\n\nShow the code\n# Fruchterman and Reingold layout\ng <- ggraph(GAStech_graph, \n            layout = \"fr\") +\n  geom_edge_link(aes()) +\n  geom_node_point(aes())\n\ng + theme_graph()\n\n\n\n\n\n\n\nShow the code\n# Circle layout\ng <- ggraph(GAStech_graph, \n            layout = \"circle\") +\n  geom_edge_link(aes()) +\n  geom_node_point(aes())\n\ng + theme_graph()"
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex08.html#creating-facet-graphs",
+    "href": "In-class_Exercise/In-class_Ex08.html#creating-facet-graphs",
+    "title": "In Class Exercise 7",
+    "section": "7. Creating facet graphs",
+    "text": "7. Creating facet graphs\n\n\nShow the code\nset_graph_style()\n\ng <- ggraph(GAStech_graph, \n            layout = \"nicely\") + \n  geom_edge_link(aes(width=Weight), \n                 alpha=0.2) +\n  scale_edge_width(range = c(0.1, 5)) +\n  geom_node_point(aes(colour = Department), \n                  size = 2) +\n  theme(legend.position = 'bottom')\n\ng + facet_edges(~Weekday) +\n  th_foreground(foreground = \"grey80\",  \n                border = TRUE) +\n  theme(legend.position = 'bottom')"
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex08.html#building-interactive-network-graph-with-visnetwork",
+    "href": "In-class_Exercise/In-class_Ex08.html#building-interactive-network-graph-with-visnetwork",
+    "title": "In Class Exercise 7",
+    "section": "Building Interactive Network Graph with visNetwork",
+    "text": "Building Interactive Network Graph with visNetwork\n\n\nShow the code\nGAStech_edges_aggregated <- GAStech_edges %>%\n  left_join(GAStech_nodes, by = c(\"sourceLabel\" = \"label\")) %>%\n  rename(from = id) %>%\n  left_join(GAStech_nodes, by = c(\"targetLabel\" = \"label\")) %>%\n  rename(to = id) %>%\n  filter(MainSubject == \"Work related\") %>%\n  group_by(from, to) %>%\n    summarise(weight = n()) %>%\n  filter(from!=to) %>%\n  filter(weight > 1) %>%\n  ungroup()\n\nvisNetwork(GAStech_nodes, \n           GAStech_edges_aggregated)\n\n\n\n\n\n\nShow the code\nvisNetwork(GAStech_nodes,\n           GAStech_edges_aggregated) %>%\n  visIgraphLayout(layout = \"layout_with_fr\")"
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex08.html#changing-the-visual-attributes",
+    "href": "In-class_Exercise/In-class_Ex08.html#changing-the-visual-attributes",
+    "title": "In Class Exercise 7",
+    "section": "Changing the visual attributes",
+    "text": "Changing the visual attributes\n\n\nShow the code\nGAStech_nodes <- GAStech_nodes %>%\n  rename(group = Department) \n\nvisNetwork(GAStech_nodes,\n           GAStech_edges_aggregated) %>%\n  visIgraphLayout(layout = \"layout_with_fr\") %>%\n  visLegend() %>%\n  visLayout(randomSeed = 123)"
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex08.html#adding-interactivity",
+    "href": "In-class_Exercise/In-class_Ex08.html#adding-interactivity",
+    "title": "In Class Exercise 7",
+    "section": "Adding Interactivity",
+    "text": "Adding Interactivity\n\n\nShow the code\nvisNetwork(GAStech_nodes,\n           GAStech_edges_aggregated) %>%\n  visIgraphLayout(layout = \"layout_with_fr\") %>%\n  visOptions(highlightNearest = TRUE,\n             nodesIdSelection = TRUE) %>%\n  visLegend() %>%\n  visLayout(randomSeed = 123)"
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Visual Analytics & Application",
@@ -355,5 +425,12 @@
     "title": "Take Home Exercise 4",
     "section": "Summary of Key Insights",
     "text": "Summary of Key Insights\n\nOverall, imports and exports follow the same ups and downs, and they follow an increasing trend until Sep 2022.\nWithin the 3-year period, merchandise trade volume was at the lowest in May 2020, right after circuit breaker started. Sharp drop was also observed during the Russia-Ukraine conflict period.\nA sharp jump was observed in merchandise trade volume in March 2021, after the start of phase 3 reopening and vaccination for public.\nFor all the 3 years, both import and export jumped in the month of March, follow by a dip in Apr and May, before heading upward again.\nHong Kong had the highest trade surplus while Taiwan had the highest trade deficit throughout the 3 years.\nTrade balances with Taiwan, Japan, United States and Republic of Korea have been dropping year-on-year in the 3-year period.\nOut of the 10 major partners, Indonesia is the one with constant increase in trade balance in the 3-year period.\nTrade balance with Thailand is rather flat across the 3 years.\nTrade balance with Mainland China and United States seem to fluctuate more from month to month as compared to other partners."
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex08.html#packages",
+    "href": "In-class_Exercise/In-class_Ex08.html#packages",
+    "title": "In Class Exercise 7",
+    "section": "1. Packages",
+    "text": "1. Packages\nNetwork Analysis 1. igraph: Network Analysis and Visualization. There is also R CRAN version of documentation. 2. tidygraph: A Tidy API for Graph Manipulation.\nNetwork Visualization 1. ggraph 2. vizNetwork"
   }
 ]
