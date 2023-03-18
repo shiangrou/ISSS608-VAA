@@ -1,0 +1,25 @@
+---
+title: "In Class Exercise 9"
+subtitle: "Information Dashboard Design"
+author: "Law Shiang Rou"
+date: 18 March 2023
+date-format: medium
+execute:
+  warning: false
+  error: false
+  message: false
+format:
+  html:
+    mainfont: Arial
+    fontsize: 15px
+    toc: true
+    toc-location: right
+    page-layout: full
+    code-fold: true
+    code-summary: "Show the code"
+    code-block-border-left: "#63B9A0"
+    code-block-bg: "#f2f6f9"
+    code-copy: hover
+    title-block-banner: true
+    fig-align: center
+---

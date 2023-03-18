@@ -1,5 +1,5 @@
 ---
-title: "In Class Exercise 7"
+title: "In Class Exercise 8"
 subtitle: "Graph Analytics"
 author: "Law Shiang Rou"
 date: 11 March 2023
