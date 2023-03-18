@@ -23,3 +23,22 @@ format:
     title-block-banner: true
     fig-align: center
 ---
+
+## **1. Overview**
+In this exercise, we are using Tableau to build information dashboard.
+Coffee Chain.mdb dataset is used for the purpose of this exercise.
+
+## **2. Bullet Graph**
+
+Building a bullet graph in Tableau is pretty easy, just click on "Show Me" and select the bullet graph.
+![](images/in-class9-1.png){width="80%," fig.align="center"}
+
+## **3. Sparkline**
+Creating a sparkline in Tableau with max and min point
+![](images/in-class9-2.png){width="60%," fig.align="center"}
+
+## **4. Dashboard**
+Combining the 2 graphs to create a dashboard
+![](images/in-class9-2.png){width="60%," fig.align="center"}
+
+

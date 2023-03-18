@@ -294,6 +294,34 @@
     "text": "Adding Interactivity\n\n\nShow the code\nvisNetwork(GAStech_nodes,\n           GAStech_edges_aggregated) %>%\n  visIgraphLayout(layout = \"layout_with_fr\") %>%\n  visOptions(highlightNearest = TRUE,\n             nodesIdSelection = TRUE) %>%\n  visLegend() %>%\n  visLayout(randomSeed = 123)"
   },
   {
+    "objectID": "In-class_Exercise/In-class_Ex09.html",
+    "href": "In-class_Exercise/In-class_Ex09.html",
+    "title": "In Class Exercise 9",
+    "section": "",
+    "text": "In this exercise, we are using Tableau to build information dashboard. Coffee Chain.mdb dataset is used for the purpose of this exercise."
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex09.html#bullet-graph",
+    "href": "In-class_Exercise/In-class_Ex09.html#bullet-graph",
+    "title": "In Class Exercise 9",
+    "section": "2. Bullet Graph",
+    "text": "2. Bullet Graph\nBuilding a bullet graph in Tableau is pretty easy, just click on “Show Me” and select the bullet graph."
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex09.html#sparkline",
+    "href": "In-class_Exercise/In-class_Ex09.html#sparkline",
+    "title": "In Class Exercise 9",
+    "section": "3. Sparkline",
+    "text": "3. Sparkline\nCreating a sparkline in Tableau with max and min point"
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex09.html#dashboard",
+    "href": "In-class_Exercise/In-class_Ex09.html#dashboard",
+    "title": "In Class Exercise 9",
+    "section": "4. Dashboard",
+    "text": "4. Dashboard\nCombining the 2 graphs to create a dashboard"
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Visual Analytics & Application",
