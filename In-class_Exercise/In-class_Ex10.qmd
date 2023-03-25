@@ -1,0 +1,39 @@
+---
+title: "In Class Exercise 10"
+subtitle: "Analysing Financial Data"
+author: "Law Shiang Rou"
+date: 25 March 2023
+date-format: medium
+execute:
+  warning: false
+  error: false
+  message: false
+format:
+  html:
+    mainfont: Arial
+    fontsize: 15px
+    toc: true
+    toc-location: right
+    page-layout: full
+    code-fold: true
+    code-summary: "Show the code"
+    code-block-border-left: "#63B9A0"
+    code-block-bg: "#f2f6f9"
+    code-copy: hover
+    title-block-banner: true
+    fig-align: center
+---
+
+## **1. Candlestick Chart**
+
+In this exercise, the dataset "SGBank.csv" is used.<br>
+In Tableau, candlestick chart is not readily available, but we can still have it created with some calculated fields manually created.
+
+![](images/in-class10-1.png){width="80%," fig.align="center"}
+
+## **2. Bollinger Band**
+
+A bollinger band with moving average, upper and lower bound can also be built.
+
+![](images/in-class10-2.png){width="80%," fig.align="center"}
+

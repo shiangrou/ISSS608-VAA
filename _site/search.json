@@ -322,6 +322,20 @@
     "text": "4. Dashboard\nCombining the 2 graphs to create a dashboard"
   },
   {
+    "objectID": "In-class_Exercise/In-class_Ex10.html",
+    "href": "In-class_Exercise/In-class_Ex10.html",
+    "title": "In Class Exercise 10",
+    "section": "",
+    "text": "In this exercise, the dataset “SGBank.csv” is used. In Tableau, candlestick chart is not readily available, but we can still have it created with some calculated fields manually created."
+  },
+  {
+    "objectID": "In-class_Exercise/In-class_Ex10.html#bollinger-band",
+    "href": "In-class_Exercise/In-class_Ex10.html#bollinger-band",
+    "title": "In Class Exercise 10",
+    "section": "2. Bollinger Band",
+    "text": "2. Bollinger Band\nA bollinger band with moving average, upper and lower bound can also be built."
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Visual Analytics & Application",
